@@ -1,0 +1,6 @@
+- Neues Menu im Setup: Mail überprüfen, hat der Spieler einen Eintrag?
+
+Fehler
+- Abwesend eintragen wenn Wert geändert und verlassen will, fragen ob Speichern
+
+- setPaneLeft, wenn nicht aufgerufen bei AbwesendSpieler und AbwesendTableau, dann wird Zentrum nicht angezeigt
