@@ -158,7 +158,7 @@ public class ConfigDbData {
 		if (mReadSet != null) {
 			mReadSet.close();
 		}
-		mReadSet = mReadStmt.executeQuery("SELECT * FROM Config");
+		mReadSet = mReadStmt.executeQuery("SELECT * FROM config");
 		mReadSet.beforeFirst();
 		while (mReadSet.next()) {
 			keyValue.put(mReadSet.getString(1), mReadSet.getString(2));

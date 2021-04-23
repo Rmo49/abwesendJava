@@ -18,7 +18,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import com.rmo.abwesend.model.MatchData;
 import com.rmo.abwesend.model.Spieler;
 import com.rmo.abwesend.model.SpielerData;
 import com.rmo.abwesend.model.SpielerTableauData;

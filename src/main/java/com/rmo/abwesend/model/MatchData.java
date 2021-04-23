@@ -27,7 +27,7 @@ public class MatchData {
 	 */
 	public static String createTable() {
 		StringBuffer sb = new StringBuffer(300);	
-		sb.append(" CREATE TABLE IF NOT EXISTS Matches (");
+		sb.append(" CREATE TABLE IF NOT EXISTS matches (");
 		sb.append(" spielerID int unsigned NOT NULL, time VARCHAR(22), matchTyp VARCHAR(1) DEFAULT NULL,");
 		sb.append(" PRIMARY KEY (spielerID, time),");
 		sb.append(" FOREIGN KEY (spielerID) REFERENCES Spieler(spielerID)");
@@ -37,7 +37,7 @@ public class MatchData {
 
 	public static String createTable2() {
 		StringBuffer sb = new StringBuffer(300);	
-		sb.append(" CREATE TABLE IF NOT EXISTS Matches (");
+		sb.append(" CREATE TABLE IF NOT EXISTS matches (");
 		sb.append(" spielerID int unsigned NOT NULL, time VARCHAR(22), matchTyp VARCHAR(1) DEFAULT NULL,");
 		sb.append(" PRIMARY KEY (spielerID, time),");
 		sb.append(" FOREIGN KEY (spielerID) REFERENCES Spieler(spielerID) ON DELETE CASCADE");
@@ -46,7 +46,7 @@ public class MatchData {
 	}
 
 	public static String dorpTable() {
-		return ("DROP TABLE IF EXISTS Matches;");
+		return ("DROP TABLE IF EXISTS matches;");
 	}
 
 	private static MatchData instance = null;
@@ -125,7 +125,7 @@ public class MatchData {
 	 */
 	public void deleteAllRow() throws SQLException {
 		setupReadSet();
-		mReadStmt.execute("TRUNCATE Matches");
+		mReadStmt.execute("TRUNCATE matches");
 	}
 	
 	/**
@@ -135,7 +135,7 @@ public class MatchData {
 	 */
 	public void updateAll(int pSpielerId, List<String> newMatches) throws Exception {
 		setupReadSet();
-		mReadStmt.execute("DELETE FROM Matches WHERE spielerId = " + pSpielerId);
+		mReadStmt.execute("DELETE FROM matches WHERE spielerId = " + pSpielerId);
 		
 		Calendar spielCalendar = new GregorianCalendar();
 		spielCalendar.setTime(Config.turnierBeginDatum);
@@ -182,7 +182,7 @@ public class MatchData {
 	 */
 	private void addRow(Match pMatch) throws SQLException {
 		Statement stmt = getConnection().createStatement();
-		StringBuffer lQuery = new StringBuffer("INSERT INTO Matches VALUES (");
+		StringBuffer lQuery = new StringBuffer("INSERT INTO matches VALUES (");
 		lQuery.append(pMatch.getSpielerId());
 		lQuery.append(", '");
 		lQuery.append(pMatch.getDatum());
@@ -199,7 +199,7 @@ public class MatchData {
 	 */
 	private void addRow(int spielerId, String time, String spielTyp) throws SQLException {
 		Statement stmt = getConnection().createStatement();
-		StringBuffer lQuery = new StringBuffer("INSERT INTO Matches VALUES (");
+		StringBuffer lQuery = new StringBuffer("INSERT INTO matches VALUES (");
 		lQuery.append(spielerId);
 		lQuery.append(", '");
 		lQuery.append(time);
@@ -219,7 +219,7 @@ public class MatchData {
 		if (mReadSet != null) {
 			mReadSet.close();
 		}
-		mReadSet = mReadStmt.executeQuery("SELECT * FROM Matches WHERE spielerId = " + pSpielerId);
+		mReadSet = mReadStmt.executeQuery("SELECT * FROM matches WHERE spielerId = " + pSpielerId);
 		List<Match> matches = new ArrayList<Match>();
 		mReadSet.beforeFirst();
 		while (mReadSet.next()) {
@@ -238,7 +238,7 @@ public class MatchData {
 			mReadSet.close();
 		}
 		String datum = Config.sdfDatum.format(pDate);
-		mReadSet = mReadStmt.executeQuery("SELECT * FROM Matches WHERE time LIKE '" + datum + "%'");
+		mReadSet = mReadStmt.executeQuery("SELECT * FROM matches WHERE time LIKE '" + datum + "%'");
 		List<Match> matches = new ArrayList<Match>();
 		mReadSet.beforeFirst();
 		while (mReadSet.next()) {

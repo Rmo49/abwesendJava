@@ -1,6 +1,5 @@
 package com.rmo.abwesend.util;
 
-import java.util.Date;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -25,7 +24,7 @@ public class SpielerVonFileTest extends TestCase {
 	 * Datum lesen
 	 */
 	public void test_getTableauId() {
-		SpielerVonFile svf = new SpielerVonFile();
+//		SpielerVonFile svf = new SpielerVonFile();
 //		svf.startSpielerEinlesen(dirName, fileName, tableauName)
 	}
 

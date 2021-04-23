@@ -1,12 +1,12 @@
 # TCA Config-Einstellungen
-# 2021-03-01 21:15
-anzeige.beginDatum=2020-08-19
+# 2021-04-23 11:48
+anzeige.beginDatum=2020-08-14
 anzeige.endDatum=2020-08-29
 anzeige.tableauBox=15
 browser.driverLocation=C:/Program Files (x86)/Google/Chrome/chromedriver.exe
 browser.webdriverTyp=webdriver.chrome.driver
 db.name=tennis
-db.url=jdbc:mysql://server41.hostfactory.ch
+db.url=//server41.hostfactory.ch
 db.username=javacon
 email.file=emails.csv
 email.hostImap=imap.mail.hostpoint.ch
@@ -21,7 +21,7 @@ spielplan.dir=D:/Downloads
 spielplan.file=Calendar.xls
 spielplan.trennCharDoppel=/
 trace.level=5
-window.heigth=558.0
-window.width=966.0
-window.x=60.0
-window.y=-853.0
+window.heigth=613.0
+window.width=923.0
+window.x=1142.0
+window.y=-769.0

@@ -62,13 +62,17 @@ public class DbConnection {
 					dbName = Config.dbNname;
 				}
 				StringBuffer dbUrlTemp = new StringBuffer(80);
+				dbUrlTemp.append(Config.dbUrlPrefix);
 				dbUrlTemp.append(Config.dbUrl);
 				if (! Config.dbUrl.endsWith("/")) {
 					dbUrlTemp.append("/");
 				}
 				dbUrlTemp.append(Config.dbNname);
-				dbUrlTemp.append(Config.dbUrlSetting);
-				sConnection = DriverManager.getConnection(dbUrlTemp.toString(), Config.get(Config.dbUserKey), dbPwFile.getDbPassword());
+//				dbUrlTemp.append(Config.dbUrlSetting);
+				String dbUrl1 = dbUrlTemp.toString();
+				String dbPw = dbPwFile.getDbPassword();
+				sConnection = DriverManager.getConnection(dbUrl1, Config.get(Config.dbUserKey), dbPw);
+//				sConnection = DriverManager.getConnection(dbUrl1, Config.get(Config.dbUserKey), "");
 			}
 			sConnection.setSchema(dbName);	// hat keine Auswirkungen
 			Statement statement = sConnection.createStatement();

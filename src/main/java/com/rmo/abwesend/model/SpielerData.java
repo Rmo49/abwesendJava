@@ -24,7 +24,7 @@ public class SpielerData {
 	 */
 	public static String createTable() {
 		StringBuffer sb = new StringBuffer(300);	
-		sb.append(" CREATE TABLE IF NOT EXISTS Spieler (");
+		sb.append(" CREATE TABLE IF NOT EXISTS spieler (");
 		sb.append(" spielerID INT unsigned NOT NULL AUTO_INCREMENT, name VARCHAR(30) DEFAULT NULL,");
 		sb.append(" vorname VARCHAR(30) DEFAULT NULL, abwesendArray VARCHAR(180) DEFAULT NULL,");
 		sb.append(" email VARCHAR(50) DEFAULT NULL,");
@@ -34,7 +34,7 @@ public class SpielerData {
 	}
 
 	public static String dorpTable() {
-		return ("DROP TABLE IF EXISTS Spieler;");
+		return ("DROP TABLE IF EXISTS spieler;");
 	}
 
 	private static SpielerData instance = null;
@@ -191,7 +191,7 @@ public class SpielerData {
 			mReadSet.close();
 		}
 		ArrayList<SpielerKurz> nameList = new ArrayList<SpielerKurz>();
-		mReadSet = mReadStmt.executeQuery("SELECT spielerID, name, vorname FROM Spieler ORDER by name, vorname;");
+		mReadSet = mReadStmt.executeQuery("SELECT spielerID, name, vorname FROM spieler ORDER by name, vorname;");
 		while (mReadSet.next()) {
 			SpielerKurz spielerKurz = new SpielerKurz();
 			spielerKurz.setId(mReadSet.getInt(1));
@@ -212,7 +212,7 @@ public class SpielerData {
 			mReadSet.close();
 		}
 		ArrayList<Spieler> spielerList = new ArrayList<Spieler>();
-		mReadSet = mReadStmt.executeQuery("SELECT * FROM Spieler ORDER by name, vorname;");
+		mReadSet = mReadStmt.executeQuery("SELECT * FROM spieler ORDER by name, vorname;");
 		while (mReadSet.next()) {
 			Spieler spieler = copyToSpieler(mReadSet);
 			spielerList.add(spieler);
@@ -238,7 +238,7 @@ public class SpielerData {
 	 * Alle Daten löschen, zuerst muss SpielerTableau gelöscht werden
 	 */
 	public void deleteAllRow() throws Exception {
-		String lQuery = "DELETE FROM Spieler;";
+		String lQuery = "DELETE FROM spieler;";
 		Statement statement = getConnection().createStatement();
 		statement.executeUpdate(lQuery);
 		statement.close();
@@ -280,7 +280,7 @@ public class SpielerData {
 		if (mReadSet != null) {
 			mReadSet.close();
 		}
-		mReadSet = mReadStmt.executeQuery("SELECT * FROM Spieler ORDER BY spielerID");
+		mReadSet = mReadStmt.executeQuery("SELECT * FROM spieler ORDER BY spielerID");
 		mReadSet.beforeFirst();
 		while (mReadSet.next()) {
 			if (mReadSet.getInt(1) == pSpielerID) {
@@ -304,7 +304,7 @@ public class SpielerData {
 			mReadSet.close();
 		}
 		StringBuffer lQuery = new StringBuffer(100);
-		lQuery.append("SELECT * FROM Spieler WHERE name LIKE '%");
+		lQuery.append("SELECT * FROM spieler WHERE name LIKE '%");
 		lQuery.append(name.trim());
 		lQuery.append("%' AND vorname LIKE '%");
 		lQuery.append(vorname.trim());
@@ -347,7 +347,7 @@ public class SpielerData {
 	 */
 	private void addRow(Spieler pSpieler) throws Exception {
 		Statement stmt = getConnection().createStatement();
-		StringBuffer lQuery = new StringBuffer("INSERT INTO Spieler VALUES (");
+		StringBuffer lQuery = new StringBuffer("INSERT INTO spieler VALUES (");
 //		lQuery.append(pSpieler.getiD());
 		lQuery.append("null, '");
 		lQuery.append(pSpieler.getName());
@@ -366,7 +366,7 @@ public class SpielerData {
 	 * Aendert die Attribute der gewählten Zeile.
 	 */
 	private void updateRow(Spieler pSpieler) throws Exception {
-		String lQuery = "UPDATE Spieler SET name = ? , vorname = ? , abwesendArray = ? , email = ? WHERE SpielerID = ";
+		String lQuery = "UPDATE spieler SET name = ? , vorname = ? , abwesendArray = ? , email = ? WHERE SpielerID = ";
 		lQuery += pSpieler.getId();
 		PreparedStatement updateSpieler = getConnection().prepareStatement(lQuery);
 		updateSpieler.setString(1, pSpieler.getName());
@@ -386,7 +386,7 @@ public class SpielerData {
 			mReadStmt = getConnection().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		}
 //		if (mReadSet == null) {
-//			mReadSet = mReadStmt.executeQuery("SELECT * FROM Spieler ORDER BY Name");
+//			mReadSet = mReadStmt.executeQuery("SELECT * FROM spieler ORDER BY Name");
 //		}
 	}
 

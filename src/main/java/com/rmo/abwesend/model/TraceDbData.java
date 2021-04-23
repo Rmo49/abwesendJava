@@ -24,14 +24,14 @@ public class TraceDbData {
 	 */
 	public static String createTable() {
 		StringBuffer sb = new StringBuffer(300);	
-		sb.append(" CREATE TABLE IF NOT EXISTS Trace (");
+		sb.append(" CREATE TABLE IF NOT EXISTS trace (");
 		sb.append(" datum datetime DEFAULT CURRENT_TIMESTAMP, wert VARCHAR(180) DEFAULT NULL");
 		sb.append(");");
 		return sb.toString();
 	}
 	
 	public static String dorpTable() {
-		return ("DROP TABLE IF EXISTS Trace;");
+		return ("DROP TABLE IF EXISTS trace;");
 	}
 	
 	
@@ -120,7 +120,7 @@ public class TraceDbData {
 	 */
 	private void addRow(String traceData) throws SQLException {
 		Statement stmt = getConnection().createStatement();
-		StringBuffer lQuery = new StringBuffer("INSERT INTO Trace VALUES (");
+		StringBuffer lQuery = new StringBuffer("INSERT INTO trace VALUES (");
 		lQuery.append("CURTIME(), '(GMT) ");
 		lQuery.append(traceData);
 		lQuery.append("');");
@@ -137,7 +137,7 @@ public class TraceDbData {
 		if (mReadSet != null) {
 			mReadSet.close();
 		}
-		String statmt = "SELECT * FROM Trace WHERE datum >= '" + Config.sdfDb.format(fromDate) + "';";
+		String statmt = "SELECT * FROM trace WHERE datum >= '" + Config.sdfDb.format(fromDate) + "';";
 		mReadSet = mReadStmt.executeQuery(statmt);
 		List<TraceDb> traceList = new ArrayList<TraceDb>();
 		mReadSet.beforeFirst();
@@ -155,7 +155,7 @@ public class TraceDbData {
 	 */
 	private void deleteBisDate(Date bisDate) throws SQLException {
 		Statement stmt = getConnection().createStatement();
-		String lQuery = "DELETE FROM Trace WHERE datum <= '" + Config.sdfDb.format(bisDate) + "';";
+		String lQuery = "DELETE FROM trace WHERE datum <= '" + Config.sdfDb.format(bisDate) + "';";
 
 		stmt.executeUpdate(lQuery);
 		stmt.close();

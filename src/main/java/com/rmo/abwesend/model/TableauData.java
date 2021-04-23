@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 
@@ -23,7 +22,7 @@ public class TableauData {
 	 */
 	public static String createTable() {
 		StringBuffer sb = new StringBuffer(300);	
-		sb.append(" CREATE TABLE IF NOT EXISTS Tableau (");
+		sb.append(" CREATE TABLE IF NOT EXISTS tableau (");
 		sb.append(" tableauID INT unsigned NOT NULL AUTO_INCREMENT, bezeichnung VARCHAR(25) DEFAULT NULL, position VARCHAR(2) DEFAULT NULL,");
 		sb.append(" konkurrenz VARCHAR(25) DEFAULT NULL, PRIMARY KEY (tableauID)");
 		sb.append(");");		
@@ -31,7 +30,7 @@ public class TableauData {
 	}
 
 	public static String dorpTable() {
-		return ("DROP TABLE IF EXISTS Tableau;");
+		return ("DROP TABLE IF EXISTS tableau;");
 	}
 
 	private static TableauData instance = null;
@@ -154,7 +153,7 @@ public class TableauData {
 			mReadSet.close();
 		}
 		ArrayList<Tableau> tableauList = new ArrayList<Tableau>();
-		mReadSet = mReadStmt.executeQuery("SELECT * FROM Tableau ORDER by position;");
+		mReadSet = mReadStmt.executeQuery("SELECT * FROM tableau ORDER by position;");
 		while (mReadSet.next()) {
 			Tableau lTableau = new Tableau();
 			lTableau.setId(mReadSet.getInt(1));
@@ -192,7 +191,7 @@ public class TableauData {
 		if (mReadSet != null) {
 			mReadSet.close();
 		}
-		mReadSet = mReadStmt.executeQuery("SELECT * FROM Tableau ORDER BY TableauID");
+		mReadSet = mReadStmt.executeQuery("SELECT * FROM tableau ORDER BY tableauID");
 		mReadSet.beforeFirst();
 		while (mReadSet.next()) {
 			if (mReadSet.getInt(1) == pTableauNr) {
@@ -211,7 +210,7 @@ public class TableauData {
 			mReadSet.close();
 		}
 		StringBuffer lQuery = new StringBuffer(100);
-		lQuery.append("SELECT * FROM Tableau WHERE bezeichnung LIKE '");
+		lQuery.append("SELECT * FROM tableau WHERE bezeichnung LIKE '");
 		lQuery.append(bezeichnung);
 		lQuery.append("%';");
 		mReadSet = mReadStmt.executeQuery(lQuery.toString());
@@ -230,7 +229,7 @@ public class TableauData {
 			mReadSet.close();
 		}
 		StringBuffer lQuery = new StringBuffer(100);
-		lQuery.append("SELECT * FROM Tableau WHERE konkurrenz LIKE '");
+		lQuery.append("SELECT * FROM tableau WHERE konkurrenz LIKE '");
 		lQuery.append(konkurrenz);
 		lQuery.append("%';");
 		mReadSet = mReadStmt.executeQuery(lQuery.toString());
@@ -259,7 +258,7 @@ public class TableauData {
 	 */
 	private void addRow(Tableau pTableau) throws Exception {
 		Statement stmt = getConnection().createStatement();
-		StringBuffer lQuery = new StringBuffer("INSERT INTO Tableau VALUES (");
+		StringBuffer lQuery = new StringBuffer("INSERT INTO tableau VALUES (");
 		lQuery.append("null, '");
 		lQuery.append(pTableau.getBezeichnung());
 		lQuery.append("', '");
@@ -275,7 +274,7 @@ public class TableauData {
 	 * Aendert die Attribute der gewählten Zeile.
 	 */
 	private void updateRow(Tableau pTableau) throws Exception {
-		String lQuery = "UPDATE Tableau SET bezeichnung = ?, position = ?, konkurrenz = ?  WHERE TableauID = ";
+		String lQuery = "UPDATE tableau SET bezeichnung = ?, position = ?, konkurrenz = ?  WHERE TableauID = ";
 		lQuery += pTableau.getId();
 		PreparedStatement updateTableau = getConnection().prepareStatement(lQuery);
 		updateTableau.setString(1, pTableau.getBezeichnung());

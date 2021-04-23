@@ -21,7 +21,7 @@ public class SpielerTableauData {
 	 */
 	public static String createTable() {
 		StringBuffer sb = new StringBuffer(300);	
-		sb.append("CREATE TABLE IF NOT EXISTS SpielerTableau (");		
+		sb.append("CREATE TABLE IF NOT EXISTS spielertableau (");		
 		sb.append(" spielerID int unsigned NOT NULL, tableauID INT unsigned NOT NULL,");
 		sb.append(" FOREIGN KEY (spielerID) REFERENCES Spieler(spielerID),");
 		sb.append(" FOREIGN KEY (tableauID) REFERENCES Tableau(tableauID)");
@@ -31,7 +31,7 @@ public class SpielerTableauData {
 
 	public static String createTable2() {
 		StringBuffer sb = new StringBuffer(300);	
-		sb.append ("CREATE TABLE IF NOT EXISTS SpielerTableau (");		
+		sb.append ("CREATE TABLE IF NOT EXISTS spielerTableau (");		
 		sb.append (" spielerID int unsigned NOT NULL, tableauID INT unsigned NOT NULL,");
 		sb.append (" PRIMARY KEY (spielerID, tableauID),");
 		sb.append (" FOREIGN KEY (spielerID) REFERENCES Spieler(spielerID)");
@@ -43,7 +43,7 @@ public class SpielerTableauData {
 	}
 
 	public static String dorpTable() {
-		return ("DROP TABLE IF EXISTS SpielerTableau;");
+		return ("DROP TABLE IF EXISTS spielertableau;");
 	}
 
 	
@@ -215,7 +215,7 @@ public class SpielerTableauData {
 	 * Alle Daten löschen.
 	 */
 	public void deleteAllRow() throws Exception {
-		String lQuery = "TRUNCATE SpielerTableau;";
+		String lQuery = "TRUNCATE spielertableau;";
 		Statement statement = getConnection().createStatement();
 		statement.executeUpdate(lQuery);
 		statement.close();
@@ -236,7 +236,7 @@ public class SpielerTableauData {
 			mReadSet.close();
 		}
 		StringBuffer lQuery = new StringBuffer(100);
-		lQuery.append("SELECT tableauID FROM SpielerTableau WHERE spielerID = '");
+		lQuery.append("SELECT tableauID FROM spielertableau WHERE spielerID = '");
 		lQuery.append(pSpielerId);
 		lQuery.append("';");
 		mReadSet = mReadStmt.executeQuery(lQuery.toString());
@@ -261,7 +261,7 @@ public class SpielerTableauData {
 			mReadSet.close();
 		}
 		StringBuffer lQuery = new StringBuffer(100);
-		lQuery.append("SELECT spielerID FROM SpielerTableau WHERE tableauID = '");
+		lQuery.append("SELECT spielerID FROM spielertableau WHERE tableauID = '");
 		lQuery.append(pTableauId);
 		lQuery.append("';");
 		mReadSet = mReadStmt.executeQuery(lQuery.toString());
@@ -279,7 +279,7 @@ public class SpielerTableauData {
 	 */
 	private void addRow(int spielerId, int tableauId) throws Exception {
 		Statement stmt = getConnection().createStatement();
-		StringBuffer lQuery = new StringBuffer("INSERT INTO SpielerTableau VALUES (");
+		StringBuffer lQuery = new StringBuffer("INSERT INTO spielertableau VALUES (");
 		lQuery.append(spielerId);
 		lQuery.append(", ");
 		lQuery.append(tableauId);
@@ -293,7 +293,7 @@ public class SpielerTableauData {
 	 */
 	private void deleteRow(Integer spielerId, Integer tableauId) throws Exception {
 		StringBuffer lQuery = new StringBuffer(80);
-		lQuery.append("DELETE FROM SpielerTableau WHERE SpielerID = ");
+		lQuery.append("DELETE FROM spielertableau WHERE SpielerID = ");
 		lQuery.append(spielerId);
 		lQuery.append(" AND TableauId = ");
 		lQuery.append(tableauId);

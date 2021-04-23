@@ -19,15 +19,15 @@ public class MailData {
 	 */
 	public static String createTable() {
 		StringBuffer sb = new StringBuffer(300);	
-		sb.append(" CREATE TABLE IF NOT EXISTS Mail (");
-		sb.append(" mailId int, betreff VARCHAR(50), text VARCHAR(500) DEFAULT NULL");
+		sb.append(" CREATE TABLE IF NOT EXISTS mail (");
+		sb.append(" mailID int, betreff VARCHAR(50), text VARCHAR(500) DEFAULT NULL");
 		sb.append(");");
 		return sb.toString();
 	}
 
 
 	public static String dorpTable() {
-		return ("DROP TABLE IF EXISTS Mail;");
+		return ("DROP TABLE IF EXISTS mail;");
 	}
 
 	private static MailData instance = null;
@@ -101,7 +101,7 @@ public class MailData {
 	 */
 	public void deleteAllRow() throws SQLException {
 		setupReadSet();
-		mReadStmt.execute("TRUNCATE Mail");
+		mReadStmt.execute("TRUNCATE mail");
 	}
 	
 
@@ -113,7 +113,7 @@ public class MailData {
 	 */
 	private void addRow(Mail pMail) throws SQLException {
 		Statement stmt = getConnection().createStatement();
-		StringBuffer lQuery = new StringBuffer("INSERT INTO Mail VALUES (");
+		StringBuffer lQuery = new StringBuffer("INSERT INTO mail VALUES (");
 		lQuery.append(pMail.getMailId());
 		lQuery.append(", '");
 		lQuery.append(pMail.getBetreff());
@@ -134,7 +134,7 @@ public class MailData {
 		if (mReadSet != null) {
 			mReadSet.close();
 		}
-		mReadSet = mReadStmt.executeQuery("SELECT * FROM Mail");
+		mReadSet = mReadStmt.executeQuery("SELECT * FROM mail");
 		Mail mail = new Mail();
 		mReadSet.beforeFirst();
 		while (mReadSet.next()) {

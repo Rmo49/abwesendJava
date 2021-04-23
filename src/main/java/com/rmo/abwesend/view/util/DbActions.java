@@ -42,6 +42,9 @@ public class DbActions {
 
 	    int zeileNr = 0;
 	    
+	    JLabel labelDb = new JLabel("Datenbank: " + Config.dbUrl);
+		pane.add(labelDb, getConstraintNext(1, zeileNr++));
+	    
 		JLabel labelTitel1 = new JLabel("Trace löschen");
 		labelTitel1.setFont(Config.fontTitel);
 		pane.add(labelTitel1, getConstraintNext(1, zeileNr++));
@@ -66,7 +69,7 @@ public class DbActions {
 		});
 		pane.add(btnDelTrace, getConstraintNext(1, zeileNr++));
 		
-
+		pane.add(new JLabel(" "), getConstraintNext(1, zeileNr++));
 		JLabel labelTitel2 = new JLabel("Alle Spieler löschen");
 		labelTitel2.setFont(Config.fontTitel);
 		pane.add(labelTitel2, getConstraintNext(1, zeileNr++));
@@ -85,7 +88,8 @@ public class DbActions {
 		});
 		pane.add(btnloeschen, getConstraintNext(1, zeileNr++));
 
-		JLabel labelTitel3 = new JLabel("Datei mit DB-Passwort generieren");
+		pane.add(new JLabel(" "), getConstraintNext(1, zeileNr++));
+		JLabel labelTitel3 = new JLabel("Datei mit DB-Passwort generieren, DbPassword.txt wird generiert");
 		labelTitel3.setFont(Config.fontTitel);
 		pane.add(labelTitel3, getConstraintNext(1, zeileNr++));
 

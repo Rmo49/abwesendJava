@@ -2,6 +2,7 @@ package com.rmo.abwesend;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
@@ -32,7 +33,7 @@ import com.rmo.abwesend.view.util.CmUtil;
  */
 public class AbwesendMain {
 	
-	private final static String version = "TC Allschwil Abwesenheiten, Version 6.0";
+	private final static String version = "TCA CM abwesend, (V 6.1)";
 //	private static JOptionPane startFrame;
 
 	public AbwesendMain() {
@@ -67,18 +68,16 @@ public class AbwesendMain {
 		    	Config.windowHeight = dim.getHeight();
 		    	Config.windowWidth = dim.getWidth();
 		    }
+		    
+		    @Override
+		    public void componentMoved(ComponentEvent e) {
+		    	Point p = e.getComponent().getLocation();
+		    	Config.windowX = p.getX();
+		    	Config.windowY = p.getY();
+		    }
 		});		
 		mainFrame.setVisible(true);
 	}
-	
-/*
-	private static void showStart() {
-		startFrame = new JOptionPane(version);
-		startFrame.setLocation(100, 100);
-		startFrame.setSize(500, 200);
-		startFrame.setVisible(true);
-	}
-*/
 	
 	/**
 	 * Alle Configuration daten lesen
@@ -102,7 +101,7 @@ public class AbwesendMain {
 	}
 		
 	private static boolean readConfiguration() {
-		// DB-File voerhanden
+		// DB-File vorhanden
 		if (! checkDbPasswordFile()) {
 			CmUtil.alertWarning("Passwort Datenbank",
 					"Passwort Datei für die Datenbank ist nicht vorhanden,\n"
@@ -169,7 +168,6 @@ public class AbwesendMain {
 	 * Configruations in properties und DB schreiben
 	 */
 	private static void writeConfiguration() {
-		
 		try {
 			Config.saveConfigData();
 		}

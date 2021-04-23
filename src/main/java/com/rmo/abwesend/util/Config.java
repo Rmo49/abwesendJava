@@ -88,8 +88,9 @@ public class Config {
 	// --- Database, muss in Config, oder Parameter gespeichert werden.
 	public static final String dbNnameKey = "db.name";
 	public static String dbNname = "tennis";
+	public static String dbUrlPrefix = "jdbc:mysql:";
 	public static final String dbUrlKey = "db.url";
-	public static String dbUrl = "jdbc:mysql://server41.hostfactory.ch";
+	public static String dbUrl = "//server41.hostfactory.ch";
 	public static String dbUrlSetting = "?useLegacyDatetimeCode=false&serverTimezone=UTC";
 	public static final String dbUserKey = "db.username";
 	public static String dbUser = "javacon";

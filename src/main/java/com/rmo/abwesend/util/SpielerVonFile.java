@@ -172,6 +172,7 @@ public class SpielerVonFile {
 	 * @param utf8
 	 * @return java-string
 	 */
+	/*
 	private String decodeFromUtf8(String utf8) {
 		byte[] utf8b = utf8.getBytes();
 		StringBuffer result = new StringBuffer(utf8.length());
@@ -191,6 +192,7 @@ public class SpielerVonFile {
 		}
 		return result.toString();
 	}
+	*/
 	
 	/**
 	 * Vergleicht 2 Strings

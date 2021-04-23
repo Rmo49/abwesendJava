@@ -80,8 +80,7 @@ public class SpielerSelektieren {
 	private JLabel anzahlSpieler;
 	private JButton btnZusaetzlich;
 
-
-	private PropertyChangeListener myListener;
+//	private PropertyChangeListener myListener;
 
 	public SpielerSelektieren(MainFrame mainFrame) {
 		this.mainFrame = mainFrame;
@@ -313,7 +312,7 @@ public class SpielerSelektieren {
 	 * @param newListener
 	 */
 	public void addChangeListener(PropertyChangeListener newListener) {
-		myListener = newListener;
+//		myListener = newListener;
 	}
 
 	/**
@@ -332,10 +331,10 @@ public class SpielerSelektieren {
 						sucheName = sucheName + e.getKeyChar();
 					}
 //				}
-					spielerData.setSuchSpielerData(sucheName.toLowerCase());
-					anzahlSpieler.setText(spielerData.getAnzahlSpieler());
-					anzahlSpieler.repaint();
-					spielerData.fireTableDataChanged();
+				spielerData.setSuchSpielerData(sucheName.toLowerCase());
+				anzahlSpieler.setText(spielerData.getAnzahlSpieler());
+				anzahlSpieler.repaint();
+				spielerData.fireTableDataChanged();
 			}
 			
 			@Override
