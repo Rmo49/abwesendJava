@@ -1,0 +1,4 @@
+Eintragen wenn ein Spieler NICHT spielen kann.
+Beispiel: -18 Kann erst ab 18.00 spielen.
+Da viele Spieler während der Woche erst ab einer bestimmten Zeit zur Verfügung stehen, kann die Zeit unten gesetzt werden.
+Speichern drücken, sonst werden die Änderungen nicht übertragen.

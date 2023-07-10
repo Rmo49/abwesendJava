@@ -1,0 +1,32 @@
+Fehler
+	- MailSenden und SendMailTCA enthältenSMTP credentials, Passwort auslagern
+
+DB Connection
+- Wenn keine Daten, kann nix eingegeben werden.
+
+mail
+- versenden: Test löschen, wird nicht mehr gebraucht
+- Passwort verschlüsseln wenn möglich, oder in seperatem file
+
+- Mail versenden, Layout im Setup Fenster von Mail-Text sollte nicht verkleinern
+- Neues Menu im Setup: Mail überprüfen, hat der Spieler einen Eintrag?
+
+
+- evt. SMS senden.
+
+Fehler
+- Abwesend eintragen wenn Wert geändert und verlassen will, fragen ob Speichern
+- Abwesend anzeigen: Wenn Spiel am Anfang und Abwesenheit, wird nur Spiel angezeigt
+
+
+- setPaneLeft, wenn nicht aufgerufen bei AbwesendSpieler und AbwesendTableau, dann wird Zentrum nicht angezeigt
+
+Info: Selenium alte Version: 3.141.59
+
+Flutter
+- Meldung wenn Verbindung testen verbessern
+
+--------------------------
+AbwesendConfig.txt
+db.url=//server41.hostfactory.ch
+db.url=//localhost
