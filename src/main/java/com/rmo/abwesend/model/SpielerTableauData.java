@@ -244,6 +244,15 @@ public class SpielerTableauData {
 		statement.close();
 	}
 
+	/**
+	 * Alle Spieler von einem Tableau entfernen
+	 */
+	public void deleteAllSpielerFromTableau(int tableauId) throws Exception  {
+		List<Integer> spielerIdList = readAllSpieler(tableauId);
+		for (Integer spielerId : spielerIdList) {
+			deleteRow(spielerId, tableauId);
+		}
+	}
 
 	// ------ interne Methoden -----------------------------------------
 
@@ -273,7 +282,7 @@ public class SpielerTableauData {
 	}
 
 	/**
-	 * Sucht alle Tableaus eines Spielers, gibt die Liste der TableauIDs zurück.
+	 * Sucht alle Spiele eines Tableaus, gibt die Liste der TableauIDs zurück.
 	 * @param pSpielerId
 	 * @return Liste mit TableauID wo Spieler spielt
 	 * @throws Exception

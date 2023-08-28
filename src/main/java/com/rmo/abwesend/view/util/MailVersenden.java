@@ -36,6 +36,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingWorker;
 
 import com.rmo.abwesend.model.Mail;
@@ -80,8 +81,6 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 	private String tableauSelected;
 	private JCheckBox anAlle;
 	private JCheckBox keineAbwesenheit;
-	// TODO definitv entfernen
-//	private JCheckBox mailTest;
 
 	private MailGenerator mailGenerator;
 	private MailSenden mailSenden;
@@ -118,12 +117,12 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 
 		compPanel.add(new JLabel("Mail-Text"), getConstraintFirst(0, zeileNr));
 
-		textMail = new JTextArea(8, 40);
-		JScrollPane scrollPane = new JScrollPane(textMail);
+		textMail = new JTextArea();
+		JScrollPane scrollPane = new JScrollPane(textMail, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		textMail.setEditable(true);
-		Dimension dimText = new Dimension(200, 100);
-		textMail.setMinimumSize(dimText);
-		textMail.setPreferredSize(dimText);
+		Dimension dimText = new Dimension(600, 160);
+		scrollPane.setMinimumSize(dimText);
+		scrollPane.setPreferredSize(dimText);
 		compPanel.add(scrollPane, getConstraintNext(1, zeileNr++));
 
 		compPanel.add(new JLabel("Variable:"), getConstraintFirst(0, zeileNr));
@@ -232,12 +231,6 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 
 		//--- Mails versenden
 		JPanel paneSend = new JPanel(new FlowLayout());
-
-//		mailTest = new JCheckBox("Testen");
-//		mailTest.setSelected(true);
-//		paneSend.add(mailTest);
-//		paneSend.add(new JLabel(" wenn selektiert werden mails in die Datei geschrieben: " + Config.sMailTest));
-//		compPanel.add(paneSend, getConstraintNext(1, zeileNr++));
 
 		btnMailSenden = new JButton("Mails versenden");
 		btnMailSenden.addActionListener(new ActionListener() {
@@ -432,6 +425,10 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 					return;
 				}
 				dateVon.setTime(dateVon.getTime() + Config.einTagLong);
+			}
+			// hier auch nach Zeit selektieren
+			if (listMatches != null && listMatches.size() > 0) {
+
 			}
 			// Liste sortieren nach Spieler ID
 			Collections.sort(listMatches, new Comparator<Match>() {
@@ -769,14 +766,14 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 		/*
 		 * die mail in ein File schreiben, zu Testzwechen
 		 */
-		private void writeMailToFile(String toAdresse, String betreff, String message) {
-			if (mailToFile == null) {
-				mailToFile = new MailToFile(Config.sMailTestPath);
-			}
-			mailToFile.println(toAdresse);
-			mailToFile.println(betreff);
-			mailToFile.println(message);
-		}
+//		private void writeMailToFile(String toAdresse, String betreff, String message) {
+//			if (mailToFile == null) {
+//				mailToFile = new MailToFile(Config.sMailTestPath);
+//			}
+//			mailToFile.println(toAdresse);
+//			mailToFile.println(betreff);
+//			mailToFile.println(message);
+//		}
 
 		/*
 		 * Executed in event dispatching thread. Wenn erledigt wird diese Methode

@@ -91,7 +91,7 @@ public class FileHandler {
 		if (fileW == null) {
 			if (! makeReader()) {
 				return null;
-			};
+			}
 		}
 		try {
 			return reader.readLine();

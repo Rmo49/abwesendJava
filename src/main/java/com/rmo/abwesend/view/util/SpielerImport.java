@@ -20,7 +20,6 @@ import javax.swing.JTextField;
 
 import com.rmo.abwesend.model.Spieler;
 import com.rmo.abwesend.model.SpielerData;
-import com.rmo.abwesend.model.SpielerTableauData;
 import com.rmo.abwesend.util.Config;
 import com.rmo.abwesend.util.SpielerImportFile;
 import com.rmo.abwesend.util.Trace;
@@ -95,9 +94,9 @@ public class SpielerImport {
  			}
 		});
 		pane.add(btnSpieler, getConstraintNext(1, zeileNr++));
-		
+
 		pane.add(new JLabel("--------------------------------"), getConstraintNext(1, zeileNr++));
-		
+
 		JLabel labelTitel2 = new JLabel("E-Mail einlesen");
 		labelTitel2.setFont(Config.fontTitel);
 		pane.add(labelTitel2, getConstraintNext(1, zeileNr++));

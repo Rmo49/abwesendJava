@@ -1,20 +1,29 @@
 package com.rmo.abwesend.view.util;
 
 import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -23,10 +32,11 @@ import javax.swing.JTextField;
 import com.rmo.abwesend.model.MatchData;
 import com.rmo.abwesend.model.SpielerData;
 import com.rmo.abwesend.model.SpielerTableauData;
+import com.rmo.abwesend.model.Tableau;
+import com.rmo.abwesend.model.TableauData;
 import com.rmo.abwesend.model.TennisDataBase;
 import com.rmo.abwesend.model.TraceDbData;
 import com.rmo.abwesend.util.Config;
-import com.rmo.abwesend.util.DbPasswordFile;
 
 /**
  * Spieler von einem File einlesen
@@ -35,8 +45,11 @@ import com.rmo.abwesend.util.DbPasswordFile;
  */
 public class DbActions {
 
-	private JTextField dbPassword;
 	private JFormattedTextField bisDatum;
+	// Die Anzeige der Tableau
+	private DefaultComboBoxModel<Tableau> tableauListModel;
+	private JComboBox<Tableau> tableauListView;
+	private int selectedTableauIndex = 0;
 
 
 	public JComponent getPanel() {
@@ -89,11 +102,12 @@ public class DbActions {
 		});
 		pane.add(btnDelTrace, getConstraintNext(1, zeileNr++));
 
+		//------ Beziehung Spiele => Tableau
 		pane.add(new JLabel(" "), getConstraintNext(1, zeileNr++));
 		JLabel labelTitel4 = new JLabel("Spieler => Tableau");
 		labelTitel4.setFont(Config.fontTitel);
 		pane.add(labelTitel4, getConstraintNext(1, zeileNr++));
-		
+
 		JButton btnVerbindung = new JButton("Alle Beziehungen löschen");
 		btnVerbindung.addActionListener(new ActionListener() {
 			@Override
@@ -103,6 +117,68 @@ public class DbActions {
 		});
 		pane.add(btnVerbindung, getConstraintNext(1, zeileNr++));
 
+
+		// Die Combobox für seletion des Tableau
+		pane.add(new JLabel(" "), getConstraintNext(1, zeileNr++));
+		JPanel flowPane = new JPanel(new FlowLayout());
+
+		JLabel labelTableau = new JLabel("Tableau: ");
+		labelTableau.setBackground(Config.colorTable);
+		labelTableau.setOpaque(true);
+		flowPane.add(labelTableau);
+
+		// Tableau Combobox
+		tableauListModel = new DefaultComboBoxModel<>();
+		tableauListView = new JComboBox<>(tableauListModel);
+		tableauListView.setRenderer(new ComboBoxRenderer());
+		// die Anzahl der angezeigten Tableau je nach Window-Höhe
+		tableauListView.setMaximumRowCount(Config.showTableauBox);
+
+		try {
+			Collection<Tableau> allTableau = TableauData.instance().readAllTableau();
+			tableauListModel.addElement(new Tableau(-1, " ", "1", "SwissTennis"));
+			Iterator<Tableau> iter = allTableau.iterator();
+			while (iter.hasNext()) {
+				tableauListModel.addElement(iter.next());
+			}
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(null, ex.getMessage(), "Datenbank lesen", JOptionPane.ERROR_MESSAGE);
+		}
+
+		tableauListView.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				selectedTableauIndex = tableauListView.getSelectedIndex();
+			}
+		});
+
+		// Wenn der Focus verloren wird die letzte selektion wieder setzen
+		tableauListView.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent e) {
+//				System.out.println("tableau: focus lost");
+//				tableauListView.setSelectedIndex(selectedTableauIndex);
+			}
+
+			@Override
+			public void focusGained(FocusEvent e) {
+//				System.out.println("tableau: focus gained");
+			}
+		});
+		flowPane.add(tableauListView);
+		pane.add(flowPane, getConstraintNext(1, zeileNr++));
+
+		JButton btnTableauSpieler = new JButton("Spieler von Tableau löschen");
+		btnTableauSpieler.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				allSpielerFromTableauLoeschen(selectedTableauIndex);
+ 			}
+		});
+		pane.add(btnTableauSpieler, getConstraintNext(1, zeileNr++));
+
+
+		//------ alle Spieler löschen
 		pane.add(new JLabel(" "), getConstraintNext(1, zeileNr++));
 		JLabel labelTitel3 = new JLabel("Alle Spieler löschen");
 		labelTitel3.setFont(Config.fontTitel);
@@ -122,6 +198,10 @@ public class DbActions {
 		});
 		pane.add(btnloeschen, getConstraintNext(1, zeileNr++));
 
+
+
+
+/*
 		pane.add(new JLabel(" "), getConstraintNext(1, zeileNr++));
 		JLabel labelTitel5 = new JLabel("Datei mit DB-Passwort generieren, DbPassword.txt wird generiert");
 		labelTitel5.setFont(Config.fontTitel);
@@ -145,7 +225,7 @@ public class DbActions {
  			}
 		});
 		pane.add(btnPwGenerate, getConstraintNext(1, zeileNr++));
-
+*/
 		return pane;
 	}
 
@@ -163,6 +243,27 @@ public class DbActions {
 		c.gridy = rowNr;
 		return c;
 	}
+
+
+	/**
+	 * Für die Anzeige der Tableau
+	 * @author ruedi
+	 *
+	 */
+	private class ComboBoxRenderer extends DefaultListCellRenderer {
+		private static final long serialVersionUID = 8295447589224463493L;
+
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value,
+                int index, boolean isSelected, boolean cellHasFocus) {
+            JLabel label = (JLabel) super.getListCellRendererComponent(list,
+                    value, index, isSelected, cellHasFocus);
+            Tableau tableau = (Tableau) value;
+            label.setText(tableau.getBezeichnung());
+            return label;
+        }
+    }
+
 
 
 	/**
@@ -220,6 +321,27 @@ public class DbActions {
 
 
 	/**
+	 * Alle Spieler von einem Tableau löschen
+	 */
+	private void allSpielerFromTableauLoeschen(int TableauId) {
+
+        int answer = JOptionPane.showConfirmDialog (null, "Alle Spieler von Tableau löschen?", "Bestätigen",
+        		JOptionPane.YES_NO_OPTION);
+        if(answer == JOptionPane.YES_OPTION) {
+			try {
+				// da erstes leer, ist die Liste um eine Position versetzt.
+				Tableau tableau = tableauListModel.getElementAt(selectedTableauIndex);
+				SpielerTableauData.instance().deleteAllSpielerFromTableau(tableau.getId());
+			}
+			catch (Exception ex) {
+				CmUtil.alertError("Beziehung Spieler => Tableau löschen", ex.getMessage());
+			}
+        } else {
+        	// nichts machen
+        }
+	}
+
+	/**
 	 * Löschen von File
 	 */
 	private void startSpielerLoeschen() {
@@ -242,6 +364,7 @@ public class DbActions {
 	/**
 	 * Aus dem Db-Passwort ein verschlüsseltes Passwort generieren
 	 */
+/*
 	private void startPwGenerate() {
 		if (dbPassword.getText().length() < 3) {
 			CmUtil.alertWarning("Passwort generieren", "Passwort zu kurz");
@@ -253,5 +376,5 @@ public class DbActions {
 
 		CmUtil.alertWarning("Passwort gespeichert", "siehe: " + Config.sDbPwFileName);
 	}
-
+*/
 }

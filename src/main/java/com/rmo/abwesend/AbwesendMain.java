@@ -21,11 +21,9 @@ import com.rmo.abwesend.model.TennisDataBase;
 import com.rmo.abwesend.model.TraceDbData;
 import com.rmo.abwesend.util.Config;
 import com.rmo.abwesend.util.DbPasswordFile;
-import com.rmo.abwesend.util.FileHandler;
 import com.rmo.abwesend.util.Trace;
 import com.rmo.abwesend.view.MainFrame;
 import com.rmo.abwesend.view.util.CmUtil;
-import com.rmo.abwesend.util.DbPasswordFile;
 
 /**
  * Die Hauptview der Applikaiton. Initialisiert das Menu und stellt die
@@ -36,7 +34,7 @@ import com.rmo.abwesend.util.DbPasswordFile;
  */
 public class AbwesendMain {
 
-	private final static String version = "TCA CM abwesend, (V8.2)";
+	private final static String version = "TCA CM abwesend, (V8.5)";
 //	private static JOptionPane startFrame;
 
 	public AbwesendMain() {
@@ -55,7 +53,7 @@ public class AbwesendMain {
 					+ "Muss zuerst angelegt werden, siehe auch Trace.txt");
 			return;
 		}
-		
+
 		// prüfen, ob DB vorhanden, dann normal weiter
 		if (TennisDataBase.dbExists()) {
 			readConfiguration();

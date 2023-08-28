@@ -17,17 +17,11 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
-
 import com.rmo.abwesend.model.DbConnection;
 import com.rmo.abwesend.model.TennisDataBase;
 import com.rmo.abwesend.util.Config;
 import com.rmo.abwesend.view.util.DbActions;
 import com.rmo.abwesend.view.util.MailVersenden;
-import com.rmo.abwesend.view.util.MailVersendenSwt;
 import com.rmo.abwesend.view.util.SpielerExport;
 import com.rmo.abwesend.view.util.SpielerImport;
 import com.rmo.abwesend.view.util.SpielerSelektieren;
@@ -210,24 +204,24 @@ public class MainFrame extends JFrame {
 		});
 		menuSetup.add(menuMailVersenden);
 
-		JMenuItem menuMailVersendenSwt = new JMenuItem("Mail versenden SWT");
-		menuMailVersendenSwt.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Display display = new Display();
-				Shell shell = new Shell(display);
-				shell.setLayout(new GridLayout(1, false));
-				MailVersendenSwt mailSwt = new MailVersendenSwt(shell, SWT.NONE);
-				shell.pack();
-				shell.open();
-				while (!shell.isDisposed()) {
-					if (!display.readAndDispatch())
-						display.sleep();
-				}
-				display.dispose();
-			}
-		});
-		menuSetup.add(menuMailVersendenSwt);
+//		JMenuItem menuMailVersendenSwt = new JMenuItem("Mail versenden SWT");
+//		menuMailVersendenSwt.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				Display display = new Display();
+//				Shell shell = new Shell(display);
+//				shell.setLayout(new GridLayout(1, false));
+//				MailVersendenSwt mailSwt = new MailVersendenSwt(shell, SWT.NONE);
+//				shell.pack();
+//				shell.open();
+//				while (!shell.isDisposed()) {
+//					if (!display.readAndDispatch())
+//						display.sleep();
+//				}
+//				display.dispose();
+//			}
+//		});
+//		menuSetup.add(menuMailVersendenSwt);
 
 		JMenuItem menuTableauVerwalten = new JMenuItem("Tableaux verwalten");
 		menuTableauVerwalten.addActionListener(new ActionListener() {

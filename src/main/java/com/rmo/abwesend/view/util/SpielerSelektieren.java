@@ -385,6 +385,11 @@ public class SpielerSelektieren {
 		return spielerList;
 	}
 
+	/**
+	 * Für die Anzeige der Tableau
+	 * @author ruedi
+	 *
+	 */
 	private class ComboBoxRenderer extends DefaultListCellRenderer {
 		private static final long serialVersionUID = 8295447589224463493L;
 
