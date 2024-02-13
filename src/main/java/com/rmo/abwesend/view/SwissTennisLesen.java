@@ -464,7 +464,8 @@ public class SwissTennisLesen extends BasePane implements ActionListener, Proper
 	    		}
         	}
     		catch (Exception ex) {
-    			String xx = ex.getMessage();
+    			// nix tun
+//    			String xx = ex.getMessage();
     		}
 
     		double i = 0.0;

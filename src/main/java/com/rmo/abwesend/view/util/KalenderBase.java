@@ -40,13 +40,15 @@ public class KalenderBase extends JComponent {
 	protected final Color 	COLOR_ABW = Color.PINK;
 	protected final Color 	COLOR_MATCH_D = Color.DARK_GRAY;
 	protected final Color 	COLOR_MATCH_E = Color.BLUE;
+	// Datumsformat für die Anzeige
+	protected final SimpleDateFormat dateFormat = new SimpleDateFormat("E d.M.");
 
 	private JScrollPane scrollPane = null;
 	protected JPanel kalenderPanel = null;
 	protected GridBagLayout gbl = null;
 	// positon für die Anzeige der Abwensenheiten
-	protected int posVon;
-	protected int posBis;
+	protected int dayNrVon;
+	protected int dayNrBis;
 
 	private List<Spieler> spielerList = null;	// Liste aller Spieler im Kalender
 
@@ -76,12 +78,12 @@ public class KalenderBase extends JComponent {
 	 */
 	protected void setPosVonBis(boolean alleTage) {
 		if (alleTage) {
-			posVon = 0;
-			posBis = Config.turnierMaxTage;
+			dayNrVon = 0;
+			dayNrBis = Config.turnierMaxTage;
 		}
 		else {
-			posVon = Config.showBeginNumber;
-			posBis = Config.showEndNumber;
+			dayNrVon = Config.showBeginNumber;
+			dayNrBis = Config.showEndNumber;
 		}
 	}
 
@@ -140,7 +142,6 @@ public class KalenderBase extends JComponent {
 		JLabel labelDatum = new JLabel("Datum:");
 		kalenderPanel.add(labelDatum, getConstraintFirst(0, row));
 
-		SimpleDateFormat dateFormat = new SimpleDateFormat("E d.M.");
 		GregorianCalendar calendar = new GregorianCalendar();
 		if (alleTage) {
 			calendar.setTime(Config.turnierBeginDatum);
@@ -152,7 +153,7 @@ public class KalenderBase extends JComponent {
 
 		setPosVonBis(alleTage);
 		int colNr = 1;
-		for (int i = posVon; i < posBis; i++) {
+		for (int i = dayNrVon; i < dayNrBis; i++) {
 			labelDatum = new JLabel(dateFormat.format(calendar.getTime()));
 			if ((calendar.get(Calendar.DAY_OF_WEEK) == 7) || (calendar.get(Calendar.DAY_OF_WEEK) == 1)) {
 				labelDatum.setBackground (Config.colorWeekend);

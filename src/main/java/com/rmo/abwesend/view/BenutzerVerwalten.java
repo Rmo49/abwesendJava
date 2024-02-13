@@ -39,13 +39,13 @@ import com.rmo.abwesend.view.util.SpringUtilities;
  */
 public class BenutzerVerwalten extends BasePane implements TableModelListener {
 
-	private Dimension EINGABE_FELD = new Dimension(400, 20);
+//	private Dimension EINGABE_FELD = new Dimension(400, 20);
 	// die daten der Tabelle
 	private UserTableModel userTableData = new UserTableModel();
 	private JTable userTable = new JTable(userTableData);
 	private JScrollPane scrollPane;
 
-	private int selectedRow;
+//	private int selectedRow;
 	private JTextField addName;
 	private JTextField addPasswort;
 

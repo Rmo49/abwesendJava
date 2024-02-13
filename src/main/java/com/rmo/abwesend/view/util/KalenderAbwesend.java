@@ -41,7 +41,7 @@ public class KalenderAbwesend extends KalenderBase {
 	}
 
 	/**
-	 *
+	 *Den Spieler in die Liste aufnehmen, mit den Matches
 	 * @param pSpieler
 	 * @param mitSpiele
 	 * @return -1 wenn schon vorhanden, sonst Länge der Liste
@@ -104,8 +104,8 @@ public class KalenderAbwesend extends KalenderBase {
 
 		// die Abwesenheit in Zahlen
 		int colNr = 1;
-		for (int i = posVon; i < posBis; i++) {
-			JLabel abwesend = new JLabel(pSpieler.getAbwesendAt(i));
+		for (int dayNr = dayNrVon; dayNr < dayNrBis; dayNr++) {
+			JLabel abwesend = new JLabel(pSpieler.getAbwesendAt(dayNr));
 			kalenderPanel.add(abwesend, getConstraintNext(colNr, rowNr));
 			colNr++;
 		}
@@ -124,8 +124,8 @@ public class KalenderAbwesend extends KalenderBase {
 		// Die visuelle Anzeige von Abwesenheit und Spiele
 		try {
 			int colNr = 0;
-			for (int i = posVon; i < posBis; i++) {
-				showNextRect(colNr, 0, isWeekend[i], pSpieler.getAbwesendAt(i), pSpieler.getSpielAt(i));
+			for (int dayNr = dayNrVon; dayNr < dayNrBis; dayNr++) {
+				showNextRect(colNr, 0, dayNr, pSpieler.getAbwesendAt(dayNr), pSpieler.getSpielAt(dayNr));
 				colNr++;
 			}
 		} catch (Exception ex) {
@@ -137,27 +137,27 @@ public class KalenderAbwesend extends KalenderBase {
 	 * Alle Rectangle darstellen (Abwesenheit und Match), wird rekrusiv aufgerufen
 	 *
 	 * @param colNr     die Spalten-Nummer die erste = 0
-	 * @param posStart	ab dieser Position zeichnen, wir in der Rekursion erhöht
+	 * @param posStart	ab dieser Position zeichnen, wird in der Rekursion erhöht
 	 * @param isWeekend true wenn Weekend
 	 * @param abwTime	String mit Abwesenheit
 	 * @param matches	String mit Matches
 	 */
-	private void showNextRect(int colNr, int posStart, boolean isWeekend, String abwTime, String matches) {
-		int posStartAbw = getPosStartAbw(abwTime, posStart, isWeekend);
+	private void showNextRect(int colNr, int posStart, int dayNr, String abwTime, String matches) {
+		int posStartAbw = getPosStartAbw(abwTime, posStart, dayNr);
 		int posEnd = 0; // das allgemeine Ende eine Rectangles ob Abw. oder Match
 
 		if (posStartAbw == 0) {
-			if (getPosEndAbw(abwTime, isWeekend) == 0) {
+			if (getPosEndAbw(abwTime, dayNr) == 0) {
 				// wenn kein Eintrag
 				posStartAbw = (int) RECT_WIDTH + 10;
 				posEnd = (int) RECT_WIDTH + 10;
 			}
 		}
-		int posStartMatch = getPosStartMatch(matches, posStart, isWeekend);
+		int posStartMatch = getPosStartMatch(matches, posStart, dayNr);
 		// Abwesenheit zuerst zeichnen wenn vor Match
 		if (posStartAbw < posStartMatch) {
 			if (posStartAbw <= RECT_WIDTH) {
-				posEnd = getPosEndAbw(abwTime, isWeekend);
+				posEnd = getPosEndAbw(abwTime, dayNr);
 				if (posEnd > posStartMatch) {
 					// Platz für Match, diesen immer anzeigen
 					posEnd = posStartMatch;
@@ -180,7 +180,7 @@ public class KalenderAbwesend extends KalenderBase {
 		}
 		if (posEnd < RECT_WIDTH) {
 			// wenn noch nicht fertig mit zeichnen in einem Rectangle, ab posEnd
-			showNextRect(colNr, posEnd, isWeekend, abwTime, matches);
+			showNextRect(colNr, posEnd, dayNr, abwTime, matches);
 		}
 	}
 
@@ -195,7 +195,7 @@ public class KalenderAbwesend extends KalenderBase {
 		if (spieleAnzeigen) {
 			kalenderPanel.add(new JLabel("Spiele:"), getConstraintFirst(0, rowNr));
 
-			for (int i = posVon; i < posBis; i++) {
+			for (int i = dayNrVon; i < dayNrBis; i++) {
 				kalenderPanel.add(new JLabel(pSpieler.getSpielAt(i)),
 						getConstraintNext(i - Config.showBeginNumber + 1, rowNr));
 			}
@@ -221,7 +221,7 @@ public class KalenderAbwesend extends KalenderBase {
 			tagText.setText(pSpieler.getAbwesendAt(i));
 			tagText.getDocument().addDocumentListener(new InputFieldChangeListener());
 
-			if (i >= posVon && i < posBis) {
+			if (i >= dayNrVon && i < dayNrBis) {
 				kalenderPanel.add(tagText, getConstraintNext(colNr, rowNr));
 				colNr++;
 			}
@@ -263,7 +263,7 @@ public class KalenderAbwesend extends KalenderBase {
 	 * @param startPos     ab dieser Position berechnen
 	 * @return grosse Zahl wenn keine Abwesenheit
 	 */
-	private int getPosStartAbw(String abwesendZeit, double startPos, boolean isWeekend) {
+	private int getPosStartAbw(String abwesendZeit, double startPos, int dayNr) {
 		if (abwesendZeit == null || abwesendZeit.length() < 1) {
 			return (int) RECT_WIDTH + 10;
 		}
@@ -273,7 +273,7 @@ public class KalenderAbwesend extends KalenderBase {
 			}
 		}
 		if (abwesendZeit.endsWith("-")) {
-			double pos = getPos(abwesendZeit.substring(0, abwesendZeit.length() - 1), isWeekend, false);
+			double pos = getPos(abwesendZeit.substring(0, abwesendZeit.length() - 1), dayNr, false);
 			if (pos >= startPos) {
 				return (int) pos;
 			}
@@ -288,12 +288,12 @@ public class KalenderAbwesend extends KalenderBase {
 	 * @param startPos
 	 * @return
 	 */
-	private int getPosEndAbw(String abwesendZeit, boolean isWeekend) {
+	private int getPosEndAbw(String abwesendZeit, int dayNr) {
 		if (abwesendZeit.compareTo("0") == 0) {
 			return (int) RECT_WIDTH;
 		}
 		if (abwesendZeit.startsWith("-")) {
-			return (int) getPos(abwesendZeit.substring(1, abwesendZeit.length()), isWeekend, false);
+			return (int) getPos(abwesendZeit.substring(1, abwesendZeit.length()), dayNr, false);
 		}
 		if (abwesendZeit.endsWith("-")) {
 			return (int) RECT_WIDTH;
@@ -309,14 +309,14 @@ public class KalenderAbwesend extends KalenderBase {
 	 * @param startPos
 	 * @return
 	 */
-	private int getPosStartMatch(String matchZeit, double startPos, boolean isWeekend) {
+	private int getPosStartMatch(String matchZeit, double startPos, int dayNr) {
 		if (matchZeit.length() > 1) {
 			int startText = 0;
 			double pos = 0;
 			// wenn etwas eingetragen
 			while (matchZeit.length() > startText + 5) {
 				String zeit = matchZeit.substring(startText + 1, startText + 6);
-				pos = getPos(zeit, isWeekend, true);
+				pos = getPos(zeit, dayNr, true);
 				if (pos < startPos) {
 					startText += 7;
 				} else {
@@ -349,11 +349,11 @@ public class KalenderAbwesend extends KalenderBase {
 	 * keine gültige zeit dann -1. Wenn zeit ausserhalb Bereich, dann 0
 	 *
 	 * @param zeit
-	 * @param isWeekend
+	 * @param dayNr
 	 * @isMatch wenn die Zeit eines Matches gelesen werden soll
-	 * @return die Zeit als Nummer
+	 * @return die Zeit als Nummer, oder -1
 	 */
-	private double getPos(String zeit, boolean isWeekend, boolean isMatch) {
+	private double getPos(String zeit, int dayNr, boolean isMatch) {
 		String std[] = zeit.split("[:.]");
 		int stunde = -1;
 		if (std.length == 0) {
@@ -364,26 +364,23 @@ public class KalenderAbwesend extends KalenderBase {
 		} catch (NumberFormatException ex) {
 			// nichts wird angezeigt
 		}
-		if (isWeekend) {
-			double startStd = stunde - Config.weekendBegin;
-			if (startStd > 0) {
-				double width = RECT_WIDTH * (startStd / Config.weekendDauer);
-				if (width > RECT_WIDTH) {
-					width = RECT_WIDTH;
-				}
-				return width;
+		// TODO hier auf individuelle Zeiten anpassen.
+		double startStd = stunde - Config.zeitStart[dayNr];
+		if (startStd > 0) {
+			int dauer = Config.zeitEnde[dayNr] - Config.zeitStart[dayNr];
+			double width = RECT_WIDTH * (startStd / dauer);
+			if (width > RECT_WIDTH) {
+				width = RECT_WIDTH;
 			}
-			return 0;
-		}
-		double endStd = stunde - Config.weekBegin;
-		if (endStd > 0) {
-			double endPos = RECT_WIDTH * (endStd / Config.weekDauer);
-			return endPos > RECT_WIDTH ? RECT_WIDTH : endPos;
+			return width;
 		}
 		return 0;
 	}
 
-	// create a panel that you can draw on.
+
+	/**
+	 * Create a panel that you can draw on.
+	 */
 	class RectPanel extends JPanel {
 		private static final long serialVersionUID = -1528962361868364694L;
 		private int mX = 0;

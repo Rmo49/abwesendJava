@@ -57,6 +57,7 @@ public class AbwesendSpieler extends BasePane implements PropertyChangeListener 
     	if (spielerId >= 0) {
      		// die DB
 	    	readSpieler(spielerId);
+	    	// zuerst die Liste löschen
 			kalenderAbw.clearSpielerList();
 			kalenderAbw.addSpieler(mSpieler, true);
 

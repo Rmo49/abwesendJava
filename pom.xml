@@ -164,5 +164,5 @@
 			<layout>default</layout>
 		 </repository>
 	 </distributionManagement>
-	<version>8-5</version>
+	<version>8-6</version>
 </project>

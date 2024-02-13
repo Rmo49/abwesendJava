@@ -81,13 +81,13 @@ public class Spieler {
 	/**
 	 * Den Wert an einer bestimmten Position.
 	 *
-	 * @param pos
+	 * @param dayNr
 	 *            0..max
 	 * @return String an der gesuchten Position.
 	 */
-	public String getAbwesendAt(int pos) {
+	public String getAbwesendAt(int dayNr) {
 		try {
-			return abwesendList.get(pos);
+			return abwesendList.get(dayNr);
 		} catch (IndexOutOfBoundsException ex) {
 			return " ";
 		}

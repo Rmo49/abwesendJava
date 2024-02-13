@@ -160,6 +160,14 @@ public class Config {
 	public static double weekEnd = 22.0;
 	public static double weekDauer = 5.0;
 
+	// die Zeiten pro Tag, erstmals einen kleinen Standardwert
+	public static final String zeitStartKey = "zeit.start";
+	public static String zeitStartStr = "9;9;17;17;";
+	public static int[] zeitStart;
+	public static final String zeitEndeKey = "zeit.ende";
+	public static String zeitEndeStr = "17;17;22;22";
+	public static int[] zeitEnde;
+	private static String zeitTrennChar = ";";
 
 	// --- Für einlesen von Spieler und Spielplan, in Config
 	public static final String spielerExportDirKey = "spieler.export.dir";
@@ -245,11 +253,13 @@ public class Config {
 	 */
 	public static void readConfigData() throws Exception {
 		Trace.println(1, "Config.readConfigData()");
+		// zuerst due Default Werte, falls nichts gesetzt ist.
 		writeDefaultInMap();
 		// alle Config-Werte von der DB lesen
 		keyValueMap = ConfigDbData.instance().readAll(keyValueMap);
 		setAllValues();
 		showDatumSetzen();
+		setZeitenProTag();
 		configDataGelesen = true;
 	}
 
@@ -279,6 +289,9 @@ public class Config {
 		weekBegin = getWert(weekBeginKey, weekBegin);
 		weekEnd = getWert(weekEndKey, weekEnd);
 		weekDauer = weekEnd - weekBegin;
+		zeitStartStr = getWert(zeitStartKey, zeitStartStr);
+		zeitEndeStr = getWert(zeitEndeKey, zeitEndeStr);
+
 		// das file für mails versenden
 		sMailToSendPath = sPath + "/" + sMailToSend;
 		sMailTestPath = sPath + "/" + sMailTest;
@@ -290,21 +303,27 @@ public class Config {
 	 */
 	public static void writeDefaultInMap() throws Exception {
 		Trace.println(2, "Config.writeDefaultInMap()");
+		// String Values
 		keyValueMap.put(swissTennisUrlKey, swissTennisUrl);
 		keyValueMap.put(swisstennisTournamentKey, swisstennisTournament);
 		keyValueMap.put(swisstennisIdKey, swisstennisId);
 		keyValueMap.put(swisstennisPwdKey, swisstennisPwd);
 
+		// Datum in die Map speichern
 		putWert(datumBeginKey, turnierBeginDatum);
 		putWert(datumEndKey, turnierEndDatum);
 		putWert(weekendEndKey, weekendEnd);
 		putWert(weekendBeginKey, weekendBegin);
 		putWert(weekBeginKey, weekBegin);
 		putWert(weekEndKey, weekEnd);
+
+		keyValueMap.put(zeitStartKey, zeitStartStr);
+		keyValueMap.put(zeitEndeKey, zeitEndeStr);
 	}
 
 	/**
-	 * Alle Werte in die DB schreiben
+	 * Alle Werte in die DB schreiben.
+	 * Die keyValueMap enthält alle tupel
 	 * @throws Exception
 	 */
 	public static void saveConfigData() throws Exception {
@@ -548,7 +567,7 @@ public class Config {
 	 * Kann erst ausgeführt werden, wenn Config auch eingelesen
 	 * @throws Exception
 	 */
-	public static void showDatumSetzen() throws Exception {
+	private static void showDatumSetzen() throws Exception {
 		// spezielle formate, statdatum,
 		showBeginDatum = sdfDatum.parse(mProperties.getProperty(showBeginDatumKey, sdfDatum.format(turnierBeginDatum)));
 		showEndDatum = sdfDatum.parse(mProperties.getProperty(showEndDatumKey, sdfDatum.format(turnierBeginDatum)));
@@ -561,12 +580,10 @@ public class Config {
 			showEndDatum = turnierEndDatum;
 		}
 		showNumberBerechnen();
-
-
 	}
 
 	/**
-	 * Die Positionen im Array berechnen, abhängig von Start- und EndDatum.
+	 * Die Positionen im Array für die Anzeite berechnen, abhängig von Start- und EndDatum.
 	 */
 	public static void showNumberBerechnen() {
 		long diffDate = showBeginDatum.getTime() - turnierBeginDatum.getTime();
@@ -584,6 +601,39 @@ public class Config {
 			showEndNumber = turnierMaxTage;
 		}
 	}
+
+	/**
+	 * Die Werte aus dem String in den Zeiten-Array schreiben
+	 */
+	private static void setZeitenProTag() {
+		// zuerst initialisieren mit Standard-Werten
+		zeitStart = new int[turnierMaxTage];
+		for (int i = 0; i < zeitStart.length; i++) {
+			zeitStart[i] = (int) weekBegin;
+		}
+
+		// übertragen der Werte aus DB
+		String[] split = zeitStartStr.split(zeitTrennChar);
+		int i = 0;
+		for (String zeit : split) {
+			zeitStart[i] = Integer.valueOf(zeit);
+			i++;
+		}
+
+		// zuerst initialisieren mit Standard-Werten
+		zeitEnde = new int[turnierMaxTage];
+		for (i = 0; i < zeitEnde.length; i++) {
+			zeitEnde[i] = (int) weekEnd;
+		}
+
+		split = zeitEndeStr.split(zeitTrennChar);
+		i = 0;
+		for (String zeit : split) {
+			zeitEnde[i] = Integer.valueOf(zeit);
+			i++;
+		}
+	}
+
 
 	/** Alle Properites in das File schreiben */
 	public static void saveProperties() throws Exception {

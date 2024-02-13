@@ -7,7 +7,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.sql.SQLException;
 import java.util.Date;
 
 import javax.swing.JFrame;
@@ -34,7 +33,7 @@ import com.rmo.abwesend.view.util.CmUtil;
  */
 public class AbwesendMain {
 
-	private final static String version = "TCA CM abwesend, (V8.5)";
+	private final static String version = "TCA CM abwesend, (V8.6)";
 //	private static JOptionPane startFrame;
 
 	public AbwesendMain() {
@@ -161,23 +160,23 @@ public class AbwesendMain {
 	 *
 	 * @return
 	 */
-	private static boolean checkDbConnection() {
-		try {
-			// test Connection zuerst
-			DbConnection.getConnection();
-		} catch (SQLException ex) {
-			if (ex.getMessage().contains("Access denied")) {
-				CmUtil.alertError(
-						"Verbindung zur Datenbank kann nicht hergestellt werden," + " wahrscheinlich falsches Passwort",
-						ex);
-				return false;
-			}
-			CmUtil.alertError("Verbindung zur Datenbank kann nicht hergestellt werden,\n"
-					+ "Ist eine Internetverbindung vorhanden?", ex);
-			return false;
-		}
-		return true;
-	}
+//	private static boolean checkDbConnection() {
+//		try {
+//			// test Connection zuerst
+//			DbConnection.getConnection();
+//		} catch (SQLException ex) {
+//			if (ex.getMessage().contains("Access denied")) {
+//				CmUtil.alertError(
+//						"Verbindung zur Datenbank kann nicht hergestellt werden," + " wahrscheinlich falsches Passwort",
+//						ex);
+//				return false;
+//			}
+//			CmUtil.alertError("Verbindung zur Datenbank kann nicht hergestellt werden,\n"
+//					+ "Ist eine Internetverbindung vorhanden?", ex);
+//			return false;
+//		}
+//		return true;
+//	}
 
 	/**
 	 * Trace schreiben, wer sich eingelogged hat.

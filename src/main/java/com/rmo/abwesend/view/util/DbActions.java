@@ -27,7 +27,6 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 
 import com.rmo.abwesend.model.MatchData;
 import com.rmo.abwesend.model.SpielerData;

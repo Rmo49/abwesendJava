@@ -84,7 +84,7 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 
 	private MailGenerator mailGenerator;
 	private MailSenden mailSenden;
-	private MailToFile mailToFile = null;
+//	private MailToFile mailToFile = null;
 
 	// Progress dialog
 	private JDialog dialog;

@@ -15,10 +15,13 @@ import com.rmo.abwesend.util.Config;
 
 /**
  * Verbindung zur Tabelle Config in der DB.
+ * Die Tabelle besteht aus token und wert (key / value) pairs.
  */
 public class ConfigDbData {
 
 	public static String tableName = "config";
+
+
 	/**
 	 * Das Create Statement für diese Tabelle
 	 * @return
@@ -76,7 +79,7 @@ public class ConfigDbData {
 	}
 
 	/**
-	 * Ein key-value pair speichern , oder updaten
+	 * Ein key-value pair speichern, oder updaten, Datatype: String
 	 */
 	public void add(String key, String value) throws Exception {
 		if (find(key) != null) {
