@@ -13,7 +13,6 @@ import javax.swing.JPanel;
 import com.rmo.abwesend.util.Config;
 import com.rmo.abwesend.view.MainFrame;
 
-
 public class VonBisDatum implements PropertyChangeListener {
 
 //	private final int DATE_PICKER_WIDTH = 120;
@@ -22,13 +21,11 @@ public class VonBisDatum implements PropertyChangeListener {
 	private JFormattedTextField vonDatum;
 	private JFormattedTextField bisDatum;
 
-
 	/**
 	 * Anzeige und Einlesen der Datumspanne, die angezeigt werden soll.
 	 */
 	public VonBisDatum() {
 	}
-
 
 	/**
 	 * Eingabefeld und Liste der Spieler werden zurückgegeben.
@@ -62,36 +59,31 @@ public class VonBisDatum implements PropertyChangeListener {
 		return panel;
 	}
 
-	 /** Called when a field's "value" property changes. */
-    @Override
+	/** Called when a field's "value" property changes. */
+	@Override
 	public void propertyChange(PropertyChangeEvent e) {
-        Object source = e.getSource();
-        if (source == vonDatum) {
-        	Date datum = (Date) vonDatum.getValue();
-        	if ((datum.compareTo(Config.turnierBeginDatum) < 0)
-        			|| (datum.compareTo(Config.turnierEndDatum) > 0)) {
-        		// wenn Datum ausserhalb Bereich
-        		Config.showBeginDatum = Config.turnierBeginDatum;
-        		vonDatum.setValue(Config.showBeginDatum);
-        	}
-        	else {
-        		Config.showBeginDatum = datum;
-        	}
-    		Config.showNumberBerechnen();
-    }
-    else if (source == bisDatum) {
-        	Date datum = (Date) bisDatum.getValue();
-        	if ((datum.compareTo(Config.turnierBeginDatum) <= 0)
-        		|| (datum.compareTo(Config.turnierEndDatum) > 0)) {
-        			// wenn ausserhalb Bereich
-            		Config.showEndDatum = Config.turnierEndDatum;
-        			bisDatum.setValue(Config.showEndDatum);
-        	}
-        	else {
-        		Config.showEndDatum = datum;
-        	}
-    		Config.showNumberBerechnen();
-        }
-    }
+		Object source = e.getSource();
+		if (source == vonDatum) {
+			Date datum = (Date) vonDatum.getValue();
+			if ((datum.compareTo(Config.turnierBeginDatum) < 0) || (datum.compareTo(Config.turnierEndDatum) > 0)) {
+				// wenn Datum ausserhalb Bereich
+				Config.showBeginDatum = Config.turnierBeginDatum;
+				vonDatum.setValue(Config.showBeginDatum);
+			} else {
+				Config.showBeginDatum = datum;
+			}
+			Config.showNumberBerechnen();
+		} else if (source == bisDatum) {
+			Date datum = (Date) bisDatum.getValue();
+			if ((datum.compareTo(Config.turnierBeginDatum) <= 0) || (datum.compareTo(Config.turnierEndDatum) > 0)) {
+				// wenn ausserhalb Bereich
+				Config.showEndDatum = Config.turnierEndDatum;
+				bisDatum.setValue(Config.showEndDatum);
+			} else {
+				Config.showEndDatum = datum;
+			}
+			Config.showNumberBerechnen();
+		}
+	}
 
 }

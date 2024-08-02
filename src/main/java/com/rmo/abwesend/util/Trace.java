@@ -7,13 +7,12 @@ import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.util.Date;
 
-/** Trace-Output for debugging.
-	Level 1: Struktur-Methoden
-	Level 2: Wichtige Methoden von Model, View (Ablauf)
-	Level 3: allg. Methoden, Variable (detailierter Ablauf)
-	Level 4: Kontroll-Output (mit Einstellungen)
-	Level 5: viel aufgerufenen Methoden der View-Schicht
-	Level 7: viel aufgerufene Methoden der Datenschicht mit Vars.
+/**
+ * Trace-Output for debugging. Level 1: Struktur-Methoden Level 2: Wichtige
+ * Methoden von Model, View (Ablauf) Level 3: allg. Methoden, Variable
+ * (detailierter Ablauf) Level 4: Kontroll-Output (mit Einstellungen) Level 5:
+ * viel aufgerufenen Methoden der View-Schicht Level 7: viel aufgerufene
+ * Methoden der Datenschicht mit Vars.
  */
 public class Trace {
 	/** Stringbuffer für Message */
@@ -22,15 +21,18 @@ public class Trace {
 	private static FileWriter file = null;
 	private static BufferedWriter writer = null;
 	private static PrintWriter printWriter = null;
+
 	/**
 	 * Trace constructor comment.
 	 */
 	public Trace() {
 		super();
 	}
+
 	/**
 	 * Ausgabe, falls dieser Level gedruckt werden soll.
-	 * @param level int
+	 * 
+	 * @param level   int
 	 * @param message java.lang.String
 	 */
 	public static void print(int level, String message) {
@@ -39,9 +41,11 @@ public class Trace {
 			sBuffer.append(' ');
 		}
 	}
+
 	/**
 	 * Ausgabe, falls dieser Level gedruckt werden soll.
-	 * @param level int level of Trace
+	 * 
+	 * @param level   int level of Trace
 	 * @param message java.lang.String
 	 */
 	public static void println(int level, String message) {
@@ -51,10 +55,10 @@ public class Trace {
 			}
 			try {
 				if (Config.traceTimestamp) {
-				    //writer.write(new Date().getTime() + " ");
-				    writer.write(DateFormat.getTimeInstance(DateFormat.MEDIUM ).format(new Date()) + " ");
+					// writer.write(new Date().getTime() + " ");
+					writer.write(DateFormat.getTimeInstance(DateFormat.MEDIUM).format(new Date()) + " ");
 				}
-				for (int i = 1; i<level; i++) {
+				for (int i = 1; i < level; i++) {
 					writer.write("  ");
 				}
 				if (sBuffer.length() > 0) {
@@ -64,11 +68,10 @@ public class Trace {
 				writer.write(message);
 				writer.newLine();
 				writer.flush();
-			}
-			catch (IOException ex) {
+			} catch (IOException ex) {
 				System.out.println("Trace.makeFile: " + ex.getMessage());
 			}
-		 }
+		}
 	}
 
 	public static PrintWriter getPrintWriter() {
@@ -82,8 +85,7 @@ public class Trace {
 		try {
 			writer.flush();
 			file.flush();
-		}
-		catch (IOException ex) {
+		} catch (IOException ex) {
 			System.out.println("Trace.flush: " + ex.getMessage());
 		}
 
@@ -95,8 +97,7 @@ public class Trace {
 			file = new FileWriter(Config.sTraceFileName);
 			writer = new BufferedWriter(file);
 			printWriter = new PrintWriter(writer);
-		}
-		catch (IOException ex) {
+		} catch (IOException ex) {
 			System.out.println("Trace.makeFile: " + ex.getMessage());
 		}
 	}

@@ -16,11 +16,13 @@ import com.rmo.abwesend.model.Tableau;
 import com.rmo.abwesend.model.TableauData;
 
 /**
- * Spieler von einem csv-File (in Text Format) einlesen, das von Swistennis exportiert wurde.
+ * Spieler von einem csv-File (in Text Format) einlesen, das von Swistennis
+ * exportiert wurde.
+ * 
  * @author ruedi
  *
  */
-public class SpielerImportFile {
+public class SpielerImportCsv {
 
 	private boolean fehler = false;
 	private int posTableau = 0;
@@ -29,14 +31,13 @@ public class SpielerImportFile {
 	private int posNameDoppel = 3;
 	private int posVornameDoppel = 4;
 
-
-	public SpielerImportFile () {
+	public SpielerImportCsv() {
 
 	}
 
 	/**
-	 * Einlesen der Spieler Zeile um Zeile.
-	 * Wenn true zurück gibt, dann keine Fehler gefunden, sonst Name in Trace
+	 * Einlesen der Spieler Zeile um Zeile. Wenn true zurück gibt, dann keine Fehler
+	 * gefunden, sonst Name in Trace
 	 *
 	 * @param dirName
 	 * @param fileName
@@ -49,9 +50,10 @@ public class SpielerImportFile {
 		fehler = false;
 		String dirFile = Config.spielerImportDir + "/" + Config.spielerImportFile;
 		InputStreamReader fileIn;
-		fileIn = new InputStreamReader(new FileInputStream(dirFile), StandardCharsets.UTF_8) ;
+		fileIn = new InputStreamReader(new FileInputStream(dirFile), StandardCharsets.UTF_8);
 
-		// Tableau-Liste lesen, damit nicht immer Zugriff auf DB und wegen Probleme mit String-split
+		// Tableau-Liste lesen, damit nicht immer Zugriff auf DB und wegen Probleme mit
+		// String-split
 		List<Tableau> tableauList = TableauData.instance().readAllTableau();
 		List<Tableau> tableauList2 = new ArrayList<>();
 		if (tableauName.length() > 0) {
@@ -65,14 +67,13 @@ public class SpielerImportFile {
 					tableauList2.add(tableau);
 				}
 			}
-		}
-		else {
+		} else {
 			tableauList2 = tableauList;
 		}
 
 		BufferedReader bufferedReader = new BufferedReader(fileIn);
 		String line;
-		//--- iteration über alle Zeilen
+		// --- iteration über alle Zeilen
 		while ((line = bufferedReader.readLine()) != null) {
 			if (line.contains(Config.spielerImportSplitChar)) {
 				String[] lSpielerZeile = line.split(Config.spielerImportSplitChar);
@@ -88,8 +89,7 @@ public class SpielerImportFile {
 									fehler = true;
 								}
 							}
-						}
-						else {
+						} else {
 							tableauId = getTableauId(lSpielerZeile[posTableau], tableauList2);
 							if (tableauId < 0) {
 								fehler = true;
@@ -102,22 +102,22 @@ public class SpielerImportFile {
 
 						// den Dopple-Partner lesen
 						if (lSpielerZeile.length > posNameDoppel) {
-							if ((lSpielerZeile[posNameDoppel].length() > 0) && (lSpielerZeile[posVornameDoppel].length() > 0)) {
+							if ((lSpielerZeile[posNameDoppel].length() > 0)
+									&& (lSpielerZeile[posVornameDoppel].length() > 0)) {
 								spielerId = addSpieler(lSpielerZeile[posNameDoppel], lSpielerZeile[posVornameDoppel]);
 							}
 							if (tableauId >= 0) {
 								addTableau(spielerId, tableauId);
 							}
 						}
-					}
-					catch (Exception ex) {
+					} catch (Exception ex) {
 						Trace.println(3, "Spieler einlesen " + ex.toString());
 						fehler = true;
 					}
 				}
-			}
-			else {
-				Trace.println(5, "In Zeile '" + line + "' Split-Char '" + Config.spielerImportSplitChar + "' nicht vorhanden");
+			} else {
+				Trace.println(5,
+						"In Zeile '" + line + "' Split-Char '" + Config.spielerImportSplitChar + "' nicht vorhanden");
 			}
 		}
 		bufferedReader.close();
@@ -125,9 +125,9 @@ public class SpielerImportFile {
 		return fehler;
 	}
 
-
 	/**
 	 * Einen Spieler dazufügen, falls noch nicht in der DB
+	 * 
 	 * @param spielerName
 	 * @throws Exception
 	 */
@@ -135,17 +135,19 @@ public class SpielerImportFile {
 		Spieler spieler = new Spieler();
 		spieler.setName(name.trim());
 		spieler.setVorName(vorname.trim());
-		Trace.println(4, "SpielerImportFile.addSpieler: " + spieler.getName() + " " + spieler.getVorName());
+		Trace.println(4, "SpielerImportCsv.addSpieler: " + spieler.getName() + " " + spieler.getVorName());
 
 		return SpielerData.instance().add(spieler);
 	}
 
 	/**
 	 * Die Id bestimmen
-	 * @param konkSuche nach der gesucht wird
+	 * 
+	 * @param konkSuche    nach der gesucht wird
 	 * @param tableauList
-	 * @param tableauName, wenn > 0 muss dieser Name in der TableauBezeichung vorhanden sein.
-	 * @return, -1 wenn nicht gefunden, sonst die ID
+	 * @param tableauName, wenn > 0 muss dieser Name in der TableauBezeichung
+	 *                     vorhanden sein. @return, -1 wenn nicht gefunden, sonst
+	 *                     die ID
 	 */
 	private int getTableauId(String konkSuche, Collection<Tableau> tableauList) {
 		Trace.print(5, "SpielerVonFile.getTableauId: " + konkSuche);
@@ -168,8 +170,7 @@ public class SpielerImportFile {
 		}
 		if (id < 0) {
 			Trace.println(5, " <== Tableau nicht gefunden");
-		}
-		else {
+		} else {
 			Trace.println(5, "");
 		}
 		return id;
@@ -177,33 +178,21 @@ public class SpielerImportFile {
 
 	/**
 	 * Die chars -62, -96 in 32 konvertieren
+	 * 
 	 * @param utf8
 	 * @return java-string
 	 */
 	/*
-	private String decodeFromUtf8(String utf8) {
-		byte[] utf8b = utf8.getBytes();
-		StringBuffer result = new StringBuffer(utf8.length());
-		for (int i = 0; i < utf8b.length; i++) {
-			if (utf8b[i] == -62) {
-				 // nix machen, überlesen
-			}
-			else {
-				if (utf8b[i] == -96) {
-					result.append(' ');
-				}
-				else {
-					char c = (char) utf8b[i];
-					result.append(c);
-				}
-			}
-		}
-		return result.toString();
-	}
-	*/
+	 * private String decodeFromUtf8(String utf8) { byte[] utf8b = utf8.getBytes();
+	 * StringBuffer result = new StringBuffer(utf8.length()); for (int i = 0; i <
+	 * utf8b.length; i++) { if (utf8b[i] == -62) { // nix machen, überlesen } else {
+	 * if (utf8b[i] == -96) { result.append(' '); } else { char c = (char) utf8b[i];
+	 * result.append(c); } } } return result.toString(); }
+	 */
 
 	/**
 	 * Vergleicht 2 Strings
+	 * 
 	 * @param str1
 	 * @param str2
 	 * @return
@@ -227,7 +216,7 @@ public class SpielerImportFile {
 			i++;
 		}
 
-		if (i < lenMax-2) {
+		if (i < lenMax - 2) {
 			// nicht indetisch, wenn nicht alles verglichen
 			return false;
 		}
@@ -236,6 +225,7 @@ public class SpielerImportFile {
 
 	/**
 	 * Wenn mehrere Leerzeichen nacheinander, dann diese löschen.
+	 * 
 	 * @param str
 	 * @return
 	 */
@@ -245,38 +235,36 @@ public class SpielerImportFile {
 		int leer = 0;
 		while (i < str.length()) {
 			int ch = str.charAt(i);
-			switch(ch) {
+			switch (ch) {
 			case 32:
-				if (i == leer+1) {
+				if (i == leer + 1) {
 					// nicht übernehme
-				}
-				else {
+				} else {
 					str2.append(str.charAt(i));
 				}
 				leer = i;
 				break;
 			case 160:
 				// spezielle Space von Unicode
-				if (i == leer+1) {
+				if (i == leer + 1) {
 					// nichts machen
-				}
-				else {
+				} else {
 					// beim ersten ein Leezeichen einfügen
 					str2.append(" ");
 				}
 				leer = i;
 				break;
 			default:
-				str2.append((char)ch);
+				str2.append((char) ch);
 			}
 			i++;
 		}
 		return str2.toString();
 	}
 
-
 	/**
 	 * Die Beziehung Spieler / Tableau sichern.
+	 * 
 	 * @param spielerID
 	 * @param konkurrenz
 	 */
@@ -284,27 +272,24 @@ public class SpielerImportFile {
 		if (tableauId >= 0) {
 			try {
 				SpielerTableauData.instance().add(spielerID, tableauId);
-			}
-			catch (Exception ex) {
+			} catch (Exception ex) {
 				Trace.println(3, "Fehler bei Tableau zuteilen: " + ex.toString());
 				fehler = true;
 			}
 		}
 	}
 
-
-
 	/**
-	 * Einlesen der e-mail Zeile um Zeile.
-	 * Dann den Spieler suchen, wenn gefunden, e-mail eintragen
-	 * Wenn true zurück gibt, dann keine Fehler gefunden, sonst Name in Trace
+	 * Einlesen der e-mail Zeile um Zeile. Dann den Spieler suchen, wenn gefunden,
+	 * e-mail eintragen Wenn true zurück gibt, dann keine Fehler gefunden, sonst
+	 * Name in Trace
 	 */
 	public boolean startEmailEinlesen(String dirName, String fileName) throws Exception {
 		Trace.println(3, "SpielerVonFile.startEmailEinlesen()");
 		fehler = false;
 		String dirFile = dirName + "/" + fileName;
 		InputStreamReader fileIn;
-		fileIn = new InputStreamReader(new FileInputStream(dirFile), StandardCharsets.UTF_8) ;
+		fileIn = new InputStreamReader(new FileInputStream(dirFile), StandardCharsets.UTF_8);
 
 		BufferedReader bufferedReader = new BufferedReader(fileIn);
 		String line;
@@ -316,8 +301,7 @@ public class SpielerImportFile {
 					if (spielerID > 0) {
 						Trace.println(4, "id: " + spielerID + " " + lSpielerZeile[0] + " " + lSpielerZeile[1]);
 						addEmail(spielerID, lSpielerZeile[2]);
-					}
-					else {
+					} else {
 						Trace.println(4, "nicht gefunden: " + lSpielerZeile[0] + " " + lSpielerZeile[1]);
 					}
 				}
@@ -330,6 +314,7 @@ public class SpielerImportFile {
 
 	/**
 	 * Email zum Spieler dazufügen
+	 * 
 	 * @param spielerName
 	 * @throws Exception
 	 */
@@ -338,6 +323,5 @@ public class SpielerImportFile {
 		spieler.setEmail(email);
 		SpielerData.instance().add(spieler);
 	}
-
 
 }

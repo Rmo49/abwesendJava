@@ -8,7 +8,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-/** Versuch mit neuem Layout SWT: Standard Widget Toolkit
+/**
+ * Versuch mit neuem Layout SWT: Standard Widget Toolkit
  *
  * @author ruedi
  *
@@ -18,6 +19,7 @@ public class MailVersendenSwt extends Composite {
 
 	/**
 	 * Create the composite.
+	 * 
 	 * @param parent
 	 * @param style
 	 */

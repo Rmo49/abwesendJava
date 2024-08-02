@@ -41,7 +41,8 @@ public class KalenderAbwesend extends KalenderBase {
 	}
 
 	/**
-	 *Den Spieler in die Liste aufnehmen, mit den Matches
+	 * Den Spieler in die Liste aufnehmen, mit den Matches
+	 * 
 	 * @param pSpieler
 	 * @param mitSpiele
 	 * @return -1 wenn schon vorhanden, sonst Länge der Liste
@@ -137,10 +138,10 @@ public class KalenderAbwesend extends KalenderBase {
 	 * Alle Rectangle darstellen (Abwesenheit und Match), wird rekrusiv aufgerufen
 	 *
 	 * @param colNr     die Spalten-Nummer die erste = 0
-	 * @param posStart	ab dieser Position zeichnen, wird in der Rekursion erhöht
+	 * @param posStart  ab dieser Position zeichnen, wird in der Rekursion erhöht
 	 * @param isWeekend true wenn Weekend
-	 * @param abwTime	String mit Abwesenheit
-	 * @param matches	String mit Matches
+	 * @param abwTime   String mit Abwesenheit
+	 * @param matches   String mit Matches
 	 */
 	private void showNextRect(int colNr, int posStart, int dayNr, String abwTime, String matches) {
 		int posStartAbw = getPosStartAbw(abwTime, posStart, dayNr);
@@ -170,8 +171,7 @@ public class KalenderAbwesend extends KalenderBase {
 				posEnd = posStartMatch + RECT_WIDTH_MATCH;
 				if (matches.startsWith("E")) {
 					addRect(colNr, posStartMatch, posEnd, COLOR_MATCH_E, rowNr);
-				}
-				else {
+				} else {
 					addRect(colNr, posStartMatch, posEnd, COLOR_MATCH_D, rowNr);
 				}
 			} else {
@@ -376,7 +376,6 @@ public class KalenderAbwesend extends KalenderBase {
 		}
 		return 0;
 	}
-
 
 	/**
 	 * Create a panel that you can draw on.

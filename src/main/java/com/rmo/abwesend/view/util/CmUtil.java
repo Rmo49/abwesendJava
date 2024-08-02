@@ -4,9 +4,9 @@ import javax.swing.JOptionPane;
 
 import com.rmo.abwesend.util.Config;
 
-
 /**
  * Anzeige von speziellen Alerts (Popups).
+ * 
  * @author Ruedi
  *
  */
@@ -14,6 +14,7 @@ public class CmUtil {
 
 	/**
 	 * Fehlermeldung mit header und Exception.
+	 * 
 	 * @param header
 	 * @param ex
 	 */
@@ -23,6 +24,7 @@ public class CmUtil {
 
 	/**
 	 * Fehlermeldung
+	 * 
 	 * @param header: Titel
 	 * @param fehler: Fehlermeldung
 	 */
@@ -32,8 +34,9 @@ public class CmUtil {
 
 	/**
 	 * Eine Warnung ausgeben
+	 * 
 	 * @param warnung: Die Warnung (Titel)
-	 * @param fehler: Was eingegeben werden muss
+	 * @param fehler:  Was eingegeben werden muss
 	 */
 	public static void alertWarning(String titel, String fehler) {
 		JOptionPane.showMessageDialog(null, fehler, titel, JOptionPane.WARNING_MESSAGE);
@@ -41,8 +44,9 @@ public class CmUtil {
 
 	/**
 	 * Eine Warnung ausgeben
+	 * 
 	 * @param titel: Die Info (Titel)
-	 * @param info: Die Information
+	 * @param info:  Die Information
 	 */
 	public static void info(String titel, String info) {
 		JOptionPane.showMessageDialog(null, info, titel, JOptionPane.INFORMATION_MESSAGE);
@@ -50,6 +54,7 @@ public class CmUtil {
 
 	/**
 	 * Prüft, ob das eingegebene Passwort richtig ist.
+	 * 
 	 * @return
 	 */
 	public static boolean passwordOk() {
@@ -57,11 +62,10 @@ public class CmUtil {
 		if (name == null) {
 			return false;
 		}
-		if (name.compareTo(Config.configDbPasswort) == 0 ) {
+		if (name.compareTo(Config.configDbPasswort) == 0) {
 			return true;
 		}
 		return false;
 	}
-
 
 }

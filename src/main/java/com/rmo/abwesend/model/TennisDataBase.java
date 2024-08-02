@@ -29,11 +29,10 @@ public class TennisDataBase {
 	 * @throws Exception
 	 */
 	public static boolean dbExists() {
-		if (dbError != null && ! dbError.isEmpty()) {
+		if (dbError != null && !dbError.isEmpty()) {
 			// wenn eine Fehlermeldung vorhanden, dann bereits ein Versuch zu lesen
 			return false;
-		}
-		else {
+		} else {
 			dbError = "";
 		}
 		try {
@@ -57,6 +56,7 @@ public class TennisDataBase {
 
 	/**
 	 * Den Fehler bei DB öffnen zurückgeben
+	 * 
 	 * @return Fehlermeldung
 	 */
 	public static String getDbError() {
@@ -120,14 +120,13 @@ public class TennisDataBase {
 			Trace.println(1, "TennisDataBase.generateDb(), Fehler: " + ex.getMessage());
 		}
 
-		if (! gefunden) {
+		if (!gefunden) {
 			try {
 				Statement statement = DbConnection.getConnection().createStatement();
 				String sql = "CREATE DATABASE " + Config.dbName;
 				statement.executeUpdate(sql);
 				statement.close();
-			}
-			catch (SQLException ex) {
+			} catch (SQLException ex) {
 				Trace.println(1, "TennisDataBase.generateDb(), Fehler: " + ex.getMessage());
 			}
 		}

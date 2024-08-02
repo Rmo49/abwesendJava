@@ -10,6 +10,7 @@ import com.rmo.abwesend.view.util.CmUtil;
 
 /**
  * Die Basis aller Panes, die im Center der View angezeigt werden.
+ * 
  * @author Ruedi
  *
  */
@@ -33,6 +34,7 @@ public abstract class BasePane {
 
 	/**
 	 * Untersucht, ob Wochenende
+	 * 
 	 * @param pos die position in der Tage Liste
 	 * @return true wenn an der position ein Wochenende steht
 	 */
@@ -48,6 +50,7 @@ public abstract class BasePane {
 
 	/**
 	 * Fehlermeldung
+	 * 
 	 * @param header
 	 * @param ex
 	 */
@@ -55,18 +58,18 @@ public abstract class BasePane {
 		JOptionPane.showMessageDialog(null, "Fehlermeldung: " + ex.getMessage(), header, JOptionPane.ERROR_MESSAGE);
 	}
 
-
 	/**
 	 * Check der Abwesenheits Eingabe.
+	 * 
 	 * @param inputString
 	 * @return
 	 */
 	public static boolean isInputOk(String inputString) {
-    	if (! inputString.matches("0|-[0-9]+[.:]?[0-9]*|[0-9]+[.:]?[0-9]*-")) {
-    		CmUtil.alertWarning(inputString, "Mögliche Eingaben: 0 / -15 / -18.30 / 16- / 19:30-");
-	    	return false;
-    	}
-    	return true;
+		if (!inputString.matches("0|-[0-9]+[.:]?[0-9]*|[0-9]+[.:]?[0-9]*-")) {
+			CmUtil.alertWarning(inputString, "Mögliche Eingaben: 0 / -15 / -18.30 / 16- / 19:30-");
+			return false;
+		}
+		return true;
 	}
 
 }

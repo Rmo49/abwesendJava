@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-
 /**
  * Verbindung zur Tabelle User in der DB.
  */
@@ -15,6 +14,7 @@ public class BenutzerData {
 
 	/**
 	 * Das Create Statement für diese Tabelle
+	 * 
 	 * @return
 	 */
 	public static String createTable() {
@@ -38,8 +38,8 @@ public class BenutzerData {
 	private Statement mReadStmt;
 
 	/**
-	 * Der Set mit allen Match-Daten von dem gelesen wird. Ist ein scrollable
-	 * Set der von allen Methoden verwendet wird. id: IntegerInteger <br>
+	 * Der Set mit allen Match-Daten von dem gelesen wird. Ist ein scrollable Set
+	 * der von allen Methoden verwendet wird. id: IntegerInteger <br>
 	 * name: String <br>
 	 */
 	private ResultSet mReadSet;
@@ -52,6 +52,7 @@ public class BenutzerData {
 
 	/**
 	 * Singleton
+	 * 
 	 * @return
 	 */
 	public static BenutzerData instance() {
@@ -74,13 +75,10 @@ public class BenutzerData {
 	public void add(Benutzer pBenutzer) throws Exception {
 		if (find(pBenutzer.getName()) != null) {
 			updateRow(pBenutzer);
-		}
-		else {
+		} else {
 			addRow(pBenutzer);
 		}
 	}
-
-
 
 	/**
 	 * Einen Benuter löschen
@@ -93,13 +91,13 @@ public class BenutzerData {
 
 	/**
 	 * Einen Benutzer lesen
+	 * 
 	 * @param
 	 * @return
 	 */
-	public String read (String name) throws SQLException {
+	public String read(String name) throws SQLException {
 		return find(name);
 	}
-
 
 	/**
 	 * Das Speichern alle Einträge. Falls schon vorhanden wird update
@@ -108,8 +106,7 @@ public class BenutzerData {
 		for (Benutzer lBenutzer : benutzerList) {
 			if (find(lBenutzer.getName()) != null) {
 				updateRow(lBenutzer);
-			}
-			else {
+			} else {
 				addRow(lBenutzer);
 			}
 		}
@@ -133,7 +130,6 @@ public class BenutzerData {
 		return benutzerList;
 	}
 
-
 	/**
 	 * Alle benutzer-Daten löschen
 	 */
@@ -142,11 +138,11 @@ public class BenutzerData {
 		mReadStmt.execute("TRUNCATE benutzer");
 	}
 
-
 	// ------ interne Methoden -----------------------------------------
 
 	/**
 	 * Sucht einen benutzer
+	 * 
 	 * @param name
 	 * @return das Passwort, oder null wenn nicht vorhanden
 	 * @throws Exception
@@ -165,7 +161,8 @@ public class BenutzerData {
 	}
 
 	/**
-	 * Eine neue Zeile (Row) in die Tabelle eintragen. Der SQL-String wird zusammengestellt.
+	 * Eine neue Zeile (Row) in die Tabelle eintragen. Der SQL-String wird
+	 * zusammengestellt.
 	 */
 	private void addRow(Benutzer pBenutzer) throws SQLException {
 		Statement stmt = getConnection().createStatement();
@@ -201,10 +198,9 @@ public class BenutzerData {
 		deleteTupel.executeUpdate();
 	}
 
-
 	/**
-	 * Setzt das Statement (Connection zur DB) und den Scroll-Set, der für
-	 * Insert oder update verwendet werden kann.
+	 * Setzt das Statement (Connection zur DB) und den Scroll-Set, der für Insert
+	 * oder update verwendet werden kann.
 	 */
 	private synchronized void setupReadSet() throws SQLException {
 		if (mReadStmt == null) {

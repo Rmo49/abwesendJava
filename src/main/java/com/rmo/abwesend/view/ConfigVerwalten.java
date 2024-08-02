@@ -48,7 +48,6 @@ public class ConfigVerwalten extends BasePane {
 	// Datumsformat für die Anzeige
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("E d.M.");
 
-
 	private int selectedRowConfig = -1;
 	private int selectedRowZeit = -1;
 	private int selectedColZeit = -1;
@@ -89,10 +88,10 @@ public class ConfigVerwalten extends BasePane {
 	 * @return
 	 */
 	private JComponent addConfigTable() {
-		JScrollPane scrollPane = new JScrollPane(configTable);
-
 		configTable.setFillsViewportHeight(true);
 		TableColumnModel columnModel = configTable.getColumnModel();
+		JScrollPane scrollPane = new JScrollPane(configTable);
+
 		columnModel.getColumn(0).setPreferredWidth(COL1WIDTH);
 		columnModel.getColumn(1).setPreferredWidth(COL2WIDTH);
 
@@ -106,6 +105,7 @@ public class ConfigVerwalten extends BasePane {
 	 * @return
 	 */
 	private JComponent addZeitTable() {
+
 		zeitTableData = new ZeitTableModel();
 		zeitTable = new JTable(zeitTableData);
 		JScrollPane scrollPane = new JScrollPane(zeitTable);
@@ -144,28 +144,29 @@ public class ConfigVerwalten extends BasePane {
 	 */
 	private void addListenerZeitTable(JTable table) {
 		table.setCellSelectionEnabled(true);
-	    ListSelectionModel cellSelectionModel = table.getSelectionModel();
-	    cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		ListSelectionModel cellSelectionModel = table.getSelectionModel();
+		cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-	    cellSelectionModel.addListSelectionListener(new ListSelectionListener() {
+		cellSelectionModel.addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent event) {
 				handleZeitEvent(table, event);
 			}
 		});
 
-	    // Muss auch ColumnModel mit Listener, wenn auf gleicher Zeile selektiert
-	    // dann wird kein Listener aufgerufen
-	    table.getColumnModel().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+		// Muss auch ColumnModel mit Listener, wenn auf gleicher Zeile selektiert
+		// dann wird kein Listener aufgerufen
+		table.getColumnModel().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent event) {
 				handleZeitEvent(table, event);
 			}
-	    });
+		});
 	}
 
 	/**
 	 * Wenn Listener aufgerufen, werden hier Werte gesetzt
+	 * 
 	 * @param event
 	 */
 	private void handleZeitEvent(JTable table, ListSelectionEvent event) {
@@ -184,7 +185,6 @@ public class ConfigVerwalten extends BasePane {
 			configWert.setText(wert);
 		}
 	}
-
 
 	/**
 	 * Textfeld und JButton um die Aenderungen zu speichern.
@@ -219,15 +219,15 @@ public class ConfigVerwalten extends BasePane {
 	@Override
 	protected void saveData() {
 //		if (CmUtil.passwordOk()) {
-			if (selectedRowConfig >= 0) {
-				configTable.setValueAt(configWert.getText(), selectedRowConfig, 1);
-				configTable.repaint();
-			}
-			if (selectedRowZeit >= 0) {
-				setZeitWerte(Integer.valueOf(configWert.getText()), selectedRowZeit, selectedColZeit);
-				zeitTable.repaint();
-			}
-			configTableData.saveAll();
+		if (selectedRowConfig >= 0) {
+			configTable.setValueAt(configWert.getText(), selectedRowConfig, 1);
+			configTable.repaint();
+		}
+		if (selectedRowZeit >= 0) {
+			setZeitWerte(Integer.valueOf(configWert.getText()), selectedRowZeit, selectedColZeit);
+			zeitTable.repaint();
+		}
+		configTableData.saveAll();
 //		} else {
 //			CmUtil.alertWarning("Wert speichern", "Passwort falsch!");
 //		}
@@ -235,6 +235,7 @@ public class ConfigVerwalten extends BasePane {
 
 	/**
 	 * Die Werte in der Config speichern.
+	 * 
 	 * @param wert
 	 * @param row
 	 * @param col
@@ -352,6 +353,7 @@ public class ConfigVerwalten extends BasePane {
 
 	/**
 	 * Den Array in einen String konvertieren
+	 * 
 	 * @return
 	 */
 	private String getZeitStartStr() {
@@ -371,8 +373,6 @@ public class ConfigVerwalten extends BasePane {
 		}
 		return buffer.toString();
 	}
-
-
 
 	// -----------------------------------------------------
 	/*

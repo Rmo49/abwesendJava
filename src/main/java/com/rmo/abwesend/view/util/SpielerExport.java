@@ -16,27 +16,26 @@ import javax.swing.JTextArea;
 import com.rmo.abwesend.util.Config;
 import com.rmo.abwesend.util.SpielerExportFile;
 
-
 /**
  * Spieler mit Tableau in ein File schreiben.
+ * 
  * @author Ruedi
  */
 public class SpielerExport {
 
 	public JComponent getPanel() {
 		JPanel pane = new JPanel(new GridBagLayout());
-	    int zeileNr = 0;
+		int zeileNr = 0;
 		pane.setBorder(BorderFactory.createLineBorder(Color.black));
 
-	    JLabel labelTitel = new JLabel("Spieler exportieren");
+		JLabel labelTitel = new JLabel("Spieler exportieren");
 		labelTitel.setFont(Config.fontTitel);
 		pane.add(labelTitel, getConstraintNext(1, zeileNr++));
 
-		JTextArea labelText = new JTextArea(2,0);
+		JTextArea labelText = new JTextArea(2, 0);
 		labelText.append("Alle Spieler werden in eine Datei exportiert \n");
 		labelText.append("In der Form: Name, Vorname, Tableau1, Tableau2, Tableau3");
 		pane.add(labelText, getConstraintNext(1, zeileNr++));
-
 
 		pane.add(new JLabel("Einstellungen in AbwesendConfig.txt"), getConstraintFirst(1, zeileNr++));
 
@@ -51,7 +50,7 @@ public class SpielerExport {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				startExport();
- 			}
+			}
 		});
 		pane.add(btnExport, getConstraintNext(0, zeileNr++));
 
@@ -60,6 +59,7 @@ public class SpielerExport {
 
 	/**
 	 * Den Gridbag der für alle Darstellungen verwendet wird
+	 * 
 	 * @param row
 	 * @return
 	 */
@@ -75,6 +75,7 @@ public class SpielerExport {
 
 	/**
 	 * Den Gridbag der für alle Darstellungen verwendet wird
+	 * 
 	 * @param row
 	 * @return
 	 */
@@ -95,13 +96,12 @@ public class SpielerExport {
 		boolean fehler = true;
 		try {
 			fehler = spielerInFile.startExport(Config.spielerExportDir, Config.spielerExportFile);
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			CmUtil.alertError("Spieler exportieren", ex);
 			return;
 		}
 		if (fehler) {
-			CmUtil.alertWarning("Spieler exportieren", "Fehler beim Schreiben, siehe Trace" );
+			CmUtil.alertWarning("Spieler exportieren", "Fehler beim Schreiben, siehe Trace");
 		}
 	}
 }

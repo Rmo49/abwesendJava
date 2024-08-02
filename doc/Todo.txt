@@ -1,5 +1,9 @@
-Fehler
-	- MailSenden und SendMailTCA enthältenSMTP credentials, Passwort auslagern
+
+Bei Benutzer noch dazufügen, das was er gewählt hat
+	anzeigeBegin=2023-08-18
+	anzeigeEnd=2023-08-18
+	anzeigeTableauList=10
+	
 
 DB Connection
 - Wenn keine Daten, kann nix eingegeben werden.
@@ -21,8 +25,6 @@ Fehler
 
 - setPaneLeft, wenn nicht aufgerufen bei AbwesendSpieler und AbwesendTableau, dann wird Zentrum nicht angezeigt
 
-Info: Selenium alte Version: 3.141.59
-
 Flutter
 - Meldung wenn Verbindung testen verbessern
 
@@ -30,3 +32,6 @@ Flutter
 AbwesendConfig.txt
 db.url=//server41.hostfactory.ch
 db.url=//localhost
+
+
+

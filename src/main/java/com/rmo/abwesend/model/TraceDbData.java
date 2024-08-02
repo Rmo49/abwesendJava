@@ -11,8 +11,6 @@ import java.util.List;
 import com.rmo.abwesend.util.Config;
 import com.rmo.abwesend.util.Trace;
 
-
-
 /**
  * Trace Daten in der DB, schreibt Datum und wer eingelogged hat.
  */
@@ -20,6 +18,7 @@ public class TraceDbData {
 
 	/**
 	 * Das Create Statement für diese Tabelle
+	 * 
 	 * @return
 	 */
 	public static String createTable() {
@@ -34,7 +33,6 @@ public class TraceDbData {
 		return ("DROP TABLE IF EXISTS trace;");
 	}
 
-
 	private static TraceDbData instance = null;
 
 	/**
@@ -44,8 +42,8 @@ public class TraceDbData {
 	private Statement mReadStmt;
 
 	/**
-	 * Der Set mit allen Match-Daten von dem gelesen wird. Ist ein scrollable
-	 * Set der von allen Methoden verwendet wird. id: IntegerInteger <br>
+	 * Der Set mit allen Match-Daten von dem gelesen wird. Ist ein scrollable Set
+	 * der von allen Methoden verwendet wird. id: IntegerInteger <br>
 	 * name: String <br>
 	 */
 	private ResultSet mReadSet;
@@ -58,6 +56,7 @@ public class TraceDbData {
 
 	/**
 	 * Singleton
+	 * 
 	 * @return
 	 */
 	public static TraceDbData instance() {
@@ -74,15 +73,13 @@ public class TraceDbData {
 		return DbConnection.getConnection();
 	}
 
-
 	/**
 	 * Das Match wird gespeichert. Falls schon vorhanden, wird nix gemacht
 	 */
 	public void add(String traceData) throws SQLException {
 		try {
 			addRow(traceData);
-		}
-		catch (SQLException ex) {
+		} catch (SQLException ex) {
 			Trace.println(5, "TraceDB schreiben: " + ex.getMessage());
 		}
 	}
@@ -96,6 +93,7 @@ public class TraceDbData {
 
 	/**
 	 * Die Trace-Einträge bis zu einen Datum löschen
+	 * 
 	 * @param date
 	 * @throws SQLException
 	 */
@@ -111,8 +109,6 @@ public class TraceDbData {
 		mReadStmt.execute("TRUNCATE Trace");
 	}
 
-
-
 	// ------ interne Methoden -----------------------------------------
 
 	/**
@@ -127,7 +123,6 @@ public class TraceDbData {
 		stmt.executeUpdate(lQuery.toString());
 		stmt.close();
 	}
-
 
 	/**
 	 * Trace ab einem bestimmten Datum anzeigen
@@ -161,10 +156,9 @@ public class TraceDbData {
 		stmt.close();
 	}
 
-
 	/**
-	 * Setzt das Statement (Connection zur DB) und den Scroll-Set, der für
-	 * Insert oder update verwendet werden kann.
+	 * Setzt das Statement (Connection zur DB) und den Scroll-Set, der für Insert
+	 * oder update verwendet werden kann.
 	 */
 	private synchronized void setupReadSet() throws SQLException {
 		if (mReadStmt == null) {

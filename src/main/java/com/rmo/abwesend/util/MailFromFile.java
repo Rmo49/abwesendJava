@@ -13,6 +13,7 @@ public class MailFromFile {
 	/** Das File von dem gelesen wird */
 	private FileInputStream fstream = null;
 	private BufferedReader br = null;
+
 	/**
 	 * MailControl constructor comment.
 	 */
@@ -43,6 +44,7 @@ public class MailFromFile {
 
 	/**
 	 * Die Anzahl mails im File
+	 * 
 	 * @return
 	 */
 	public int getNubmerOfMails() {
@@ -72,8 +74,9 @@ public class MailFromFile {
 		return (int) anzahl;
 	}
 
-	/** Initialisiert alle Writers
-	 * */
+	/**
+	 * Initialisiert alle Writers
+	 */
 	private void makeReader() {
 		try {
 			fstream = new FileInputStream(Config.sMailToSendPath);
@@ -92,8 +95,7 @@ public class MailFromFile {
 				fstream.close();
 				fstream = null;
 			}
-		}
-		catch (IOException ex) {
+		} catch (IOException ex) {
 			// nichts
 		}
 	}

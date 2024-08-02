@@ -52,7 +52,6 @@ import com.rmo.abwesend.util.Config;
 import com.rmo.abwesend.util.MailFromFile;
 import com.rmo.abwesend.util.MailGenerator;
 import com.rmo.abwesend.util.MailSenden;
-import com.rmo.abwesend.util.MailToFile;
 import com.rmo.abwesend.util.Trace;
 
 /**
@@ -118,7 +117,8 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 		compPanel.add(new JLabel("Mail-Text"), getConstraintFirst(0, zeileNr));
 
 		textMail = new JTextArea();
-		JScrollPane scrollPane = new JScrollPane(textMail, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		JScrollPane scrollPane = new JScrollPane(textMail, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		textMail.setEditable(true);
 		Dimension dimText = new Dimension(600, 160);
 		scrollPane.setMinimumSize(dimText);
@@ -138,7 +138,7 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 		compPanel.add(btnSpeichern, getConstraintNext(1, zeileNr++));
 		compPanel.add(new JLabel("======================================="), getConstraintNext(1, zeileNr++));
 
-		//--- Selektieren
+		// --- Selektieren
 		compPanel.add(new JLabel("Selektieren:"), getConstraintFirst(0, zeileNr));
 		compPanel.add(new JLabel("Auswählen an wen die mails gesendet werden"), getConstraintNext(1, zeileNr++));
 
@@ -149,7 +149,7 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				anAlleAction();
- 			}
+			}
 		});
 		paneSel.add(anAlle);
 
@@ -160,7 +160,7 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				keineAbwesenheitAction();
- 			}
+			}
 		});
 		paneSel.add(keineAbwesenheit);
 
@@ -171,8 +171,7 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 		List<Tableau> tabList = null;
 		try {
 			tabList = TableauData.instance().readAllTableau();
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 		}
 		for (Tableau element : tabList) {
 			tableauString.add(element.getBezeichnung());
@@ -183,13 +182,13 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				tableauComboAction();
- 			}
+			}
 		});
 
 		paneSel.add(tableauCombo);
 		compPanel.add(paneSel, getConstraintNext(1, zeileNr++));
 
-		//--- Match von ... bis
+		// --- Match von ... bis
 		JPanel paneMatch = new JPanel(new FlowLayout());
 		paneMatch.add(new JLabel("/ oder Datum der Matches ab: "));
 		// DatumSpanne
@@ -225,11 +224,10 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 		paneGen.add(new JLabel(">>>> wird in: '" + Config.sMailToSend + "' generiert"));
 		compPanel.add(paneGen, getConstraintNext(1, zeileNr++));
 
-
 		compPanel.add(new JLabel("siehe in: " + Config.sMailToSendPath), getConstraintNext(1, zeileNr++));
 //		compPanel.add(new JLabel("======================================="), getConstraintNext(1, zeileNr++));
 
-		//--- Mails versenden
+		// --- Mails versenden
 		JPanel paneSend = new JPanel(new FlowLayout());
 
 		btnMailSenden = new JButton("Mails versenden");
@@ -326,8 +324,6 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 		bisDatum.setEditable(enable);
 	}
 
-
-
 	/**
 	 * Die Daten von DB.
 	 */
@@ -402,7 +398,8 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 	}
 
 	/**
-	 * Alle Matches in der Zeitspanne einlesen, die Class-Var listMatches wird gefüllt.
+	 * Alle Matches in der Zeitspanne einlesen, die Class-Var listMatches wird
+	 * gefüllt.
 	 */
 	private void matchesLesen() {
 		Date dateVon;
@@ -454,14 +451,12 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 		Tableau tableau = null;
 		try {
 			tableau = TableauData.instance().readBezeichnung(tableauSelected);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			CmUtil.alertWarning("Email versenden", "Fehler: " + e.getMessage());
 			return;
 		}
 		listTableauSpieler = SpielerTableauData.instance().readSpielerOfTableau(tableau.getId());
 	}
-
 
 	/**
 	 * Die mails versenden mit einem Popup-Window. Dieses wird aufgerufen von Mail
@@ -552,8 +547,6 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 		}
 	}
 
-
-
 //-------- MyTask für versenden der mails ------------------------------------
 	class TaskMail extends SwingWorker<Void, Void> {
 
@@ -579,8 +572,7 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 					generateKeineAbwesenheit();
 				} else if (tableauSelected.length() > 0) {
 					generateForTableau();
-				}
-				else {
+				} else {
 					generateMatches();
 				}
 			} else {
@@ -616,6 +608,7 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 			}
 			mailGenerator.closeFile();
 		}
+
 		/**
 		 * Itertation über alle Spieler, die keine Abwensenheit eingetragen
 		 *
@@ -637,13 +630,12 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 				setProgress(progress);
 
 				// wenn keine Abwesenheit eingetragen
-				if (! spieler.hasAbwesenheit()) {
+				if (!spieler.hasAbwesenheit()) {
 					mailGenerator.generateMail(spieler);
 				}
 			}
 			mailGenerator.closeFile();
 		}
-
 
 		/**
 		 * Iteration über die alle Spieler eines bestimmten Tableaus.
@@ -665,7 +657,6 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 			}
 			mailGenerator.closeFile();
 		}
-
 
 		/**
 		 * Iteration über die ganze Liste der selektierten Matches.
@@ -710,7 +701,6 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 			mailGenerator.closeFile();
 		}
 
-
 		/**
 		 * Itertation über alle Mails, diese senden
 		 *
@@ -735,7 +725,7 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 //				if (mailTest.isSelected()) {
 //					writeMailToFile(toAdresse, betreff, mailText);
 //				} else {
-					mailSenden.sendMail(toAdresse, betreff, mailText);
+				mailSenden.sendMail(toAdresse, betreff, mailText);
 //				}
 				double k = pos++ / last * 100;
 				progress = (int) k;
@@ -790,7 +780,7 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 //				if (mailTest.isSelected()) {
 //					message.append(mailToFile.readEnd());
 //				} else {
-					message.append(mailSenden.readEnd());
+				message.append(mailSenden.readEnd());
 //				}
 			}
 			dialog.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));

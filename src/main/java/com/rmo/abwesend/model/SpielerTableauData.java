@@ -7,16 +7,15 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 /**
- * Spieler-Tableau-Beziehung, Verbindung zur Tabelle SpielerTableau in der DB. Schnittstelle zur
- * DB. Tableau werden mit der Klasse Tableau sichtbar gemacht.
+ * Spieler-Tableau-Beziehung, Verbindung zur Tabelle SpielerTableau in der DB.
+ * Schnittstelle zur DB. Tableau werden mit der Klasse Tableau sichtbar gemacht.
  */
 public class SpielerTableauData {
 
 	/**
 	 * Das Create Statement für diese Tabelle
+	 * 
 	 * @return
 	 */
 	public static String createTable() {
@@ -31,12 +30,12 @@ public class SpielerTableauData {
 
 	public static String createTable2() {
 		StringBuffer sb = new StringBuffer(300);
-		sb.append ("CREATE TABLE IF NOT EXISTS spielerTableau (");
-		sb.append (" spielerID int unsigned NOT NULL, tableauID INT unsigned NOT NULL,");
-		sb.append (" PRIMARY KEY (spielerID, tableauID),");
-		sb.append (" FOREIGN KEY (spielerID) REFERENCES Spieler(spielerID)");
-		sb.append (" ON DELETE CASCADE,");
-		sb.append (" FOREIGN KEY (tableauID) REFERENCES Tableau(tableauID)");
+		sb.append("CREATE TABLE IF NOT EXISTS spielerTableau (");
+		sb.append(" spielerID int unsigned NOT NULL, tableauID INT unsigned NOT NULL,");
+		sb.append(" PRIMARY KEY (spielerID, tableauID),");
+		sb.append(" FOREIGN KEY (spielerID) REFERENCES Spieler(spielerID)");
+		sb.append(" ON DELETE CASCADE,");
+		sb.append(" FOREIGN KEY (tableauID) REFERENCES Tableau(tableauID)");
 //		sb.append (" ON DELETE CASCADE");
 		sb.append(");");
 		return sb.toString();
@@ -45,7 +44,6 @@ public class SpielerTableauData {
 	public static String dorpTable() {
 		return ("DROP TABLE IF EXISTS spielertableau;");
 	}
-
 
 	private static SpielerTableauData instance = null;
 
@@ -56,8 +54,8 @@ public class SpielerTableauData {
 	private Statement mReadStmt;
 
 	/**
-	 * Der Set mit allen Tableau-Daten von dem gelesen wird. Ist ein scrollable
-	 * Set der von allen Methoden verwendet wird. id: IntegerInteger <br>
+	 * Der Set mit allen Tableau-Daten von dem gelesen wird. Ist ein scrollable Set
+	 * der von allen Methoden verwendet wird. id: IntegerInteger <br>
 	 * tableauID: String <br>
 	 */
 	private ResultSet mReadSet;
@@ -68,9 +66,9 @@ public class SpielerTableauData {
 	private SpielerTableauData() {
 	}
 
-
 	/**
 	 * Singleton
+	 * 
 	 * @return
 	 */
 	public static SpielerTableauData instance() {
@@ -88,8 +86,8 @@ public class SpielerTableauData {
 	}
 
 	/**
-	 * Die Beziehungen Spieler / Tableau werden zusätzlich gespeichert.
-	 * Falls eine Beziehung nicht vorhanden ist, wird diese aufgenommen.
+	 * Die Beziehungen Spieler / Tableau werden zusätzlich gespeichert. Falls eine
+	 * Beziehung nicht vorhanden ist, wird diese aufgenommen.
 	 */
 	public void add(SpielerTableau pST) throws Exception {
 		List<Integer> oldList = findAllTableaux(pST.getSpielerId());
@@ -102,24 +100,22 @@ public class SpielerTableauData {
 					break;
 				}
 			}
-			if (! found) {
+			if (!found) {
 				addRow(pST.getSpielerId(), newId.intValue());
 			}
 			found = false;
 		}
 	}
 
-
 	/**
-	 * Eine neue Beziehung speichern.
-	 * Falls diese nicht vorhanden ist, wird diese aufgenommen.
+	 * Eine neue Beziehung speichern. Falls diese nicht vorhanden ist, wird diese
+	 * aufgenommen.
 	 */
 	public void add(int spielerID, int tableauID) throws Exception {
 		List<Integer> oldList = null;
 		try {
 			oldList = findAllTableaux(spielerID);
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			// nichts machen wenn nicht gefunden
 			oldList = null;
 		}
@@ -134,16 +130,15 @@ public class SpielerTableauData {
 				}
 			}
 		}
-		if (! found) {
+		if (!found) {
 			addRow(spielerID, tableauID);
 		}
 	}
 
-
 	/**
-	 * Die Beziehungen Spieler / Tableau werden neu gespeichert.
-	 * Falls eine Beziehung nicht vorhanden ist, wird diese aufgenommen.
-	 * Beziehungen, die nicht mehr gelten, werden gelöscht.
+	 * Die Beziehungen Spieler / Tableau werden neu gespeichert. Falls eine
+	 * Beziehung nicht vorhanden ist, wird diese aufgenommen. Beziehungen, die nicht
+	 * mehr gelten, werden gelöscht.
 	 */
 	public void update(SpielerTableau pST) throws Exception {
 		List<Integer> oldList = findAllTableaux(pST.getSpielerId());
@@ -156,7 +151,7 @@ public class SpielerTableauData {
 					break;
 				}
 			}
-			if (! found) {
+			if (!found) {
 				addRow(pST.getSpielerId(), newId.intValue());
 			}
 			found = false;
@@ -170,16 +165,16 @@ public class SpielerTableauData {
 					break;
 				}
 			}
-			if (! found) {
+			if (!found) {
 				deleteRow(pST.getSpielerId(), oldId);
 			}
 			found = false;
 		}
 	}
 
-
 	/**
 	 * Alle TableauId wo der Spieler spielt.
+	 * 
 	 * @param spielerId
 	 * @return Liste mit allen tableauId
 	 */
@@ -192,9 +187,9 @@ public class SpielerTableauData {
 		return tableauList;
 	}
 
-
 	/**
 	 * Alle TableauId wo der Spieler spielt.
+	 * 
 	 * @param spielerId
 	 * @return Liste mit allen tableauId
 	 */
@@ -204,6 +199,7 @@ public class SpielerTableauData {
 
 	/**
 	 * Alle SpielerID eines Tableaux.
+	 * 
 	 * @param tableauId
 	 * @return Liste mit allen spielerId
 	 */
@@ -213,6 +209,7 @@ public class SpielerTableauData {
 
 	/**
 	 * Die Spieler eines Tableau
+	 * 
 	 * @param die Id des Tableau
 	 * @return
 	 */
@@ -226,13 +223,11 @@ public class SpielerTableauData {
 				spielerList.add(lSpieler);
 			}
 //			spielerList.sort(spielerComparator);
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 //			alertError("Probleme bei Tableau lesen.", ex);
 		}
 		return spielerList;
 	}
-
 
 	/**
 	 * Alle Daten löschen.
@@ -247,7 +242,7 @@ public class SpielerTableauData {
 	/**
 	 * Alle Spieler von einem Tableau entfernen
 	 */
-	public void deleteAllSpielerFromTableau(int tableauId) throws Exception  {
+	public void deleteAllSpielerFromTableau(int tableauId) throws Exception {
 		List<Integer> spielerIdList = readAllSpieler(tableauId);
 		for (Integer spielerId : spielerIdList) {
 			deleteRow(spielerId, tableauId);
@@ -258,6 +253,7 @@ public class SpielerTableauData {
 
 	/**
 	 * Sucht alle Tableaus eines Spielers, gibt die Liste der TableauIDs zurück.
+	 * 
 	 * @param pSpielerId
 	 * @return Liste mit TableauID wo Spieler spielt
 	 * @throws Exception
@@ -283,6 +279,7 @@ public class SpielerTableauData {
 
 	/**
 	 * Sucht alle Spiele eines Tableaus, gibt die Liste der TableauIDs zurück.
+	 * 
 	 * @param pSpielerId
 	 * @return Liste mit TableauID wo Spieler spielt
 	 * @throws Exception
@@ -334,10 +331,9 @@ public class SpielerTableauData {
 		deleteTupel.executeUpdate();
 	}
 
-
 	/**
-	 * Setzt das Statement (Connection zur DB) und den Scroll-Set, der für
-	 * Insert oder update verwendet werden kann.
+	 * Setzt das Statement (Connection zur DB) und den Scroll-Set, der für Insert
+	 * oder update verwendet werden kann.
 	 */
 	private synchronized void setupReadSet() throws Exception {
 		if (mReadStmt == null) {

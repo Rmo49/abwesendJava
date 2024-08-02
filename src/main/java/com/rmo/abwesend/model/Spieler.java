@@ -7,6 +7,7 @@ import com.rmo.abwesend.util.Config;
 
 /**
  * Daten eines Spielers. Die Abwesenheit ist eine Liste durch ';' getrennt.
+ * 
  * @author ruedi
  *
  */
@@ -81,8 +82,7 @@ public class Spieler {
 	/**
 	 * Den Wert an einer bestimmten Position.
 	 *
-	 * @param dayNr
-	 *            0..max
+	 * @param dayNr 0..max
 	 * @return String an der gesuchten Position.
 	 */
 	public String getAbwesendAt(int dayNr) {
@@ -102,7 +102,6 @@ public class Spieler {
 		return abwesendList;
 	}
 
-
 	/**
 	 * Prüft, ob ein Eintrag in Abwesenheiten
 	 *
@@ -112,20 +111,17 @@ public class Spieler {
 		String abw;
 		for (String element : abwesendList) {
 			abw = element;
-			if (! abw.isBlank()) {
+			if (!abw.isBlank()) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-
-
 	/**
 	 * Liste von Tage, die übernommen werden soll.
 	 *
-	 * @param list
-	 *            String-Werte getrennt durch ";"
+	 * @param list String-Werte getrennt durch ";"
 	 */
 	public void setAbwesendList(String list) {
 		abwesendList = makeList(list);
@@ -161,10 +157,10 @@ public class Spieler {
 //	}
 
 	/**
-	 * Den Wert an einer bestimmten Position
-	 * Wenn falsche Position dann wird Leerstring zurückgegeben.
+	 * Den Wert an einer bestimmten Position Wenn falsche Position dann wird
+	 * Leerstring zurückgegeben.
 	 *
-	 * @param pos  0..max
+	 * @param pos 0..max
 	 * @return String an der gesuchten Position, oder Leerstring
 	 */
 	public String getSpielAt(int pos) {
@@ -187,8 +183,7 @@ public class Spieler {
 	/**
 	 * Liste von Tage, die übernommen werden soll.
 	 *
-	 * @param list
-	 *            String-Werte getrennt durch ";"
+	 * @param list String-Werte getrennt durch ";"
 	 */
 	public void setSpieleList(String list) {
 		spieleList = makeList(list);
@@ -216,8 +211,7 @@ public class Spieler {
 		String listText = spieleList.get(pos);
 		if (add && listText != null && listText.length() > 1) {
 			listText = listText + "," + text;
-		}
-		else {
+		} else {
 			listText = text;
 		}
 		spieleList.set(pos, listText);
@@ -243,6 +237,7 @@ public class Spieler {
 
 	/**
 	 * Die Spiele-Liste anlegen
+	 * 
 	 * @param list
 	 * @return
 	 */
@@ -255,6 +250,7 @@ public class Spieler {
 
 	/**
 	 * Convert String zu Liste.
+	 * 
 	 * @param list
 	 * @return
 	 */
@@ -274,6 +270,7 @@ public class Spieler {
 
 	/**
 	 * Convert eine Liste in einen String.
+	 * 
 	 * @param list
 	 * @return
 	 */

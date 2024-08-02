@@ -24,14 +24,15 @@ import java.util.Vector;
 import com.rmo.abwesend.AbwesendMain;
 import com.rmo.abwesend.model.ConfigDbData;
 
-
 /**
- * Configuration Abwesend. Kann seine Daten vom Config-File einlesen, und schreiben.
- * Allgemeine Daten werden in der DB gespeichert. Diese werden nach dem Start in die keyValueMap
- * gelesen. Von dieser Map werden die statischen (typisierten) Variablen gesetzt, und diese Werte sogleich wieder
- * in die Map zurückgeschrieben, somit werden Werte mit den Default-Werten gesetzt falls noch nicht in der DB.
- * Wenn ein Wert geändert wird, wird auch die statische Variable gesetzt.
- * Am Ende des Programms werde alle Werte in die DB geschrieben.
+ * Configuration Abwesend. Kann seine Daten vom Config-File einlesen, und
+ * schreiben. Allgemeine Daten werden in der DB gespeichert. Diese werden nach
+ * dem Start in die keyValueMap gelesen. Von dieser Map werden die statischen
+ * (typisierten) Variablen gesetzt, und diese Werte sogleich wieder in die Map
+ * zurückgeschrieben, somit werden Werte mit den Default-Werten gesetzt falls
+ * noch nicht in der DB. Wenn ein Wert geändert wird, wird auch die statische
+ * Variable gesetzt. Am Ende des Programms werde alle Werte in die DB
+ * geschrieben.
  */
 public class Config {
 	public static final boolean newVersion = true;
@@ -55,7 +56,7 @@ public class Config {
 	public static final SimpleDateFormat sdfZeit = new SimpleDateFormat("HH:mm");
 	public static final SimpleDateFormat sdfSwiss = new SimpleDateFormat("dd.MM.yyyy");
 	public static final SimpleDateFormat sdfTagName = new SimpleDateFormat("EEE, dd.MM.yyyy HH:mm", Locale.GERMANY);
-	public static final long einTagLong = 24*60*60*1000;	// für Datum in long
+	public static final long einTagLong = 24 * 60 * 60 * 1000; // für Datum in long
 
 	/** Config path filename und file */
 	public static String sPath = "";
@@ -77,11 +78,11 @@ public class Config {
 	private static Properties mProperties;
 	private static Vector<Object> mPropertyList;
 
-	//----- Config-Werte in der DB
+	// ----- Config-Werte in der DB
 	// alle Werte werden hier gehalten und in die DB gespeichert
 	private static Map<String, String> keyValueMap = new TreeMap<>();
 	// das Passwort um die Config-Werte zu ändern
-	public static String configDbPasswort="T4123";
+	public static String configDbPasswort = "T4123";
 
 	// --- Trace
 	public static int traceLevel = 5;
@@ -139,7 +140,8 @@ public class Config {
 	public static final String showTableauBoxKey = "anzeige.tableauBox";
 	public static int showTableauBox = 10;
 
-	// die aktuellen Datumspanne, wo die Abwesenheiten gezeigt werden, sind Properties
+	// die aktuellen Datumspanne, wo die Abwesenheiten gezeigt werden, sind
+	// Properties
 	public static final String showBeginDatumKey = "anzeige.beginDatum";
 	public static Date showBeginDatum = turnierBeginDatum;
 	public static final String showEndDatumKey = "anzeige.endDatum";
@@ -175,6 +177,7 @@ public class Config {
 	public static final String spielerExportFileKey = "spieler.export.file";
 	public static String spielerExportFile = "SpielerExport.txt";
 
+	// Spieler import
 	public static final String spielerImportDirKey = "spieler.import.dir";
 	public static String spielerImportDir = "D:/Downloads";
 	public static final String spielerImportFileKey = "spieler.import.file";
@@ -182,16 +185,26 @@ public class Config {
 	public static final String spielerImportSplitCharKey = "spieler.import.splitChar";
 	public static String spielerImportSplitChar = ",";
 	// falls direkt von XLS file gelesen wird
-	public static final String spielerXlsRowHeadKey = "5";
-	public static final String spielerXlsColKonkurrenzKey = "Konkurrenz";
-	public static final String spielerXlsColName1Key = "Name";
-	public static final String spielerXlsColName2Key = "Name Doppelpartner";
+	public static final String spielerXlsImportFileKey = "spieler.excel.import.file";
+	public static String spielerXlsImportFile = "PlayerList.xls";
+
+	public static String spielerRowIndex = "Konkurrenz";
+	public static final String spielerColKonkurrenzKey = "spieler.import.konkurrenz";
+	public static String spielerColKonkurrenz = "Konkurrenzx";
+	public static final String spielerColName1Key = "spieler.import.name1";
+	public static String spielerColName1 = "Name";
+	public static final String spielerColVorname1Key = "spieler.import.vorname1";
+	public static String spielerColVorname1 = "Vorname";
+	public static final String spielerColName2Key = "spieler.import.name2";
+	public static String spielerColName2 = "Name Doppelpartner";
+	public static final String spielerColVorname2Key = "spieler.import.vorname2";
+	public static String spielerColVorname2 = "Vorname Doppelpartner";
 
 	public static final String emailImportFileKey = "email.import.file";
 	public static String emailImportFile = "emails.txt";
 
 	public static final String planDirKey = "spielplan.dir";
-	public static String planDir = "C:/Downloads";
+	public static String planDir = "D:/Downloads";
 	public static final String planFileKey = "spielplan.file";
 	public static String planFile = "Calendar.xls";
 	public static final String planTrennCharKey = "spielplan.trennChar.Doppel";
@@ -203,14 +216,13 @@ public class Config {
 	public static final String planColDatumKey = "spielplan.col.datum";
 	public static int planColDatum = 1;
 	public static final String planColZeitKey = "spielplan.col.zeit";
-	public static int planColZeit= 2;
+	public static int planColZeit = 2;
 	public static final String planColName1Key = "spielplan.col.name1";
 	public static int planColName1 = 4;
 	public static final String planColName2Key = "spielplan.col.name2";
 	public static int planColName2 = 6;
 
-
-	//--- mail senden
+	// --- mail senden
 	public static final String emailUser = "email.user";
 	public static final String emailPassword = "email.passwort";
 	public static final String emailHostImap = "email.hostImap";
@@ -227,7 +239,6 @@ public class Config {
 	public static final String windowYKey = "window.y";
 	public static double windowY = 10;
 
-
 	/**
 	 * Config nur statische Methoden, darum Konstruktor verstcken.
 	 */
@@ -236,6 +247,7 @@ public class Config {
 
 	/**
 	 * Gibt den gespeicherten Wert zurück aus Property oder Config
+	 * 
 	 * @param key
 	 * @return
 	 */
@@ -246,10 +258,9 @@ public class Config {
 		return keyValueMap.get(key);
 	}
 
-
 	/**
-	 * Alle key value pairs einlesen, das sind felder mit einer 'final String wertEndung'.
-	 * Die Werte werden in der keyValueMap gespeichert.
+	 * Alle key value pairs einlesen, das sind felder mit einer 'final String
+	 * wertEndung'. Die Werte werden in der keyValueMap gespeichert.
 	 */
 	public static void readConfigData() throws Exception {
 		Trace.println(1, "Config.readConfigData()");
@@ -264,8 +275,8 @@ public class Config {
 	}
 
 	/**
-	 * Variable setzen, damit diese einfacher verwendet werden können.
-	 * Wird aufgerufen, nachdem alle Werte eingelesen wurden
+	 * Variable setzen, damit diese einfacher verwendet werden können. Wird
+	 * aufgerufen, nachdem alle Werte eingelesen wurden
 	 */
 	public static void setAllValues() throws Exception {
 		Trace.println(2, "Config.setAllValues() from DB");
@@ -276,7 +287,7 @@ public class Config {
 		turnierBeginDatum = getWert(datumBeginKey, turnierBeginDatum);
 		turnierEndDatum = getWert(datumEndKey, turnierEndDatum);
 		// max Tage berechnen
-		turnierMaxTage = Math.toIntExact((turnierEndDatum.getTime() - turnierBeginDatum.getTime()) / einTagLong) +1;
+		turnierMaxTage = Math.toIntExact((turnierEndDatum.getTime() - turnierBeginDatum.getTime()) / einTagLong) + 1;
 		if (turnierMaxTage < 1 || turnierMaxTage > maxTageErlaubt) {
 			turnierMaxTage = maxTageErlaubt + 1;
 		}
@@ -299,6 +310,7 @@ public class Config {
 
 	/**
 	 * Alle Werte in den Map schreiben zur Zwischenspeicherung
+	 * 
 	 * @throws Exception
 	 */
 	public static void writeDefaultInMap() throws Exception {
@@ -322,8 +334,8 @@ public class Config {
 	}
 
 	/**
-	 * Alle Werte in die DB schreiben.
-	 * Die keyValueMap enthält alle tupel
+	 * Alle Werte in die DB schreiben. Die keyValueMap enthält alle tupel
+	 * 
 	 * @throws Exception
 	 */
 	public static void saveConfigData() throws Exception {
@@ -339,6 +351,7 @@ public class Config {
 
 	/**
 	 * Den gesetzen Wert einer Variablen lesen und zurückgeben
+	 * 
 	 * @param key Name der Variable
 	 * @return gefunderner Wert, oder null wenn nicht gefunden
 	 */
@@ -349,7 +362,6 @@ public class Config {
 		}
 		return tmp;
 	}
-
 
 	/** Einen int-Werte einlesen */
 //	private static int getWert(String key, int wert) throws Exception {
@@ -364,15 +376,12 @@ public class Config {
 //		return tmp;
 //	}
 
-
 	/** Einen double-Werte einlesen */
 	private static double getWert(String key, double wert) throws Exception {
 		try {
 			return Double.parseDouble(getWert(key, Double.toString(wert)));
-		}
-		catch (NumberFormatException ex) {
-			throw new Exception("Config-Wert: '" + key + "' falsch \n"
-					+ "Fehler: " + ex.getMessage());
+		} catch (NumberFormatException ex) {
+			throw new Exception("Config-Wert: '" + key + "' falsch \n" + "Fehler: " + ex.getMessage());
 		}
 	}
 
@@ -380,11 +389,9 @@ public class Config {
 	private static Date getWert(String key, Date wert) throws Exception {
 		String tmp = sdfDatum.format(wert);
 		try {
-			return sdfDatum.parse(getWert(key,tmp));
-		}
-		catch (ParseException ex) {
-			throw new Exception("Config-Wert: '" + key + "' falsch \n"
-					+ "Fehler: " + ex.getMessage());
+			return sdfDatum.parse(getWert(key, tmp));
+		} catch (ParseException ex) {
+			throw new Exception("Config-Wert: '" + key + "' falsch \n" + "Fehler: " + ex.getMessage());
 		}
 	}
 
@@ -392,7 +399,6 @@ public class Config {
 //	private static void putWert(String key, int wert) {
 //		keyValueMap.put(key, Integer.toString(wert));
 //	}
-
 
 	/** Einen double-Werte in den Map speichen */
 	private static void putWert(String key, double wert) {
@@ -404,15 +410,12 @@ public class Config {
 		keyValueMap.put(key, sdfDatum.format(wert));
 	}
 
-
-
 	/** Prüft, ob das File vorhanden ist */
 	private static void checkConfigFile(String configFileName) throws Exception {
 		String fileName = null;
 		if (sPath.length() > 0) {
 			fileName = sPath + "/" + configFileName;
-		}
-		else {
+		} else {
 			fileName = configFileName;
 		}
 		sConfigFile = new File(fileName);
@@ -425,11 +428,11 @@ public class Config {
 
 	// ------- Property file handling -----------------------------
 
-	/** Alle Properties einlesen,
-	 * wenn in Properties-file nicht gefunden, wird ein default-Wert gesetzt
-	 * dieser wird dann mit dem Property im flie gespeichert.
+	/**
+	 * Alle Properties einlesen, wenn in Properties-file nicht gefunden, wird ein
+	 * default-Wert gesetzt dieser wird dann mit dem Property im flie gespeichert.
 	 * So werden neue Properties im File angezeigt.
-	 * */
+	 */
 	public static void readProperties() throws Exception {
 		Trace.println(1, "Config.readProperties()");
 
@@ -437,8 +440,7 @@ public class Config {
 		String path = AbwesendMain.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
 		if (path.endsWith(".jar")) {
 			sPath = path.substring(0, path.lastIndexOf("/"));
-		}
-		else {
+		} else {
 			sPath = path.substring(0, path.lastIndexOf("/"));
 		}
 
@@ -460,40 +462,34 @@ public class Config {
 		mProperties.setProperty(traceLevelKey, Integer.toString(traceLevel));
 		Trace.println(1, "trace.level = " + traceLevel);
 
-		//--- überprüfen ob bereits gesetzt, sonst neu in die Property schreiben
+		// --- überprüfen ob bereits gesetzt, sonst neu in die Property schreiben
 		if (mProperties.getProperty(dbNameKey) == null) {
 			mProperties.setProperty(dbNameKey, dbName);
-		}
-		else {
+		} else {
 			dbName = mProperties.getProperty(dbNameKey);
 		}
 		if (mProperties.getProperty(dbUrlKey) == null) {
 			mProperties.setProperty(dbUrlKey, dbUrl);
-		}
-		else {
+		} else {
 			dbUrl = mProperties.getProperty(dbUrlKey);
 		}
 		if (mProperties.getProperty(dbPortKey) == null) {
 			mProperties.setProperty(dbPortKey, dbPort);
-		}
-		else {
+		} else {
 			dbPort = mProperties.getProperty(dbPortKey);
 		}
 
 		if (mProperties.getProperty(dbUserKey) == null) {
 			mProperties.setProperty(dbUserKey, dbUser);
-		}
-		else {
+		} else {
 			dbUser = mProperties.getProperty(dbUserKey);
 		}
 		if (mProperties.getProperty(showTableauBoxKey) == null) {
 			mProperties.setProperty(showTableauBoxKey, Integer.toString(showTableauBox));
-		}
-		else {
+		} else {
 			try {
 				showTableauBox = Integer.parseInt(mProperties.getProperty(showTableauBoxKey));
-			}
-			catch (NumberFormatException ex) {
+			} catch (NumberFormatException ex) {
 				// nichts tun default wie gesetzt
 			}
 		}
@@ -515,6 +511,22 @@ public class Config {
 			spielerImportSplitChar = mProperties.getProperty(spielerImportSplitCharKey);
 		}
 
+		if (mProperties.getProperty(spielerColKonkurrenzKey) != null) {
+			spielerColKonkurrenz = mProperties.getProperty(spielerColKonkurrenzKey);
+		}
+		if (mProperties.getProperty(spielerColName1Key) != null) {
+			spielerColName1 = mProperties.getProperty(spielerColName1Key);
+		}
+		if (mProperties.getProperty(spielerColVorname1Key) != null) {
+			spielerColVorname1 = mProperties.getProperty(spielerColVorname1Key);
+		}
+		if (mProperties.getProperty(spielerColName2Key) != null) {
+			spielerColName2 = mProperties.getProperty(spielerColName2Key);
+		}
+		if (mProperties.getProperty(spielerColVorname2Key) != null) {
+			spielerColVorname2 = mProperties.getProperty(spielerColVorname2Key);
+		}
+
 		if (mProperties.getProperty(emailImportFileKey) != null) {
 			emailImportFile = mProperties.getProperty(emailImportFileKey);
 		}
@@ -530,7 +542,8 @@ public class Config {
 		}
 		// die Integer-Werte setzem
 		planRowStart = Integer.parseInt(mProperties.getProperty(planRowStartKey, Integer.toString(planRowStart)));
-		planColDatumZeit = Integer.parseInt(mProperties.getProperty(planColDatumZeitKey, Integer.toString(planColDatumZeit)));
+		planColDatumZeit = Integer
+				.parseInt(mProperties.getProperty(planColDatumZeitKey, Integer.toString(planColDatumZeit)));
 		planColDatum = Integer.parseInt(mProperties.getProperty(planColDatumKey, Integer.toString(planColDatum)));
 		planColZeit = Integer.parseInt(mProperties.getProperty(planColZeitKey, Integer.toString(planColZeit)));
 		planColName1 = Integer.parseInt(mProperties.getProperty(planColName1Key, Integer.toString(planColName1)));
@@ -563,27 +576,29 @@ public class Config {
 	}
 
 	/**
-	 * Die Werte für das Anzeigedatum setzen.
-	 * Kann erst ausgeführt werden, wenn Config auch eingelesen
+	 * Die Werte für das Anzeigedatum setzen. Kann erst ausgeführt werden, wenn
+	 * Config auch eingelesen
+	 * 
 	 * @throws Exception
 	 */
 	private static void showDatumSetzen() throws Exception {
 		// spezielle formate, statdatum,
 		showBeginDatum = sdfDatum.parse(mProperties.getProperty(showBeginDatumKey, sdfDatum.format(turnierBeginDatum)));
 		showEndDatum = sdfDatum.parse(mProperties.getProperty(showEndDatumKey, sdfDatum.format(turnierBeginDatum)));
-		if (showBeginDatum.getTime() < turnierBeginDatum.getTime() ||
-				showBeginDatum.getTime() > turnierEndDatum.getTime()) {
+		if (showBeginDatum.getTime() < turnierBeginDatum.getTime()
+				|| showBeginDatum.getTime() > turnierEndDatum.getTime()) {
 			showBeginDatum = turnierBeginDatum;
 		}
-		if (showEndDatum.getTime() < turnierBeginDatum.getTime() ||
-				showEndDatum.getTime() > turnierEndDatum.getTime()) {
+		if (showEndDatum.getTime() < turnierBeginDatum.getTime()
+				|| showEndDatum.getTime() > turnierEndDatum.getTime()) {
 			showEndDatum = turnierEndDatum;
 		}
 		showNumberBerechnen();
 	}
 
 	/**
-	 * Die Positionen im Array für die Anzeite berechnen, abhängig von Start- und EndDatum.
+	 * Die Positionen im Array für die Anzeite berechnen, abhängig von Start- und
+	 * EndDatum.
 	 */
 	public static void showNumberBerechnen() {
 		long diffDate = showBeginDatum.getTime() - turnierBeginDatum.getTime();
@@ -595,7 +610,7 @@ public class Config {
 		diffDate = showEndDatum.getTime() - showBeginDatum.getTime();
 		diffTage = diffDate / einTagLong;
 		if (diffTage >= 0) {
-			showEndNumber = Math.toIntExact(showBeginNumber + diffTage) +1;
+			showEndNumber = Math.toIntExact(showBeginNumber + diffTage) + 1;
 		}
 		if (showEndNumber > turnierMaxTage) {
 			showEndNumber = turnierMaxTage;
@@ -634,7 +649,6 @@ public class Config {
 		}
 	}
 
-
 	/** Alle Properites in das File schreiben */
 	public static void saveProperties() throws Exception {
 		Trace.println(1, "Config.saveProperties()");
@@ -660,8 +674,8 @@ public class Config {
 	}
 
 	/**
-	 * Die Wert, die vom Programm geändert wurden,
-	 * wieder in die Properties schreiben, dann weden diese gespeichert.
+	 * Die Wert, die vom Programm geändert wurden, wieder in die Properties
+	 * schreiben, dann weden diese gespeichert.
 	 */
 	private static void writeProperties() {
 		mProperties.setProperty(dbUrlKey, dbUrl);
@@ -678,6 +692,11 @@ public class Config {
 		mProperties.setProperty(webDriverFileKey, webDriverFile);
 		mProperties.setProperty(spielerImportDirKey, spielerImportDir);
 		mProperties.setProperty(spielerImportFileKey, spielerImportFile);
+		mProperties.setProperty(spielerColKonkurrenzKey, spielerColKonkurrenz);
+		mProperties.setProperty(spielerColName1Key, spielerColName1);
+		mProperties.setProperty(spielerColVorname1Key, spielerColVorname1);
+		mProperties.setProperty(spielerColName2Key, spielerColName2);
+		mProperties.setProperty(spielerColVorname2Key, spielerColVorname2);
 		mProperties.setProperty(spielerExportDirKey, spielerExportDir);
 		mProperties.setProperty(spielerExportFileKey, spielerExportFile);
 		mProperties.setProperty(emailImportFileKey, emailImportFile);
@@ -689,7 +708,7 @@ public class Config {
 		mProperties.setProperty(planColName2Key, Integer.toString(planColName2));
 		mProperties.setProperty(planTrennCharKey, planTrennChar);
 		mProperties.setProperty(planDirKey, planDir);
-		mProperties.setProperty(planFileKey,planFile);
+		mProperties.setProperty(planFileKey, planFile);
 		mProperties.setProperty(planTrennCharKey, planTrennChar);
 
 	}
@@ -698,17 +717,17 @@ public class Config {
 	private static int getIntProperty(String property) throws Exception {
 		try {
 			String value = mProperties.getProperty(property);
-			if (value == null)
+			if (value == null) {
 				return -1;
+			}
 			return Integer.parseInt(value);
 		} catch (NumberFormatException ex) {
-			throw new Exception("Property: '" + property + "' falsch \n"
-					+ "Fehler: " + ex.getMessage());
+			throw new Exception("Property: '" + property + "' falsch \n" + "Fehler: " + ex.getMessage());
 		}
 	}
 
 	/**
-	 * Alle keys der Properites sortieren
+	 * Alle keys der Properites spielerieren
 	 */
 	private static void sortPorperties() {
 		Enumeration<Object> properityKeys = mProperties.keys();
@@ -717,7 +736,7 @@ public class Config {
 			mPropertyList.add(properityKeys.nextElement());
 		}
 
-		Collections.sort(mPropertyList, new Comparator <Object>() {
+		Collections.sort(mPropertyList, new Comparator<>() {
 
 			@Override
 			public int compare(Object o1, Object o2) {
@@ -739,11 +758,10 @@ public class Config {
 	public static void setJavaVersion(String version) {
 		if (version.length() > 3) {
 			String v1 = version.substring(0, 3);
-			String v2 = v1.substring(v1.indexOf(".")+1,v1.length());
+			String v2 = v1.substring(v1.indexOf(".") + 1, v1.length());
 			try {
 				javaVersion = Integer.parseInt(v2);
-			}
-			catch (Exception ex) {
+			} catch (Exception ex) {
 			}
 		}
 	}

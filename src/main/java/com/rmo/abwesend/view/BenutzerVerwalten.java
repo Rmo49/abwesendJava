@@ -70,6 +70,7 @@ public class BenutzerVerwalten extends BasePane implements TableModelListener {
 
 	/**
 	 * Textfeld und JButton um die Aenderungen zu speichern.
+	 * 
 	 * @return
 	 */
 	private JComponent addTopButtons() {
@@ -98,11 +99,10 @@ public class BenutzerVerwalten extends BasePane implements TableModelListener {
 				int row = userTable.getSelectedRow();
 				// ID sichern
 				// Eingabefelderfüllen
-				addName.setText((String)userTable.getValueAt(row, 0));
-				addPasswort.setText((String)userTable.getValueAt(row, 1));
-		    }
+				addName.setText((String) userTable.getValueAt(row, 0));
+				addPasswort.setText((String) userTable.getValueAt(row, 1));
+			}
 		});
-
 
 		btnLoeschen.addActionListener(new ActionListener() {
 			@Override
@@ -111,20 +111,19 @@ public class BenutzerVerwalten extends BasePane implements TableModelListener {
 				try {
 					String name = (String) userTable.getValueAt(row, 0);
 					BenutzerData.instance().delete(name);
-				}
-				catch (Exception ex) {
+				} catch (Exception ex) {
 					alertError("Löschen von Benutzer", ex);
 				}
 				userTableData.readAllData();
 				scrollPane.repaint();
-		    }
+			}
 		});
 
 		btnSpeichernAll.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				userTableData.saveAll();
-		    }
+			}
 		});
 
 		return listPane;
@@ -132,6 +131,7 @@ public class BenutzerVerwalten extends BasePane implements TableModelListener {
 
 	/**
 	 * Die Tabellle mit allen Bendutzern.
+	 * 
 	 * @return
 	 */
 	private JComponent addUserTable() {
@@ -199,7 +199,7 @@ public class BenutzerVerwalten extends BasePane implements TableModelListener {
 				int viewRow = table.getSelectedRow();
 				if (viewRow >= 0) {
 					// den Wert zum ändern übertragen
-					selectedRow = viewRow;
+//					int selectedRow = viewRow;
 //					String wert = (String) userTableData.getValueAt(selectedRow, 1);
 //					userWert.setText(wert);
 				}
@@ -209,6 +209,7 @@ public class BenutzerVerwalten extends BasePane implements TableModelListener {
 
 	/**
 	 * Der Inhalt des Models hat sich geändert.
+	 * 
 	 * @param arg0
 	 */
 	@Override
@@ -229,8 +230,7 @@ public class BenutzerVerwalten extends BasePane implements TableModelListener {
 				// nach speichern alles zurücksetzen
 				addName.setText("");
 				addPasswort.setText("");
-			}
-			else {
+			} else {
 				CmUtil.alertWarning("Benutzer speichern", "Daten zu kurz");
 			}
 
@@ -306,6 +306,7 @@ public class BenutzerVerwalten extends BasePane implements TableModelListener {
 
 		/**
 		 * Einen Benutzer dauzufürgen
+		 * 
 		 * @param benuter
 		 */
 		public void addData(Benutzer benutzer) {

@@ -10,7 +10,6 @@ import com.rmo.abwesend.model.SpielerData;
 import com.rmo.abwesend.view.util.CmUtil;
 import com.rmo.abwesend.view.util.KalenderAbwesend;
 
-
 /**
  * Spieler auswählen aus Tableau oder Name eingeben. Abwesenheiten anzeigen.
  *
@@ -33,6 +32,7 @@ public class AbwesendSpieler extends BasePane implements PropertyChangeListener 
 
 	/**
 	 * Der Panel der die Abwensenheiten eines Spieler anzeigt.
+	 * 
 	 * @return
 	 */
 	public JComponent getPanel() {
@@ -44,63 +44,59 @@ public class AbwesendSpieler extends BasePane implements PropertyChangeListener 
 	 * Wird aufgerufen, wenn Doppelklick in der Spieler-Liste
 	 */
 	@Override
-    public void propertyChange(PropertyChangeEvent event) {
-    	int spielerID = Integer.parseInt((String)event.getNewValue());
-    	readSpieler(spielerID);
+	public void propertyChange(PropertyChangeEvent event) {
+		int spielerID = Integer.parseInt((String) event.getNewValue());
+		readSpieler(spielerID);
 //		addShowFirst();
-   }
+	}
 
 	/**
 	 * Den ersten Spieler anzeigen
 	 */
-    public void addShowSpielerFirst(int spielerId, boolean alleTage) {
-    	if (spielerId >= 0) {
-     		// die DB
-	    	readSpieler(spielerId);
-	    	// zuerst die Liste löschen
+	public void addShowSpielerFirst(int spielerId, boolean alleTage) {
+		if (spielerId >= 0) {
+			// die DB
+			readSpieler(spielerId);
+			// zuerst die Liste löschen
 			kalenderAbw.clearSpielerList();
 			kalenderAbw.addSpieler(mSpieler, true);
 
-	   		kalenderAbw.removeAllSpieler();
-	   		kalenderAbw.setupKalendarPanel(alleTage);
-	   		kalenderAbw.setupScrollPane();
-	   		kalenderAbw.showSpieler(mSpieler, true, false);
-    	}
-    	else {
-    		CmUtil.alertWarning("Spieler anzeigen", "zuerst Spieler selektieren");
-    	}
-   }
+			kalenderAbw.removeAllSpieler();
+			kalenderAbw.setupKalendarPanel(alleTage);
+			kalenderAbw.setupScrollPane();
+			kalenderAbw.showSpieler(mSpieler, true, false);
+		} else {
+			CmUtil.alertWarning("Spieler anzeigen", "zuerst Spieler selektieren");
+		}
+	}
 
 	/**
 	 * Einen weiteren Spieler anzeigen
 	 */
-    public void addShowSpielerNext(int spielerId) {
-    	if (spielerId >= 0) {
-     		// die DB
-	    	readSpieler(spielerId);
+	public void addShowSpielerNext(int spielerId) {
+		if (spielerId >= 0) {
+			// die DB
+			readSpieler(spielerId);
 			if (kalenderAbw.addSpieler(mSpieler, true) > 0) {
-		   		kalenderAbw.showSpieler(mSpieler, true, false);
+				kalenderAbw.showSpieler(mSpieler, true, false);
 			}
-    	}
-    	else {
-    		CmUtil.alertWarning("Spieler anzeigen", "zuerst Spieler selektieren");
-    	}
-   }
-
+		} else {
+			CmUtil.alertWarning("Spieler anzeigen", "zuerst Spieler selektieren");
+		}
+	}
 
 	/**
 	 * Spieler einlesen und anzeigen
+	 * 
 	 * @param spielerId
 	 */
 	private void readSpieler(int spielerID) {
 		try {
 			mSpieler = SpielerData.instance().read(spielerID);
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			alertError("Fehler beim Lesen in SpielerData, Spieler: " + spielerID, ex);
 		}
 	}
-
 
 	@Override
 	protected void saveData() {

@@ -10,16 +10,15 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 /**
- * Spieler-Model, Verbindung zu Spieler in der DB. Schnittstelle zur
- * DB. Spieler werden mit der Klasse Spieler sichtbar gemacht.
+ * Spieler-Model, Verbindung zu Spieler in der DB. Schnittstelle zur DB. Spieler
+ * werden mit der Klasse Spieler sichtbar gemacht.
  */
 public class SpielerData {
 
 	/**
 	 * Das Create Statement für diese Tabelle
+	 * 
 	 * @return
 	 */
 	public static String createTable() {
@@ -47,8 +46,8 @@ public class SpielerData {
 	private Statement mReadStmt;
 
 	/**
-	 * Der Set mit allen Spieler-Daten von dem gelesen wird. Ist ein scrollable
-	 * Set der von allen Methoden verwendet wird. id: IntegerInteger <br>
+	 * Der Set mit allen Spieler-Daten von dem gelesen wird. Ist ein scrollable Set
+	 * der von allen Methoden verwendet wird. id: IntegerInteger <br>
 	 * name: String <br>
 	 */
 	private ResultSet mReadSet;
@@ -61,6 +60,7 @@ public class SpielerData {
 
 	/**
 	 * Singleton
+	 * 
 	 * @return
 	 */
 	public static SpielerData instance() {
@@ -78,8 +78,9 @@ public class SpielerData {
 	}
 
 	/**
-	 * Das Spieler wird gesucht und die SpielerID zurückgegeben.
-	 * Falls der Spieler nicht vorhanden ist, wird ein neuer Spieler angelegt.
+	 * Das Spieler wird gesucht und die SpielerID zurückgegeben. Falls der Spieler
+	 * nicht vorhanden ist, wird ein neuer Spieler angelegt.
+	 * 
 	 * @param pSpieler
 	 * @return die ID des Spielers
 	 * @throws Exception wenn der Name zu kurz
@@ -94,20 +95,18 @@ public class SpielerData {
 			spielerID = findRow(pSpieler.getName(), pSpieler.getVorName());
 			if (spielerID >= 0) {
 				return spielerID;
-			}
-			else {
+			} else {
 				// wenn nicht gefunden, neue Spieler anlegen
 				addRow(pSpieler);
 				// nochmals lesen, für die neue Nummer
 				spielerID = findRow(pSpieler.getName(), pSpieler.getVorName());
 			}
-		}
-		else {
-			if ( findRow(pSpieler.getId()) ) {
+		} else {
+			if (findRow(pSpieler.getId())) {
 				updateRow(pSpieler);
 				spielerID = pSpieler.getId();
 			} else {
-			// wenn nicht gefunden, neuen Spieler anlegen
+				// wenn nicht gefunden, neuen Spieler anlegen
 				addRow(pSpieler);
 				spielerID = findRow(pSpieler.getName(), pSpieler.getVorName());
 			}
@@ -160,7 +159,7 @@ public class SpielerData {
 	}
 
 	/**
-	 * Die SpielerId  wird zurückgegeben. Wenn nicht gefunden wird -1 rurückgegeben
+	 * Die SpielerId wird zurückgegeben. Wenn nicht gefunden wird -1 rurückgegeben
 	 */
 	public int readId(String name, String vorname) throws Exception {
 		return findRow(name, vorname);
@@ -182,6 +181,7 @@ public class SpielerData {
 
 	/**
 	 * Alle Spieler mit Name und Vorname zurückgeben.
+	 * 
 	 * @return
 	 * @throws Exception
 	 */
@@ -203,6 +203,7 @@ public class SpielerData {
 
 	/**
 	 * Alle Spieler mit Name und Vorname zurückgeben.
+	 * 
 	 * @return
 	 * @throws Exception
 	 */
@@ -220,10 +221,9 @@ public class SpielerData {
 		return spielerList;
 	}
 
-
 	/**
-	 * Das Spieler mit der Nummer pSpielerNr wird gelöscht. Falls die SpielerNr nicht
-	 * vorhanden ist, wird die Exception SpielerNotFoundException geworfen.
+	 * Das Spieler mit der Nummer pSpielerNr wird gelöscht. Falls die SpielerNr
+	 * nicht vorhanden ist, wird die Exception SpielerNotFoundException geworfen.
 	 */
 	public void delete(int pSpielerID) throws Exception {
 		if (findRow(pSpielerID)) {
@@ -232,7 +232,6 @@ public class SpielerData {
 			throw new SQLException("Spieler " + pSpielerID + " nicht gelöscht!");
 		}
 	}
-
 
 	/**
 	 * Alle Daten löschen, zuerst muss SpielerTableau gelöscht werden
@@ -244,11 +243,9 @@ public class SpielerData {
 		statement.close();
 	}
 
-
-
 	/**
-	 * Wenn an Aenderungen interessiert.
-	 * Listener von der gleichen Klasse nur einmal dazufügen.
+	 * Wenn an Aenderungen interessiert. Listener von der gleichen Klasse nur einmal
+	 * dazufügen.
 	 *
 	 * @param newListener
 	 */
@@ -256,11 +253,11 @@ public class SpielerData {
 		myListener = newListener;
 	}
 
-
 	// ------ interne Methoden -----------------------------------------
 
 	/**
-	 * Ruft immer den letzten registrierten Listeners, sonst wird der gleiche Listener mehrmals registriert.
+	 * Ruft immer den letzten registrierten Listeners, sonst wird der gleiche
+	 * Listener mehrmals registriert.
 	 */
 	private void notifyListeners(Object object, String property, String oldValue, String newValue) {
 		if (myListener != null) {
@@ -292,7 +289,7 @@ public class SpielerData {
 
 	/**
 	 * Sucht den Spieler über Namen. Wenn true, steht mReadSet auf dieser Zeile.
-
+	 * 
 	 * @param name
 	 * @param vorname
 	 * @return die ID des Spielers
@@ -340,7 +337,6 @@ public class SpielerData {
 		return pSpieler;
 	}
 
-
 	/**
 	 * Eine neue Zeile (Row) in die Tabelle eintragen. Kopiert die Attribute vom
 	 * ResultSet in das Objekt Spieler. Der SQL-String wird zusammengestellt.
@@ -376,10 +372,9 @@ public class SpielerData {
 		updateSpieler.executeUpdate();
 	}
 
-
 	/**
-	 * Setzt das Statement (Connection zur DB) und den Scroll-Set, der für
-	 * Insert oder update verwendet werden kann.
+	 * Setzt das Statement (Connection zur DB) und den Scroll-Set, der für Insert
+	 * oder update verwendet werden kann.
 	 */
 	private synchronized void setupReadSet() throws Exception {
 		if (mReadStmt == null) {

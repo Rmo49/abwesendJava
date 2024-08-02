@@ -11,19 +11,17 @@ import java.util.Map.Entry;
 
 import com.rmo.abwesend.util.Config;
 
-
-
 /**
- * Verbindung zur Tabelle Config in der DB.
- * Die Tabelle besteht aus token und wert (key / value) pairs.
+ * Verbindung zur Tabelle Config in der DB. Die Tabelle besteht aus token und
+ * wert (key / value) pairs.
  */
 public class ConfigDbData {
 
 	public static String tableName = "config";
 
-
 	/**
 	 * Das Create Statement für diese Tabelle
+	 * 
 	 * @return
 	 */
 	public static String createTable() {
@@ -48,8 +46,8 @@ public class ConfigDbData {
 	private Statement mReadStmt;
 
 	/**
-	 * Der Set mit allen Match-Daten von dem gelesen wird. Ist ein scrollable
-	 * Set der von allen Methoden verwendet wird. id: IntegerInteger <br>
+	 * Der Set mit allen Match-Daten von dem gelesen wird. Ist ein scrollable Set
+	 * der von allen Methoden verwendet wird. id: IntegerInteger <br>
 	 * name: String <br>
 	 */
 	private ResultSet mReadSet;
@@ -62,6 +60,7 @@ public class ConfigDbData {
 
 	/**
 	 * Singleton
+	 * 
 	 * @return
 	 */
 	public static ConfigDbData instance() {
@@ -84,8 +83,7 @@ public class ConfigDbData {
 	public void add(String key, String value) throws Exception {
 		if (find(key) != null) {
 			updateRow(key, value);
-		}
-		else {
+		} else {
 			addRow(key, value);
 		}
 	}
@@ -97,8 +95,7 @@ public class ConfigDbData {
 		String wert = Integer.toString(value);
 		if (find(key) != null) {
 			updateRow(key, wert);
-		}
-		else {
+		} else {
 			addRow(key, wert);
 		}
 	}
@@ -110,8 +107,7 @@ public class ConfigDbData {
 		String wert = Double.toString(value);
 		if (find(key) != null) {
 			updateRow(key, wert);
-		}
-		else {
+		} else {
 			addRow(key, wert);
 		}
 	}
@@ -123,21 +119,20 @@ public class ConfigDbData {
 		String wert = Config.sdfDatum.format(value);
 		if (find(key) != null) {
 			updateRow(key, wert);
-		}
-		else {
+		} else {
 			addRow(key, wert);
 		}
 	}
 
 	/**
 	 * Einen Wert lesen
+	 * 
 	 * @param key
 	 * @return
 	 */
-	public String read (String key) throws SQLException {
+	public String read(String key) throws SQLException {
 		return find(key);
 	}
-
 
 	/**
 	 * Das Speichern alle Einträge. Falls schon vorhanden wird update
@@ -146,8 +141,7 @@ public class ConfigDbData {
 		for (Entry<String, String> pair : map.entrySet()) {
 			if (find(pair.getKey()) != null) {
 				updateRow(pair.getKey(), pair.getValue());
-			}
-			else {
+			} else {
 				addRow(pair.getKey(), pair.getValue());
 			}
 		}
@@ -169,7 +163,6 @@ public class ConfigDbData {
 		return keyValue;
 	}
 
-
 	/**
 	 * Alle Config-Daten löschen
 	 */
@@ -177,7 +170,6 @@ public class ConfigDbData {
 		setupReadSet();
 		mReadStmt.execute("TRUNCATE config");
 	}
-
 
 	// ------ interne Methoden -----------------------------------------
 
@@ -188,6 +180,7 @@ public class ConfigDbData {
 
 	/**
 	 * Sucht einen Wert des Keys.
+	 * 
 	 * @param key
 	 * @return den gefundenen Wert, oder null wenn nicht vorhandne
 	 * @throws Exception
@@ -206,7 +199,8 @@ public class ConfigDbData {
 	}
 
 	/**
-	 * Eine neue Zeile (Row) in die Tabelle eintragen. Der SQL-String wird zusammengestellt.
+	 * Eine neue Zeile (Row) in die Tabelle eintragen. Der SQL-String wird
+	 * zusammengestellt.
 	 */
 	private void addRow(String key, String value) throws SQLException {
 		Statement stmt = getConnection().createStatement();
@@ -230,10 +224,9 @@ public class ConfigDbData {
 		updateConfig.executeUpdate();
 	}
 
-
 	/**
-	 * Setzt das Statement (Connection zur DB) und den Scroll-Set, der für
-	 * Insert oder update verwendet werden kann.
+	 * Setzt das Statement (Connection zur DB) und den Scroll-Set, der für Insert
+	 * oder update verwendet werden kann.
 	 */
 	private synchronized void setupReadSet() throws SQLException {
 		if (mReadStmt == null) {

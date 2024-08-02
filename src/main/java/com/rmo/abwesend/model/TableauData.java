@@ -8,22 +8,22 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 /**
- * Tableau-Model, Verbindung zu Tableau-Tabelle in der DB. Schnittstelle zur
- * DB. Tableau werden mit der Klasse Tableau sichtbar gemacht.
+ * Tableau-Model, Verbindung zu Tableau-Tabelle in der DB. Schnittstelle zur DB.
+ * Tableau werden mit der Klasse Tableau sichtbar gemacht.
  */
 public class TableauData {
 
 	/**
 	 * Das Create Statement für diese Tabelle
+	 * 
 	 * @return
 	 */
 	public static String createTable() {
 		StringBuffer sb = new StringBuffer(300);
 		sb.append(" CREATE TABLE IF NOT EXISTS tableau (");
-		sb.append(" tableauID INT unsigned NOT NULL AUTO_INCREMENT, bezeichnung VARCHAR(25) DEFAULT NULL, position VARCHAR(2) DEFAULT NULL,");
+		sb.append(
+				" tableauID INT unsigned NOT NULL AUTO_INCREMENT, bezeichnung VARCHAR(25) DEFAULT NULL, position VARCHAR(2) DEFAULT NULL,");
 		sb.append(" konkurrenz VARCHAR(25) DEFAULT NULL, PRIMARY KEY (tableauID)");
 		sb.append(");");
 		return sb.toString();
@@ -42,8 +42,8 @@ public class TableauData {
 	private Statement mReadStmt;
 
 	/**
-	 * Der Set mit allen Tableau-Daten von dem gelesen wird. Ist ein scrollable
-	 * Set der von allen Methoden verwendet wird. id: IntegerInteger <br>
+	 * Der Set mit allen Tableau-Daten von dem gelesen wird. Ist ein scrollable Set
+	 * der von allen Methoden verwendet wird. id: IntegerInteger <br>
 	 * tableauID: String <br>
 	 */
 	private ResultSet mReadSet;
@@ -56,6 +56,7 @@ public class TableauData {
 
 	/**
 	 * Singleton
+	 * 
 	 * @return
 	 */
 	public static TableauData instance() {
@@ -72,7 +73,6 @@ public class TableauData {
 		return DbConnection.getConnection();
 	}
 
-
 	/**
 	 * Das Tableau wird gespeichert. Falls die TableauNr nicht vorhanden ist, wird
 	 * ein neuer Tableau angelegt
@@ -88,12 +88,11 @@ public class TableauData {
 			}
 			// wenn nicht gefunden, neues anlegen
 			addRow(pTableau);
-		}
-		else {
+		} else {
 			if (findRow(pTableau.getId())) {
 				updateRow(pTableau);
 			} else {
-			// wenn nicht gefunden, neues anlegen
+				// wenn nicht gefunden, neues anlegen
 				addRow(pTableau);
 			}
 		}
@@ -128,8 +127,8 @@ public class TableauData {
 	}
 
 	/**
-	 * Das Tableau mit der Swiss-Tennis bezeichung wird zurückgegeben.
-	 * Wenn nicht gefunden wird eine SQLException geworfen.
+	 * Das Tableau mit der Swiss-Tennis bezeichung wird zurückgegeben. Wenn nicht
+	 * gefunden wird eine SQLException geworfen.
 	 */
 	public Tableau readKonkurrenz(String pKonkurrenz) throws Exception {
 		if (findKonkurrenz(pKonkurrenz)) {
@@ -141,9 +140,9 @@ public class TableauData {
 		}
 	}
 
-
 	/**
 	 * Alle Tableaux geordnet nach position zurückgeben
+	 * 
 	 * @return
 	 * @throws Exception
 	 */
@@ -166,10 +165,9 @@ public class TableauData {
 		return tableauList;
 	}
 
-
 	/**
-	 * Das Tableau mit der Nummer pTableauNr wird gelöscht. Falls die TableauNr nicht
-	 * vorhanden ist, wird die Exception TableauNotFoundException geworfen.
+	 * Das Tableau mit der Nummer pTableauNr wird gelöscht. Falls die TableauNr
+	 * nicht vorhanden ist, wird die Exception TableauNotFoundException geworfen.
 	 */
 	public void delete(int pTableauNr) throws Exception {
 		if (findRow(pTableauNr)) {
@@ -178,7 +176,6 @@ public class TableauData {
 			throw new SQLException("Tableau " + pTableauNr + " nicht gelöscht!");
 		}
 	}
-
 
 	// ------ interne Methoden -----------------------------------------
 
@@ -202,7 +199,8 @@ public class TableauData {
 	}
 
 	/**
-	 * Sucht den Tableau über Bezeichnung. Wenn true, steht mReadSet auf dieser Zeile.
+	 * Sucht den Tableau über Bezeichnung. Wenn true, steht mReadSet auf dieser
+	 * Zeile.
 	 */
 	private boolean findBezeichnung(String bezeichnung) throws Exception {
 		setupReadSet();
@@ -221,7 +219,8 @@ public class TableauData {
 	}
 
 	/**
-	 * Sucht den Tableau über Konkurrenz, die Bezeichnung von Swisstennis. Wenn true, steht mReadSet auf dieser Zeile.
+	 * Sucht den Tableau über Konkurrenz, die Bezeichnung von Swisstennis. Wenn
+	 * true, steht mReadSet auf dieser Zeile.
 	 */
 	private boolean findKonkurrenz(String konkurrenz) throws Exception {
 		setupReadSet();
@@ -250,7 +249,6 @@ public class TableauData {
 		pTableau.setKonkurrenz(mReadSet.getString(4));
 		return pTableau;
 	}
-
 
 	/**
 	 * Eine neue Zeile (Row) in die Tabelle eintragen. Kopiert die Attribute vom
@@ -283,10 +281,9 @@ public class TableauData {
 		updateTableau.executeUpdate();
 	}
 
-
 	/**
-	 * Setzt das Statement (Connection zur DB) und den Scroll-Set, der für
-	 * Insert oder update verwendet werden kann.
+	 * Setzt das Statement (Connection zur DB) und den Scroll-Set, der für Insert
+	 * oder update verwendet werden kann.
 	 */
 	private synchronized void setupReadSet() throws Exception {
 		if (mReadStmt == null) {

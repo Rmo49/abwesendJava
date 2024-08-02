@@ -13,16 +13,15 @@ import java.util.List;
 
 import com.rmo.abwesend.util.Config;
 
-
-
 /**
- * Match-Model, Verbindung zur Tabelle Matches in der DB.
- * Matches werden mit der Klasse Match sichtbar gemacht.
+ * Match-Model, Verbindung zur Tabelle Matches in der DB. Matches werden mit der
+ * Klasse Match sichtbar gemacht.
  */
 public class MatchData {
 
 	/**
 	 * Das Create Statement für diese Tabelle
+	 * 
 	 * @return
 	 */
 	public static String createTable() {
@@ -58,8 +57,8 @@ public class MatchData {
 	private Statement mReadStmt;
 
 	/**
-	 * Der Set mit allen Match-Daten von dem gelesen wird. Ist ein scrollable
-	 * Set der von allen Methoden verwendet wird. id: IntegerInteger <br>
+	 * Der Set mit allen Match-Daten von dem gelesen wird. Ist ein scrollable Set
+	 * der von allen Methoden verwendet wird. id: IntegerInteger <br>
 	 * name: String <br>
 	 */
 	private ResultSet mReadSet;
@@ -72,6 +71,7 @@ public class MatchData {
 
 	/**
 	 * Singleton
+	 * 
 	 * @return
 	 */
 	public static MatchData instance() {
@@ -88,19 +88,16 @@ public class MatchData {
 		return DbConnection.getConnection();
 	}
 
-
 	/**
 	 * Das Match wird gespeichert. Falls schon vorhanden, wird nix gemacht
 	 */
 	public void add(Match pMatch) throws SQLException {
 		try {
 			addRow(pMatch);
-		}
-		catch (SQLException ex) {
+		} catch (SQLException ex) {
 			if (ex.getErrorCode() == 1062) {
 				// wenn Duplicate error, dann nix machen.
-			}
-			else {
+			} else {
 				throw ex;
 			}
 		}
@@ -130,6 +127,7 @@ public class MatchData {
 
 	/**
 	 * Update alle matches eines Spielers (löschen oder dazufügen)
+	 * 
 	 * @param pSpielerId
 	 * @param newMatches
 	 */
@@ -158,21 +156,20 @@ public class MatchData {
 		}
 	}
 
-	private String[] checkSpiel (String spielZeit, int startPos) throws ParseException {
+	private String[] checkSpiel(String spielZeit, int startPos) throws ParseException {
 		String[] spiel = new String[2];
 		spiel[0] = spielZeit.substring(startPos, 1);
-		if (! spiel[0].matches("[ED]")) {
+		if (!spiel[0].matches("[ED]")) {
 			throw new ParseException("Nur E oder D erlaubt", startPos);
 		}
 		if (spielZeit.length() < 6) {
 			throw new ParseException("Zeit muss 5 Zeichen lang sein", 1);
 		}
-		spiel[1] = spielZeit.substring(startPos+1,6);
+		spiel[1] = spielZeit.substring(startPos + 1, 6);
 		// wirft ParseException wenn nicht ok
 		Config.sdfZeit.parse(spiel[1]);
 		return spiel;
 	}
-
 
 	// ------ interne Methoden -----------------------------------------
 
@@ -228,9 +225,9 @@ public class MatchData {
 		return matches;
 	}
 
-
 	/**
 	 * Sucht alle Matches von einem bestimmten Datum.
+	 * 
 	 * @param pDate das Datum wo alle Matches gelesen werden
 	 * @return die Liste dier Matches
 	 * @throws SQLException
@@ -250,7 +247,6 @@ public class MatchData {
 		return matches;
 	}
 
-
 	/**
 	 * Kopiert die Attribute vom ResultSet in das Objekt Spieler
 	 */
@@ -263,8 +259,8 @@ public class MatchData {
 	}
 
 	/**
-	 * Setzt das Statement (Connection zur DB) und den Scroll-Set, der für
-	 * Insert oder update verwendet werden kann.
+	 * Setzt das Statement (Connection zur DB) und den Scroll-Set, der für Insert
+	 * oder update verwendet werden kann.
 	 */
 	private synchronized void setupReadSet() throws SQLException {
 		if (mReadStmt == null) {

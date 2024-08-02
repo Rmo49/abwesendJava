@@ -9,7 +9,6 @@ import com.rmo.abwesend.util.Config;
 import com.rmo.abwesend.util.DbPasswordFile;
 import com.rmo.abwesend.util.Trace;
 
-
 /**
  * Connection zur MySql-DB.
  */
@@ -19,7 +18,7 @@ public class DbConnection {
 	// public static final String sJdbcDriver = "sun.jdbc.odbc.JdbcOdbcDriver";
 	// --- connection to MySql
 	public static final String sJdbcDriver = "com.mysql.cj.jdbc.Driver";
-	//public static final String url = "jdbc:mysql://localhost:3306/";
+	// public static final String url = "jdbc:mysql://localhost:3306/";
 //	jdbc:mysql://localhost/db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 	private static DbPasswordFile dbPwFile = null;
 
@@ -28,18 +27,17 @@ public class DbConnection {
 
 	/**
 	 * Prüfen, ob die Verbindung zur DB bereits besteht.
+	 * 
 	 * @return
 	 */
 	public static boolean isConnected() {
 		try {
 			if (sConnection == null || sConnection.isClosed()) {
 				return false;
-			}
-			else {
+			} else {
 				return true;
 			}
-		}
-		catch (SQLException ex) {
+		} catch (SQLException ex) {
 			return false;
 		}
 	}
@@ -47,8 +45,7 @@ public class DbConnection {
 	/**
 	 * Opens the Connection to MySql which is set in Config.
 	 *
-	 * @param dbName
-	 *            the name of database (schema), if null no database is opend
+	 * @param dbName the name of database (schema), if null no database is opend
 	 * @return Connection or null if not opened.
 	 */
 	private static Connection open(String dbName) throws SQLException {
@@ -57,7 +54,7 @@ public class DbConnection {
 		dbPwFile = new DbPasswordFile(Config.sDbPwFileName);
 		String dbUrl1 = "";
 		try {
-			if (! isConnected()) {
+			if (!isConnected()) {
 				Class.forName(sJdbcDriver, true, Thread.currentThread().getContextClassLoader());
 				if (dbName == null) {
 					dbName = Config.dbName;
@@ -65,7 +62,7 @@ public class DbConnection {
 				StringBuffer dbUrlTemp = new StringBuffer(80);
 				dbUrlTemp.append(Config.dbUrlPrefix);
 				dbUrlTemp.append(Config.dbUrl);
-				if (! Config.dbUrl.endsWith("/")) {
+				if (!Config.dbUrl.endsWith("/")) {
 					dbUrlTemp.append("/");
 				}
 				dbUrlTemp.append(Config.dbName);
@@ -74,7 +71,7 @@ public class DbConnection {
 				String dbPw = dbPwFile.getDbPassword();
 				sConnection = DriverManager.getConnection(dbUrl1, Config.get(Config.dbUserKey), dbPw);
 			}
-			sConnection.setSchema(dbName);	// hat keine Auswirkungen
+			sConnection.setSchema(dbName); // hat keine Auswirkungen
 			Statement statement = sConnection.createStatement();
 			statement.execute("USE " + dbName);
 			sConnection.setAutoCommit(true);
@@ -95,8 +92,7 @@ public class DbConnection {
 	/**
 	 * Opens the Connection to MySql which is set in Config.
 	 *
-	 * @param dbName
-	 *            the name of database (schema), if null no database is opend
+	 * @param dbName the name of database (schema), if null no database is opend
 	 * @return Connection or null if not opened.
 	 */
 	private static Connection openLocal(String dbName) throws SQLException {
@@ -105,7 +101,7 @@ public class DbConnection {
 		dbPwFile = new DbPasswordFile(Config.sDbPwFileName);
 		String dbUrl1 = "";
 		try {
-			if (! isConnected()) {
+			if (!isConnected()) {
 				Class.forName(sJdbcDriver, true, Thread.currentThread().getContextClassLoader());
 				if (dbName == null) {
 					dbName = Config.dbName;
@@ -113,7 +109,7 @@ public class DbConnection {
 				StringBuffer dbUrlTemp = new StringBuffer(80);
 				dbUrlTemp.append(Config.dbUrlPrefix);
 				dbUrlTemp.append(Config.dbUrl);
-				if (! Config.dbUrl.endsWith(":")) {
+				if (!Config.dbUrl.endsWith(":")) {
 					dbUrlTemp.append(":");
 				}
 				dbUrlTemp.append(Config.dbPort);
@@ -121,7 +117,7 @@ public class DbConnection {
 				String dbPw = dbPwFile.getDbPassword();
 				sConnection = DriverManager.getConnection(dbUrl1, Config.get(Config.dbUserKey), dbPw);
 			}
-			sConnection.setSchema(dbName);	// hat keine Auswirkungen
+			sConnection.setSchema(dbName); // hat keine Auswirkungen
 			Statement statement = sConnection.createStatement();
 			statement.execute("USE " + dbName);
 			sConnection.setAutoCommit(true);
@@ -151,22 +147,21 @@ public class DbConnection {
 				sConnection = null;
 			}
 		} catch (Exception e) {
-			throw new Exception("Schliessen der DB '" + Config.dbName
-					+ "' Fehlermeldung: \n" + e.getMessage());
+			throw new Exception("Schliessen der DB '" + Config.dbName + "' Fehlermeldung: \n" + e.getMessage());
 		}
 	}
 
 	/**
-	 * Returns the Connection to database. If not open, it will setup
-	 * a connection to mySQL, or a specific schema.
+	 * Returns the Connection to database. If not open, it will setup a connection
+	 * to mySQL, or a specific schema.
+	 * 
 	 * @return Connection to mySql or a schema
 	 */
 	public static Connection getConnection() throws SQLException {
-		if (! isConnected()) {
+		if (!isConnected()) {
 			if (Config.dbUrl.startsWith("//local")) {
 				openLocal(Config.dbName);
-			}
-			else {
+			} else {
 				open(Config.dbName);
 			}
 		}

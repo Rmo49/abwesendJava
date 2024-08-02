@@ -9,8 +9,8 @@ import javax.xml.bind.DatatypeConverter;
 import com.rmo.abwesend.view.util.CmUtil;
 
 /**
- * Das DB-Passwort in ein File schreiben
- * Wenn dieses File vorhanden ist, kann eine Verbindung zur DB hergestellt werden.
+ * Das DB-Passwort in ein File schreiben Wenn dieses File vorhanden ist, kann
+ * eine Verbindung zur DB hergestellt werden.
  */
 public class DbPasswordFile {
 	/** Name des Files */
@@ -28,8 +28,8 @@ public class DbPasswordFile {
 	}
 
 	/**
-	 * Gibt das gespeicherte Passwort zurück.
-	 * Wenn kein File vorhanden, dann NULL;
+	 * Gibt das gespeicherte Passwort zurück. Wenn kein File vorhanden, dann NULL;
+	 * 
 	 * @return
 	 */
 	public String getDbPassword() {
@@ -44,7 +44,6 @@ public class DbPasswordFile {
 		return password;
 	}
 
-
 	/**
 	 * Aus dem Db-Passwort ein verschlüsseltes Passwort generieren
 	 */
@@ -56,8 +55,7 @@ public class DbPasswordFile {
 
 		try {
 			md = MessageDigest.getInstance("MD5");
-		}
-		catch (NoSuchAlgorithmException ex) {
+		} catch (NoSuchAlgorithmException ex) {
 			CmUtil.alertWarning("Passwort generieren: ", ex.getMessage());
 			return "";
 		}
@@ -79,6 +77,6 @@ public class DbPasswordFile {
 		}
 		fileHandler.println(text);
 		fileHandler.close();
-	 }
+	}
 
 }

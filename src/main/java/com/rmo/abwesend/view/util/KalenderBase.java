@@ -25,21 +25,22 @@ import com.rmo.abwesend.util.Config;
 
 /**
  * Die Basisklasse für alle Darstellungen des Kalenders.
+ * 
  * @author Ruedi
  *
  */
 public class KalenderBase extends JComponent {
 
 	private static final long serialVersionUID = 5865140523599634196L;
-	protected final double 	GRID_HEIGTH = 120;
-	protected final double 	NAMECOL_WIDTH = 80;
-	protected final double 	DELBUTTON_WIDTH = 10;
-	protected final double 	RECT_WIDTH = 50.0;
-	protected final int		RECT_HIGTH = 16;
-	protected final int		RECT_WIDTH_MATCH = 7;
-	protected final Color 	COLOR_ABW = Color.PINK;
-	protected final Color 	COLOR_MATCH_D = Color.DARK_GRAY;
-	protected final Color 	COLOR_MATCH_E = Color.BLUE;
+	protected final double GRID_HEIGTH = 120;
+	protected final double NAMECOL_WIDTH = 80;
+	protected final double DELBUTTON_WIDTH = 10;
+	protected final double RECT_WIDTH = 50.0;
+	protected final int RECT_HIGTH = 16;
+	protected final int RECT_WIDTH_MATCH = 7;
+	protected final Color COLOR_ABW = Color.PINK;
+	protected final Color COLOR_MATCH_D = Color.DARK_GRAY;
+	protected final Color COLOR_MATCH_E = Color.BLUE;
 	// Datumsformat für die Anzeige
 	protected final SimpleDateFormat dateFormat = new SimpleDateFormat("E d.M.");
 
@@ -50,7 +51,7 @@ public class KalenderBase extends JComponent {
 	protected int dayNrVon;
 	protected int dayNrBis;
 
-	private List<Spieler> spielerList = null;	// Liste aller Spieler im Kalender
+	private List<Spieler> spielerList = null; // Liste aller Spieler im Kalender
 
 	protected boolean[] isWeekend = new boolean[Config.turnierMaxTage];
 
@@ -58,8 +59,7 @@ public class KalenderBase extends JComponent {
 	protected int rowNr = 1;
 
 	/**
-	 * Version 1 Header stabil in der ersten Zeile
-	 * Version 2 für grosse Liste?
+	 * Version 1 Header stabil in der ersten Zeile Version 2 für grosse Liste?
 	 *
 	 * @param version
 	 */
@@ -73,15 +73,15 @@ public class KalenderBase extends JComponent {
 
 	/**
 	 * Die position für die Anzeige des Arrays setzen
-	 * @param alleTage wenn alle Tage angezeigt werden sollen,
-	 * sonst nur gemäss Anzeige von bis.
+	 * 
+	 * @param alleTage wenn alle Tage angezeigt werden sollen, sonst nur gemäss
+	 *                 Anzeige von bis.
 	 */
 	protected void setPosVonBis(boolean alleTage) {
 		if (alleTage) {
 			dayNrVon = 0;
 			dayNrBis = Config.turnierMaxTage;
-		}
-		else {
+		} else {
 			dayNrVon = Config.showBeginNumber;
 			dayNrBis = Config.showEndNumber;
 		}
@@ -89,6 +89,7 @@ public class KalenderBase extends JComponent {
 
 	/**
 	 * Ein GridPane erstellen
+	 * 
 	 * @return
 	 */
 	protected JPanel getGrid() {
@@ -106,14 +107,14 @@ public class KalenderBase extends JComponent {
 	public void setupScrollPane() {
 		if (scrollPane == null) {
 			scrollPane = new JScrollPane(kalenderPanel);
-		}
-		else {
+		} else {
 			scrollPane.setViewportView(kalenderPanel);
 		}
 		scrollPane.setAlignmentY(Component.TOP_ALIGNMENT);
 	}
 
-	 /** Der Panel für den Kalender-Grid werden angelegt.
+	/**
+	 * Der Panel für den Kalender-Grid werden angelegt.
 	 *
 	 * @return
 	 */
@@ -132,9 +133,9 @@ public class KalenderBase extends JComponent {
 		return scrollPane;
 	}
 
-
 	/**
 	 * Den Header mit Datum zurückgeben.
+	 * 
 	 * @param grid
 	 * @param row
 	 */
@@ -145,8 +146,7 @@ public class KalenderBase extends JComponent {
 		GregorianCalendar calendar = new GregorianCalendar();
 		if (alleTage) {
 			calendar.setTime(Config.turnierBeginDatum);
-		}
-		else {
+		} else {
 			calendar.setTime(Config.showBeginDatum);
 		}
 		calendar.setLenient(true);
@@ -156,11 +156,10 @@ public class KalenderBase extends JComponent {
 		for (int i = dayNrVon; i < dayNrBis; i++) {
 			labelDatum = new JLabel(dateFormat.format(calendar.getTime()));
 			if ((calendar.get(Calendar.DAY_OF_WEEK) == 7) || (calendar.get(Calendar.DAY_OF_WEEK) == 1)) {
-				labelDatum.setBackground (Config.colorWeekend);
+				labelDatum.setBackground(Config.colorWeekend);
 				labelDatum.setOpaque(true);
 				isWeekend[i] = true;
-			}
-			else {
+			} else {
 				isWeekend[i] = false;
 			}
 			kalenderPanel.add(labelDatum, getConstraintNext(colNr, row));
@@ -171,6 +170,7 @@ public class KalenderBase extends JComponent {
 
 	/**
 	 * Den Gridbag der für alle Darstellungen verwendet wird
+	 * 
 	 * @param row
 	 * @return
 	 */
@@ -186,6 +186,7 @@ public class KalenderBase extends JComponent {
 
 	/**
 	 * Den Gridbag der für alle Darstellungen verwendet wird
+	 * 
 	 * @param row
 	 * @return
 	 */
@@ -201,6 +202,7 @@ public class KalenderBase extends JComponent {
 
 	/**
 	 * Den Gridbag der für die Recgtangles verwendet wird
+	 * 
 	 * @param row
 	 * @return
 	 */
@@ -214,9 +216,9 @@ public class KalenderBase extends JComponent {
 		return c;
 	}
 
-
 	/**
 	 * Den Spieler in die Kontroll-Liste einfügen, falls noch nicht vorhanden.
+	 * 
 	 * @param pSpieler
 	 * @return -1 wenn schon vorhanden, sonst Position in der Kontroll-Liste
 	 */
@@ -233,8 +235,8 @@ public class KalenderBase extends JComponent {
 	}
 
 	/**
-	 * Den Spieler von der Position entfernen.
-	 * return true wenn removed
+	 * Den Spieler von der Position entfernen. return true wenn removed
+	 * 
 	 * @param position
 	 */
 	protected boolean removeSpielerFromList(int pos) {
@@ -264,6 +266,7 @@ public class KalenderBase extends JComponent {
 
 	/**
 	 * Die Anzahl Spieler in der Liste
+	 * 
 	 * @return
 	 */
 	protected int getSpielerListSize() {
@@ -272,6 +275,7 @@ public class KalenderBase extends JComponent {
 
 	/**
 	 * Ein Spieler von der Liste
+	 * 
 	 * @param pos
 	 * @return
 	 */
@@ -288,10 +292,9 @@ public class KalenderBase extends JComponent {
 		}
 	}
 
-
-
 	/**
 	 * Die Spiele in den Array eintragen
+	 * 
 	 * @param pSpieler
 	 * @return
 	 */
@@ -300,9 +303,8 @@ public class KalenderBase extends JComponent {
 		List<Match> matches = null;
 		try {
 			matches = MatchData.instance().readAll(pSpieler.getId());
-		}
-		catch (Exception ex) {
-			//TODO wenn fehler
+		} catch (Exception ex) {
+			// TODO wenn fehler
 		}
 		if (matches != null && matches.size() > 0) {
 			for (Match match : matches) {
@@ -317,6 +319,7 @@ public class KalenderBase extends JComponent {
 
 	/**
 	 * Die position im Array (0..max)
+	 * 
 	 * @param datum
 	 * @return position im Array
 	 */
@@ -325,16 +328,14 @@ public class KalenderBase extends JComponent {
 		Date datum = null;
 		try {
 			datum = Config.sdfDatum.parse(datumText);
-		}
-		catch (ParseException ex) {
+		} catch (ParseException ex) {
 			return -1;
 		}
 		long diff = datum.getTime() - startDate.getTime();
 		if (diff >= 0) {
 			long pos = diff / Config.einTagLong;
 			return pos;
-		}
-		else {
+		} else {
 			return -1;
 		}
 	}

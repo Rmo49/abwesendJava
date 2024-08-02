@@ -44,7 +44,6 @@ public class AbwesendEintragen extends BasePane implements PropertyChangeListene
 	// Werte von der Abwesend-Liste speichern
 	private JButton saveBtn;
 
-
 	public AbwesendEintragen(SpielerSelektieren pSelect) {
 		mSpielerSelect = pSelect;
 	}
@@ -55,36 +54,36 @@ public class AbwesendEintragen extends BasePane implements PropertyChangeListene
 	}
 
 	public JComponent getPanel() {
-			// dies ist ein Listener, für SpielerListe
-			mSpielerSelect.addChangeListener(this);
-			// Layout für Anzeige von Spieler und Buttons
-			JPanel panel = new JPanel();
-			panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-			panel.add(abwesendKalender.getBasePane());
-			panel.add(addButtons());
+		// dies ist ein Listener, für SpielerListe
+		mSpielerSelect.addChangeListener(this);
+		// Layout für Anzeige von Spieler und Buttons
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.add(abwesendKalender.getBasePane());
+		panel.add(addButtons());
 
-			saveBtn.setEnabled(false);
-			inputFieldListener = new PropertyChangeListener() {
-				@Override
-				public void propertyChange(PropertyChangeEvent evt) {
-					saveBtn.setEnabled(true);
-				}
-			};
-			abwesendKalender.addPropertyChangeListener(inputFieldListener);
+		saveBtn.setEnabled(false);
+		inputFieldListener = new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				saveBtn.setEnabled(true);
+			}
+		};
+		abwesendKalender.addPropertyChangeListener(inputFieldListener);
 
-			return panel;
+		return panel;
 	}
 
 	/**
 	 * Wird aufgerufen, wenn Eingabe-Daten geändert wurden
 	 */
 	@Override
-    public void propertyChange(PropertyChangeEvent event) {
-    	int spielerID = Integer.parseInt((String)event.getNewValue());
-    	if (readSpieler(spielerID)) {
-    		addShowAbwesenheiten();
-    	}
-   }
+	public void propertyChange(PropertyChangeEvent event) {
+		int spielerID = Integer.parseInt((String) event.getNewValue());
+		if (readSpieler(spielerID)) {
+			addShowAbwesenheiten();
+		}
+	}
 
 	/**
 	 * Die Buttons am Ende der View
@@ -124,23 +123,14 @@ public class AbwesendEintragen extends BasePane implements PropertyChangeListene
 		layout.setAutoCreateGaps(true);
 		layout.setAutoCreateContainerGaps(true);
 
-		layout.setHorizontalGroup(
-			layout.createSequentialGroup()
-				.addComponent(wochenWert)
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-					.addComponent(wochenwertBtn)
-					.addComponent(checkOverwrite)
-					.addComponent(saveBtn))
-		);
+		layout.setHorizontalGroup(layout.createSequentialGroup().addComponent(wochenWert)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(wochenwertBtn)
+						.addComponent(checkOverwrite).addComponent(saveBtn)));
 
-		layout.setVerticalGroup(
-			layout.createSequentialGroup()
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-					.addComponent(wochenWert)
-					.addComponent(wochenwertBtn))
-				.addComponent(checkOverwrite)
-				.addComponent(saveBtn)
-		);
+		layout.setVerticalGroup(layout
+				.createSequentialGroup().addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+						.addComponent(wochenWert).addComponent(wochenwertBtn))
+				.addComponent(checkOverwrite).addComponent(saveBtn));
 
 		return panel;
 	}
@@ -148,13 +138,13 @@ public class AbwesendEintragen extends BasePane implements PropertyChangeListene
 	/**
 	 * Den Spieler in Abwesenheiten anzeigen.
 	 */
-    public boolean addShowSpieler(int spielerId) {
-    	if (readSpieler(spielerId)) {
-    		addShowAbwesenheiten();
-    		return true;
-    	}
-    	return false;
-   }
+	public boolean addShowSpieler(int spielerId) {
+		if (readSpieler(spielerId)) {
+			addShowAbwesenheiten();
+			return true;
+		}
+		return false;
+	}
 
 	/**
 	 * Spieler einlesen und anzeigen
@@ -175,7 +165,6 @@ public class AbwesendEintragen extends BasePane implements PropertyChangeListene
 		SpielerData.instance().addChangeListener(this);
 		return true;
 	}
-
 
 	/**
 	 * Die Abwesenheiten anzeigen
@@ -200,8 +189,7 @@ public class AbwesendEintragen extends BasePane implements PropertyChangeListene
 			if (!isWeekend(i)) {
 				if (checkOverwrite.isSelected()) {
 					abwesendKalender.getInputList().get(i).setText(text);
-				}
-				else {
+				} else {
 					// nur einfügen, wenn noch keine Eingabe
 					if (abwesendKalender.getInputList().get(i).getText().length() == 0) {
 						abwesendKalender.getInputList().get(i).setText(text);

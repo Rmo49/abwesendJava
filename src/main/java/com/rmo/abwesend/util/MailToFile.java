@@ -27,44 +27,43 @@ public class MailToFile {
 
 	/**
 	 * Ausgabe, falls dieser Level gedruckt werden soll.
-	 * @param level int level of Trace
+	 * 
+	 * @param level   int level of Trace
 	 * @param message java.lang.String
 	 */
 	public void println(String message) {
-			if (fileWriter == null) {
-				makeWriter();
+		if (fileWriter == null) {
+			makeWriter();
+		}
+		try {
+			if (sBuffer.length() > 0) {
+				writer.write(sBuffer.toString());
+				sBuffer.delete(0, sBuffer.length());
 			}
-			try {
-				if (sBuffer.length() > 0) {
-					writer.write(sBuffer.toString());
-					sBuffer.delete(0, sBuffer.length());
-				}
-				if (message == null) {
-					message = "NULL";
-				}
-				writer.write(message);
-				writer.newLine();
-				writer.flush();
+			if (message == null) {
+				message = "NULL";
 			}
-			catch (IOException ex) {
-				System.out.println("Trace.makeFile, Fehler: " + ex.getMessage());
-			}
-		 }
+			writer.write(message);
+			writer.newLine();
+			writer.flush();
+		} catch (IOException ex) {
+			System.out.println("Trace.makeFile, Fehler: " + ex.getMessage());
+		}
+	}
 
 	/** Initialisiert alle Writers */
 	private void makeWriter() {
 		try {
 			// zuerst löschen
 			file = new File(filePath);
-			if(file.exists()){
+			if (file.exists()) {
 				file.delete();
 			}
 
 			fileWriter = new FileWriter(filePath);
 			writer = new BufferedWriter(fileWriter);
 			Trace.println(1, "MailToSend: " + filePath);
-		}
-		catch (IOException ex) {
+		} catch (IOException ex) {
 			System.out.println("MailControl.makeFile: " + ex.getMessage());
 		}
 	}
@@ -78,8 +77,7 @@ public class MailToFile {
 				fileWriter.close();
 				fileWriter = null;
 			}
-		}
-		catch (IOException ex) {
+		} catch (IOException ex) {
 			// nichts
 		}
 	}
@@ -89,7 +87,7 @@ public class MailToFile {
 	 */
 	public String readEnd() {
 		close();
-		return("\nAlles geschrieben. \n siehe: " + filePath);
+		return ("\nAlles geschrieben. \n siehe: " + filePath);
 	}
 
 }

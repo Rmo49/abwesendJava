@@ -49,7 +49,7 @@ public class MainFrame extends JFrame {
 	private JMenuBar menuBar;
 	private JMenuItem menuAbwAnzeigen;
 	private JMenuItem menuAbwTableau;
-	private JMenuItem menuAbwEintagen;
+	private JMenuItem menuAbwEintragen;
 	private JMenuItem menuSpielerTableau;
 	private JMenuItem menuMatchEinlesen;
 	private JMenuItem menuTurnierPage;
@@ -138,11 +138,11 @@ public class MainFrame extends JFrame {
 		});
 		menuBar.add(menuAbwTableau);
 
-		menuAbwEintagen = new JMenuItem("Abwesend eintragen");
-		menuAbwEintagen.setToolTipText("Abwesenheiten eines Spielers eintragen");
-		menuAbwEintagen.setBackground(Config.colorSpieler);
-		menuAbwEintagen.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		menuAbwEintagen.addActionListener(new ActionListener() {
+		menuAbwEintragen = new JMenuItem("Abwesend eintragen");
+		menuAbwEintragen.setToolTipText("Abwesenheiten eines Spielers eintragen");
+		menuAbwEintragen.setBackground(Config.colorSpieler);
+		menuAbwEintragen.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		menuAbwEintragen.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 //				setPaneLeft(mSpielerSelect.getPanel());
@@ -152,7 +152,7 @@ public class MainFrame extends JFrame {
 				}
 			}
 		});
-		menuBar.add(menuAbwEintagen);
+		menuBar.add(menuAbwEintragen);
 
 		menuSpielerTableau = new JMenuItem("Spieler verwalten");
 		menuSpielerTableau.setToolTipText(
@@ -176,7 +176,7 @@ public class MainFrame extends JFrame {
 		menuTurnierPage.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new SwissTennisLesen(mainFrame).startSeiteLesen();
+				new MatchesImport(mainFrame).startSeiteLesen();
 			}
 		});
 		menuBar.add(menuTurnierPage);
@@ -184,11 +184,11 @@ public class MainFrame extends JFrame {
 		// --------- Setup menu ----------------------------------------------------
 		menuSetup = new JMenu("Setup");
 
-		menuMatchEinlesen = new JMenuItem("Spiele laden");
+		menuMatchEinlesen = new JMenuItem("Matches einlesen");
 		menuMatchEinlesen.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				SwissTennisLesen spieleEinlesen = new SwissTennisLesen(mainFrame);
+				MatchesImport spieleEinlesen = new MatchesImport(mainFrame);
 				setPaneCenter(spieleEinlesen.getPanel());
 			}
 		});
@@ -233,11 +233,21 @@ public class MainFrame extends JFrame {
 		});
 		menuSetup.add(menuTableauVerwalten);
 
-		JMenuItem menuSpielerEinlesen = new JMenuItem("Daten einlesen");
-		menuSpielerEinlesen.addActionListener(new ActionListener() {
+		JMenuItem menuDatenEinlesen = new JMenuItem("Daten einlesen");
+		menuDatenEinlesen.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				SpielerImport spielerEinlesen = new SpielerImport();
+				setPaneCenter(spielerEinlesen.getPanel());
+			}
+		});
+		menuSetup.add(menuDatenEinlesen);
+
+		JMenuItem menuSpielerEinlesen = new JMenuItem("Spieler Excel einlesen");
+		menuSpielerEinlesen.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SpielerDatenImport spielerEinlesen = new SpielerDatenImport(mainFrame);
 				setPaneCenter(spielerEinlesen.getPanel());
 			}
 		});
@@ -357,7 +367,7 @@ public class MainFrame extends JFrame {
 		if (!TennisDataBase.dbExists() || !DbConnection.isConnected()) {
 			menuAbwTableau.setEnabled(false);
 			menuAbwAnzeigen.setEnabled(false);
-			menuAbwEintagen.setEnabled(false);
+			menuAbwEintragen.setEnabled(false);
 			menuSpielerTableau.setEnabled(false);
 			menuTurnierPage.setEnabled(false);
 			menuSetup.setEnabled(true);
@@ -373,12 +383,12 @@ public class MainFrame extends JFrame {
 		}
 		if (mSpielerSelect.getSelectedSpielerId() >= 0) {
 			menuAbwAnzeigen.setEnabled(true);
-			menuAbwEintagen.setEnabled(true);
+			menuAbwEintragen.setEnabled(true);
 			menuSpielerTableau.setEnabled(true);
 			mSpielerSelect.setBtnEnalble(true);
 		} else {
 			menuAbwAnzeigen.setEnabled(false);
-			menuAbwEintagen.setEnabled(false);
+			menuAbwEintragen.setEnabled(false);
 			menuSpielerTableau.setEnabled(true);
 			mSpielerSelect.setBtnEnalble(false);
 		}

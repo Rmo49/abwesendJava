@@ -5,16 +5,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-
-
 /**
- * Mail-Daten, der Inhalt der mail, meist nur die aktuelle Version (Text) in der DB.
+ * Mail-Daten, der Inhalt der mail, meist nur die aktuelle Version (Text) in der
+ * DB.
  *
  */
 public class MailData {
 
 	/**
 	 * Das Create Statement für diese Tabelle
+	 * 
 	 * @return
 	 */
 	public static String createTable() {
@@ -24,7 +24,6 @@ public class MailData {
 		sb.append(");");
 		return sb.toString();
 	}
-
 
 	public static String dorpTable() {
 		return ("DROP TABLE IF EXISTS mail;");
@@ -39,8 +38,8 @@ public class MailData {
 	private Statement mReadStmt;
 
 	/**
-	 * Der Set mit allen Mail-Daten von dem gelesen wird. Ist ein scrollable
-	 * Set der von allen Methoden verwendet wird. id: IntegerInteger <br>
+	 * Der Set mit allen Mail-Daten von dem gelesen wird. Ist ein scrollable Set der
+	 * von allen Methoden verwendet wird. id: IntegerInteger <br>
 	 * name: String <br>
 	 */
 	private ResultSet mReadSet;
@@ -53,6 +52,7 @@ public class MailData {
 
 	/**
 	 * Singleton
+	 * 
 	 * @return
 	 */
 	public static MailData instance() {
@@ -69,7 +69,6 @@ public class MailData {
 		return DbConnection.getConnection();
 	}
 
-
 	/**
 	 * Das Mail wird gespeichert. Falls schon vorhanden, wird nix gemacht
 	 */
@@ -77,12 +76,10 @@ public class MailData {
 		deleteAllRow();
 		try {
 			addRow(pMail);
-		}
-		catch (SQLException ex) {
+		} catch (SQLException ex) {
 			if (ex.getErrorCode() == 1062) {
 				// wenn Duplicate error, dann nix machen.
-			}
-			else {
+			} else {
 				throw ex;
 			}
 		}
@@ -95,7 +92,6 @@ public class MailData {
 		return findAll();
 	}
 
-
 	/**
 	 * Alle Mailes löschen
 	 */
@@ -104,12 +100,11 @@ public class MailData {
 		mReadStmt.execute("TRUNCATE mail");
 	}
 
-
-
 	// ------ interne Methoden -----------------------------------------
 
 	/**
-	 * Eine neue Zeile (Row) in die Tabelle eintragen. Der SQL-String wird zusammengestellt.
+	 * Eine neue Zeile (Row) in die Tabelle eintragen. Der SQL-String wird
+	 * zusammengestellt.
 	 */
 	private void addRow(Mail pMail) throws SQLException {
 		Statement stmt = getConnection().createStatement();
@@ -123,7 +118,6 @@ public class MailData {
 		stmt.executeUpdate(lQuery.toString());
 		stmt.close();
 	}
-
 
 	/**
 	 * Sucht die Row mit der Spielernummer. Wenn true, steht mReadSet auf dieser
@@ -155,8 +149,8 @@ public class MailData {
 	}
 
 	/**
-	 * Setzt das Statement (Connection zur DB) und den Scroll-Set, der für
-	 * Insert oder update verwendet werden kann.
+	 * Setzt das Statement (Connection zur DB) und den Scroll-Set, der für Insert
+	 * oder update verwendet werden kann.
 	 */
 	private synchronized void setupReadSet() throws SQLException {
 		if (mReadStmt == null) {

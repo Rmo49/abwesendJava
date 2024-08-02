@@ -51,8 +51,9 @@ public class MailControl {
 		}
 	}
 
-	/** Initialisiert alle Writers
-	 * */
+	/**
+	 * Initialisiert alle Writers
+	 */
 	private static void makeWriters() {
 		try {
 			StringBuffer fileName = new StringBuffer(Config.sMailControl);

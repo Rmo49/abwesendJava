@@ -26,7 +26,9 @@ import com.rmo.abwesend.util.Config;
 import com.rmo.abwesend.view.util.SpringUtilities;
 
 /**
- * Die Tableaux-Liste verwalten, CRUD-Buttons anzeigen und entsprechende Aktionen.
+ * Die Tableaux-Liste verwalten, CRUD-Buttons anzeigen und entsprechende
+ * Aktionen.
+ * 
  * @author Ruedi
  *
  */
@@ -57,6 +59,7 @@ public class TableauVerwalten extends BasePane {
 
 	/**
 	 * Die Anzeige aller Tableaux als Tabelle mit Position in der Liste.
+	 * 
 	 * @return
 	 */
 	private JComponent addTableauTable() {
@@ -78,6 +81,7 @@ public class TableauVerwalten extends BasePane {
 
 	/**
 	 * Die Entry Form für ein neues Tableau
+	 * 
 	 * @return
 	 */
 	private JComponent addEntryForm() {
@@ -134,12 +138,12 @@ public class TableauVerwalten extends BasePane {
 			}
 		});
 
- 		return panel;
+		return panel;
 	}
-
 
 	/**
 	 * Textfeld und JButton um die Aenderungen zu speichern.
+	 * 
 	 * @return
 	 */
 	private JComponent addTopButtons() {
@@ -169,12 +173,11 @@ public class TableauVerwalten extends BasePane {
 				// ID sichern
 				tempId = tableauTableData.getIdAt(row);
 				// Eingabefelderfüllen
-				addPosition.setText((String)tableauTableData.getValueAt(row, 0));
-				addBezeichnung.setText((String)tableauTableData.getValueAt(row, 1));
-				addKonkurrenz.setText((String)tableauTableData.getValueAt(row, 2));
-		    }
+				addPosition.setText((String) tableauTableData.getValueAt(row, 0));
+				addBezeichnung.setText((String) tableauTableData.getValueAt(row, 1));
+				addKonkurrenz.setText((String) tableauTableData.getValueAt(row, 2));
+			}
 		});
-
 
 		btnLoeschen.addActionListener(new ActionListener() {
 			@Override
@@ -182,25 +185,23 @@ public class TableauVerwalten extends BasePane {
 				int row = tableauTable.getSelectedRow();
 				try {
 					TableauData.instance().delete(tableauTableData.getIdAt(row));
-				}
-				catch (Exception ex) {
+				} catch (Exception ex) {
 					alertError("Löschen von Tableau", ex);
 				}
 				tableauTableData.readAllData();
 				tableScrollPane.repaint();
-		    }
+			}
 		});
 
 		btnSpeichernAll.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				tableauTableData.saveAll();
-		    }
+			}
 		});
 
 		return listPane;
 	}
-
 
 	/**
 	 * Speichern (oder ändern) des eingegebenen Wertes
@@ -209,7 +210,6 @@ public class TableauVerwalten extends BasePane {
 	protected void saveData() {
 		tableauTableData.saveAll();
 	}
-
 
 //--- Model der Tableau Daten ------------------------------------
 
@@ -276,7 +276,6 @@ public class TableauVerwalten extends BasePane {
 			return "";
 		}
 
-
 		/**
 		 * Die ID ist nicht veränderbar.
 		 */
@@ -302,9 +301,9 @@ public class TableauVerwalten extends BasePane {
 			}
 		}
 
-
 		/**
 		 * Gibt die ID der zeile zurück
+		 * 
 		 * @return
 		 */
 		public int getIdAt(int row) {
@@ -323,24 +322,23 @@ public class TableauVerwalten extends BasePane {
 				if (tableauListe != null) {
 					tableauListe = null;
 				}
-				tableauListe = new ArrayList<>();	// statt remove
+				tableauListe = new ArrayList<>(); // statt remove
 				tableauListe.addAll(TableauData.instance().readAllTableau());
-			}
-			catch (Exception ex) {
+			} catch (Exception ex) {
 				alertError("ReadAll Tableau", ex);
 			}
 		}
 
 		/**
 		 * Einen neue Eintrag dazufügen
+		 * 
 		 * @param tableau
 		 */
 		public void add(Tableau tableau) {
 			try {
 				TableauData.instance().add(tableau);
 				readAllData();
-			}
-			catch (Exception ex) {
+			} catch (Exception ex) {
 				alertError("Add Tableau", ex);
 			}
 		}
@@ -354,13 +352,11 @@ public class TableauVerwalten extends BasePane {
 				for (Tableau element : tableauListe) {
 					TableauData.instance().add(element);
 				}
-			}
-			catch (Exception ex) {
+			} catch (Exception ex) {
 				alertError("SaveAll Tableau", ex);
 			}
 		}
 
 	}
-
 
 }

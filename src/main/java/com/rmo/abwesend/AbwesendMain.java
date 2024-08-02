@@ -33,7 +33,7 @@ import com.rmo.abwesend.view.util.CmUtil;
  */
 public class AbwesendMain {
 
-	private final static String version = "TCA CM abwesend, (V8.6)";
+	private final static String version = "TCA CM abwesend, (V9.0)";
 //	private static JOptionPane startFrame;
 
 	public AbwesendMain() {
@@ -47,9 +47,9 @@ public class AbwesendMain {
 			return;
 		}
 
-		if (! checkDbPasswordFile()) {
+		if (!checkDbPasswordFile()) {
 			CmUtil.alertWarning("Passwort Datenbank", "Passwort Datei für die Datenbank ist nicht vorhanden,\n"
-					+ "Muss zuerst angelegt werden, siehe auch Trace.txt");
+					+ "Muss zuerst angelegt werden, siehe auch Trace.txt, \n" + "in: " + Config.sPath);
 			return;
 		}
 
@@ -93,7 +93,6 @@ public class AbwesendMain {
 		});
 		mainFrame.setVisible(true);
 	}
-
 
 	/**
 	 * Alle Configuration daten lesen
@@ -141,7 +140,7 @@ public class AbwesendMain {
 	}
 
 	/**
-	 * prüfen, ob Passwort-File vorhanden ist, wenn ein  Passwort zurückgegeben wird.
+	 * prüfen, ob Passwort-File vorhanden ist, wenn ein Passwort zurückgegeben wird.
 	 *
 	 * @return
 	 */
@@ -149,8 +148,7 @@ public class AbwesendMain {
 		DbPasswordFile dbPwFile = new DbPasswordFile(Config.sDbPwFileName);
 		if (dbPwFile.getDbPassword() == null) {
 			return false;
-		}
-		else {
+		} else {
 			return true;
 		}
 	}

@@ -12,18 +12,19 @@ import com.rmo.abwesend.model.Tableau;
 
 /**
  * Spieler in ein File schreiben.
+ * 
  * @author ruedi
  *
  */
 public class SpielerExportFile {
 
 	// maximale Anzahl Tableau wo sich ein Spieler anmelden kann.
-	public SpielerExportFile () {
+	public SpielerExportFile() {
 	}
 
 	/**
-	 * Exportieren Zeile um Zeile.
-	 * Wenn true zurück gibt, dann keine Fehler gefunden, sonst Fehler in Trace
+	 * Exportieren Zeile um Zeile. Wenn true zurück gibt, dann keine Fehler
+	 * gefunden, sonst Fehler in Trace
 	 */
 	public boolean startExport(String dirName, String fileName) throws Exception {
 		Trace.println(3, "SpielerExportFile.startExport()");

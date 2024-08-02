@@ -29,10 +29,10 @@ import com.rmo.abwesend.model.TableauData;
 import com.rmo.abwesend.util.Config;
 import com.rmo.abwesend.view.util.SpielerSelektieren;
 
-
 /**
- * Spieler und Tableau anzeigen, vom Spieler kann der Name geändert werden.
- * Die Tableaux in denen er spielt können selektiert werden.
+ * Spieler und Tableau anzeigen, vom Spieler kann der Name geändert werden. Die
+ * Tableaux in denen er spielt können selektiert werden.
+ * 
  * @author Ruedi
  *
  */
@@ -50,7 +50,6 @@ public class SpielerVerwalten extends BasePane implements PropertyChangeListener
 	private JButton btnLoeschen;
 	private JButton btnSpeichern;
 
-
 	// Alle Tableaux in einer Liste
 	private List<JCheckBox> mTableauList;
 	private List<Tableau> mTableauListData;
@@ -66,16 +65,15 @@ public class SpielerVerwalten extends BasePane implements PropertyChangeListener
 
 	public JComponent getPanel() {
 		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(1,2));
+		panel.setLayout(new GridLayout(1, 2));
 		panel.add(addSpielerAnzeigen());
 		panel.add(addTableauList());
 
-	   	int spielerID = selectSpieler.getSelectedSpielerId();
+		int spielerID = selectSpieler.getSelectedSpielerId();
 		if (spielerID >= 0) {
-        	readSpieler(spielerID);
-    		setCheckedData(spielerID);
-    	}
-		else {
+			readSpieler(spielerID);
+			setCheckedData(spielerID);
+		} else {
 			setElementsEnable(true);
 		}
 
@@ -123,6 +121,7 @@ public class SpielerVerwalten extends BasePane implements PropertyChangeListener
 
 	/**
 	 * Die Buttons unterhalb der Eingabefelder
+	 * 
 	 * @param grid
 	 */
 	private void addButtons(JPanel panel) {
@@ -173,7 +172,7 @@ public class SpielerVerwalten extends BasePane implements PropertyChangeListener
 			mTableauList.add(new JCheckBox(mTableauListData.get(i).getBezeichnung()));
 			mTableauList.get(i).setSelected(true);
 			panel.add(mTableauList.get(i), getConstraintTableau(col, row));
-			if ((col == 0) && (i >= (mTableauListData.size() / 2) )) {
+			if ((col == 0) && (i >= (mTableauListData.size() / 2))) {
 				col = 1;
 				row = 0;
 			}
@@ -182,9 +181,9 @@ public class SpielerVerwalten extends BasePane implements PropertyChangeListener
 		return panel;
 	}
 
-
 	/**
 	 * Den Gridbag der für alle Darstellungen verwendet wird
+	 * 
 	 * @param row
 	 * @return
 	 */
@@ -192,7 +191,7 @@ public class SpielerVerwalten extends BasePane implements PropertyChangeListener
 		GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		c.fill = GridBagConstraints.BOTH;
-		c.insets = new Insets(2,2,2,2);
+		c.insets = new Insets(2, 2, 2, 2);
 		c.weightx = 1;
 		c.gridx = colNr;
 		c.gridy = rowNr;
@@ -201,6 +200,7 @@ public class SpielerVerwalten extends BasePane implements PropertyChangeListener
 
 	/**
 	 * Den Gridbag der für alle Darstellungen verwendet wird
+	 * 
 	 * @param row
 	 * @return
 	 */
@@ -235,8 +235,9 @@ public class SpielerVerwalten extends BasePane implements PropertyChangeListener
 	private void btnLoeschenCalled() {
 		if (mSpieler != null) {
 
-           int answer = JOptionPane.showConfirmDialog (null, "Soll " + mSpieler.getName() + " gelöscht werden?", "Bestätigen",  JOptionPane.YES_NO_OPTION);
-            if(answer == JOptionPane.YES_OPTION) {
+			int answer = JOptionPane.showConfirmDialog(null, "Soll " + mSpieler.getName() + " gelöscht werden?",
+					"Bestätigen", JOptionPane.YES_NO_OPTION);
+			if (answer == JOptionPane.YES_OPTION) {
 				if (deleteSpieler(mSpieler.getId())) {
 					nameFiled.setText("");
 					vorNameField.setText("");
@@ -244,9 +245,9 @@ public class SpielerVerwalten extends BasePane implements PropertyChangeListener
 					setElementsEnable(false);
 					selectSpieler.refreshAfterChange();
 				}
-            } else {
-            	// nichts machen
-            }
+			} else {
+				// nichts machen
+			}
 
 		}
 	}
@@ -281,20 +282,19 @@ public class SpielerVerwalten extends BasePane implements PropertyChangeListener
 	/**
 	 * Wird aufgerufen, wenn Doppelklick oder löschen in der Spieler-Liste
 	 */
-    @Override
-    public void propertyChange(PropertyChangeEvent event) {
-    	int spielerID = Integer.parseInt((String)event.getNewValue());
-    	if (spielerID >= 0) {
-        	readSpieler(spielerID);
-    		setCheckedData(spielerID);
-    		return;
-    	}
-    	spielerID = Integer.parseInt((String)event.getOldValue());
-    	if (spielerID >= 0) {
-        	deleteSpieler(spielerID);
-    	}
-   }
-
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
+		int spielerID = Integer.parseInt((String) event.getNewValue());
+		if (spielerID >= 0) {
+			readSpieler(spielerID);
+			setCheckedData(spielerID);
+			return;
+		}
+		spielerID = Integer.parseInt((String) event.getOldValue());
+		if (spielerID >= 0) {
+			deleteSpieler(spielerID);
+		}
+	}
 
 	/**
 	 * Spieler einlesen und anzeigen
@@ -307,15 +307,15 @@ public class SpielerVerwalten extends BasePane implements PropertyChangeListener
 			nameFiled.setText(mSpieler.getName());
 			vorNameField.setText(mSpieler.getVorName());
 			emailField.setText(mSpieler.getEmail());
-			idShow.setText( String.valueOf(mSpieler.getId() ));
+			idShow.setText(String.valueOf(mSpieler.getId()));
 		} catch (Exception ex) {
 			alertError("Fehler beim Lesen in SpielerData, Spieler: " + spielerID, ex);
 		}
 	}
 
-
 	/**
 	 * Spieler löschen
+	 * 
 	 * @param spielerID
 	 * @return true wenn gelöscht, false wenn löschen nicht möglich
 	 */
@@ -328,7 +328,6 @@ public class SpielerVerwalten extends BasePane implements PropertyChangeListener
 		}
 		return true;
 	}
-
 
 	/**
 	 * Alle Tableau Selektion auf unchecked setzen.
@@ -423,6 +422,7 @@ public class SpielerVerwalten extends BasePane implements PropertyChangeListener
 
 	/**
 	 * Alle Buttons und Eingabefelder aktiv / inaktiv
+	 * 
 	 * @param disable
 	 */
 	private void setElementsEnable(boolean enable) {

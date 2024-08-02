@@ -35,6 +35,7 @@ public class FileHandler {
 
 	/**
 	 * Ausgabe, falls dieser Level gedruckt werden soll.
+	 * 
 	 * @param message java.lang.String
 	 */
 	public void println(String message) {
@@ -45,8 +46,7 @@ public class FileHandler {
 			writer.write(message);
 			writer.newLine();
 			writer.flush();
-		}
-		catch (IOException ex) {
+		} catch (IOException ex) {
 			System.out.println("Trace.makeFile: " + ex.getMessage());
 		}
 	}
@@ -59,14 +59,14 @@ public class FileHandler {
 			if (fileR != null) {
 				fileR.close();
 			}
-		}
-		catch (IOException ex) {
+		} catch (IOException ex) {
 			// nix tun
 		}
 	}
 
 	/**
 	 * Ausgabe, falls dieser Level gedruckt werden soll.
+	 * 
 	 * @param message java.lang.String
 	 */
 	public void print(String message) {
@@ -76,27 +76,26 @@ public class FileHandler {
 		try {
 			writer.write(message);
 			writer.flush();
-		}
-		catch (IOException ex) {
+		} catch (IOException ex) {
 			System.out.println("Trace.makeFile: " + ex.getMessage());
 		}
 	}
 
 	/**
-	 * Oeffnet das File und liest die nächste Zeile.
-	 * Wenn keine File oder keine Zeile, dann wird NULL zurückgegeben.
+	 * Oeffnet das File und liest die nächste Zeile. Wenn keine File oder keine
+	 * Zeile, dann wird NULL zurückgegeben.
+	 * 
 	 * @return
 	 */
 	public String readLine() {
 		if (fileW == null) {
-			if (! makeReader()) {
+			if (!makeReader()) {
 				return null;
 			}
 		}
 		try {
 			return reader.readLine();
-		}
-		catch (IOException ex) {
+		} catch (IOException ex) {
 			System.out.println("Trace.makeFile: " + ex.getMessage());
 			return null;
 		}
@@ -105,19 +104,18 @@ public class FileHandler {
 
 	/**
 	 * Ein Reader aufsetzen, wenn nicht gefunden wird false
+	 * 
 	 * @return
 	 */
 	public boolean makeReader() {
 		try {
 			reader = new BufferedReader(new FileReader(mFileName));
-		}
-		catch (IOException ex) {
+		} catch (IOException ex) {
 			Trace.println(2, "FileHandler.makeReader: " + ex.getMessage());
 			return false;
 		}
 		return true;
 	}
-
 
 	/** Initialisiert Writer */
 	private void makeWriters() {
@@ -126,8 +124,7 @@ public class FileHandler {
 
 			fileW = new FileWriter(fileName.toString());
 			writer = new BufferedWriter(fileW);
-		}
-		catch (IOException ex) {
+		} catch (IOException ex) {
 			System.out.println("FileHandler.makeFile: " + ex.getMessage());
 		}
 	}

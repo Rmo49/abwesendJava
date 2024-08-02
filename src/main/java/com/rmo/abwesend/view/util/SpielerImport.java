@@ -21,12 +21,13 @@ import javax.swing.JTextField;
 import com.rmo.abwesend.model.Spieler;
 import com.rmo.abwesend.model.SpielerData;
 import com.rmo.abwesend.util.Config;
-import com.rmo.abwesend.util.SpielerImportFile;
+import com.rmo.abwesend.util.SpielerImportCsv;
 import com.rmo.abwesend.util.Trace;
 
 /**
- * Spieler von einem File einlesen und die e-mails.
- * Wir normalerweise beim setup der Daten ausgeführt.
+ * Spieler von einem File einlesen und die e-mails. Wir normalerweise beim setup
+ * der Daten ausgeführt.
+ * 
  * @author Ruedi
  *
  */
@@ -36,19 +37,18 @@ public class SpielerImport {
 
 //	private JTextField fileNameEmail;
 
-
 	public JComponent getPanel() {
 		JPanel pane = new JPanel(new GridBagLayout());
 		pane.setSize(400, 200);
 		pane.setBorder(BorderFactory.createLineBorder(Color.black));
 
-	    int zeileNr = 0;
+		int zeileNr = 0;
 
 		JLabel labelTitel = new JLabel("Spieler einlesen");
 		labelTitel.setFont(Config.fontTitel);
 		pane.add(labelTitel, getConstraintNext(1, zeileNr++));
 
-		JTextArea labelText = new JTextArea(2,0);
+		JTextArea labelText = new JTextArea(2, 0);
 		labelText.append("Die Spieler müssen in der Form 'Konkurrenz, Name, Vorname, Name, Vorname' \n");
 		labelText.append("in der Datei vorhanden sein. Verwendetert Zeichensatz: UTF-8");
 		labelText.setEditable(false);
@@ -61,12 +61,12 @@ public class SpielerImport {
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane.showMessageDialog(null,
 						"Die Liste von Swisstennis herunterladen: Spieler > Liste (excel). \n"
-						+ "Das zweite Name-Paar ist der Doppelpartner, falls vorhanden. \n"
-						+ "Wenn der Spieler noch nicht vorhanden ist, wird ein neuer angelegt.\n"
-						+ "Der Spieler wird auch im Tableau eingetragen, falls eine Übereinstimmung der Bezeichnung \n"
-						+ "mit Swisstennis gefunden wird. (siehe auch: Setup > Tableaux verwalten)",
+								+ "Das zweite Name-Paar ist der Doppelpartner, falls vorhanden. \n"
+								+ "Wenn der Spieler noch nicht vorhanden ist, wird ein neuer angelegt.\n"
+								+ "Der Spieler wird auch im Tableau eingetragen, falls eine Übereinstimmung der Bezeichnung \n"
+								+ "mit Swisstennis gefunden wird. (siehe auch: Setup > Tableaux verwalten)",
 						"Spieler einlesen", JOptionPane.INFORMATION_MESSAGE);
- 			}
+			}
 		});
 		pane.add(btnEinlesenInfo, getConstraintNext(1, zeileNr++));
 
@@ -91,9 +91,18 @@ public class SpielerImport {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				spielerEinlesen();
- 			}
+			}
 		});
 		pane.add(btnSpieler, getConstraintNext(1, zeileNr++));
+
+		JButton btnSpieler2 = new JButton("Spieler einlesen (Excel)");
+		btnSpieler.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				spielerEinlesenExcel();
+			}
+		});
+		pane.add(btnSpieler2, getConstraintNext(1, zeileNr++));
 
 		pane.add(new JLabel("--------------------------------"), getConstraintNext(1, zeileNr++));
 
@@ -101,7 +110,7 @@ public class SpielerImport {
 		labelTitel2.setFont(Config.fontTitel);
 		pane.add(labelTitel2, getConstraintNext(1, zeileNr++));
 
-		JTextArea labelText2 = new JTextArea(2,0);
+		JTextArea labelText2 = new JTextArea(2, 0);
 		labelText2.append("Die e-mails müssen in der Form 'Name, Vorname, e-mail' in der Datei vorhanden sein.\n");
 		labelText2.append("verwendetert Zeichensatz: UTF-8");
 		labelText2.setEditable(false);
@@ -119,7 +128,7 @@ public class SpielerImport {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				emailEinlesen();
- 			}
+			}
 		});
 		pane.add(btnEmailLesen, getConstraintNext(1, zeileNr++));
 
@@ -128,7 +137,7 @@ public class SpielerImport {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				emailCheck();
- 			}
+			}
 		});
 		pane.add(new JLabel("alle e-mail vorhanden?"), getConstraintFirst(0, zeileNr));
 		pane.add(btnEmailCheck, getConstraintNext(1, zeileNr++));
@@ -138,6 +147,7 @@ public class SpielerImport {
 
 	/**
 	 * Den Gridbag der für alle Darstellungen verwendet wird
+	 * 
 	 * @param row
 	 * @return
 	 */
@@ -145,7 +155,7 @@ public class SpielerImport {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.anchor = GridBagConstraints.EAST;
-		gbc.insets = new Insets(2,2,2,8);
+		gbc.insets = new Insets(2, 2, 2, 8);
 		gbc.gridx = colNr;
 		gbc.gridy = rowNr;
 		return gbc;
@@ -153,6 +163,7 @@ public class SpielerImport {
 
 	/**
 	 * Den Gridbag der für alle Darstellungen verwendet wird
+	 * 
 	 * @param row
 	 * @return
 	 */
@@ -160,7 +171,7 @@ public class SpielerImport {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.anchor = GridBagConstraints.WEST;
-		gbc.insets = new Insets(2,8,2,2);
+		gbc.insets = new Insets(2, 8, 2, 2);
 		gbc.gridx = colNr;
 		gbc.gridy = rowNr;
 		return gbc;
@@ -170,17 +181,34 @@ public class SpielerImport {
 	 * Spieler einlensen von File
 	 */
 	private void spielerEinlesen() {
-		SpielerImportFile spielerVonFile = new SpielerImportFile();
+		SpielerImportCsv spielerVonFile = new SpielerImportCsv();
 		boolean fehler = true;
 		try {
 			fehler = spielerVonFile.startSpielerEinlesen(tableauName.getText());
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			CmUtil.alertError("Spieler einlesen", ex);
 			return;
 		}
 		if (fehler) {
-			CmUtil.alertWarning("Spieler einlesen", "Fehler beim Lesen, siehe Trace" );
+			CmUtil.alertWarning("Spieler einlesen", "Fehler beim Lesen, siehe Trace");
+			Trace.flush();
+		}
+	}
+
+	/**
+	 * Spieler einlensen von File
+	 */
+	private void spielerEinlesenExcel() {
+		SpielerImportCsv spielerVonFile = new SpielerImportCsv();
+		boolean fehler = true;
+		try {
+			fehler = spielerVonFile.startSpielerEinlesen(tableauName.getText());
+		} catch (Exception ex) {
+			CmUtil.alertError("Spieler einlesen", ex);
+			return;
+		}
+		if (fehler) {
+			CmUtil.alertWarning("Spieler einlesen", "Fehler beim Lesen, siehe Trace");
 			Trace.flush();
 		}
 	}
@@ -189,26 +217,24 @@ public class SpielerImport {
 	 * Einlensen von File
 	 */
 	private void emailEinlesen() {
-		SpielerImportFile spielerVonFile = new SpielerImportFile();
+		SpielerImportCsv spielerVonFile = new SpielerImportCsv();
 		boolean fehler = true;
 		try {
 			fehler = spielerVonFile.startEmailEinlesen(Config.spielerImportDir, Config.emailImportFile);
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			CmUtil.alertError("Email einlesen", ex);
 			return;
 		}
 		if (fehler) {
-			CmUtil.alertWarning("Email einlesen", "Fehler beim Lesen, siehe Trace" );
-		}
-		else {
-			CmUtil.alertWarning("Email eingelesen", "siehe Trace" );
+			CmUtil.alertWarning("Email einlesen", "Fehler beim Lesen, siehe Trace");
+		} else {
+			CmUtil.alertWarning("Email eingelesen", "siehe Trace");
 		}
 	}
 
 	/**
-	 * Prüfen, ob ein Eintrag im Feld e-mail vorhanden ist.
-	 * Liste mit Namen, die keinen Eintrag haben.
+	 * Prüfen, ob ein Eintrag im Feld e-mail vorhanden ist. Liste mit Namen, die
+	 * keinen Eintrag haben.
 	 */
 	private void emailCheck() {
 		Trace.println(0, "----> emailCheck");
@@ -216,15 +242,14 @@ public class SpielerImport {
 			List<Spieler> spielerList = SpielerData.instance().readAllSpieler();
 			for (Spieler lSpieler : spielerList) {
 				if (lSpieler.getEmail().length() < 5) {
-					Trace.println(0, lSpieler.getName() + " " + lSpieler.getVorName() + " email: " + lSpieler.getEmail());
+					Trace.println(0,
+							lSpieler.getName() + " " + lSpieler.getVorName() + " email: " + lSpieler.getEmail());
 				}
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			CmUtil.alertWarning("Email prüfen", "Fehler: " + e.getMessage());
 		}
-		CmUtil.alertWarning("Email prüfen", "siehe Trace" );
+		CmUtil.alertWarning("Email prüfen", "siehe Trace");
 	}
-
 
 }

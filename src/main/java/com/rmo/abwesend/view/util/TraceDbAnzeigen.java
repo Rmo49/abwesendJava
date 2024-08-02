@@ -22,9 +22,9 @@ import com.rmo.abwesend.model.TraceDb;
 import com.rmo.abwesend.model.TraceDbData;
 import com.rmo.abwesend.util.Config;
 
-
 /**
  * Die Trace von der DB anzeigen (wer wann eingelogged hat.
+ * 
  * @author Ruedi
  *
  */
@@ -42,6 +42,7 @@ public class TraceDbAnzeigen {
 
 	/**
 	 * Der Panel mit allen Infos.
+	 * 
 	 * @return
 	 */
 	public JPanel getPanel() {
@@ -74,7 +75,7 @@ public class TraceDbAnzeigen {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				addTraceTable();
- 			}
+			}
 		});
 		panel.add(btnShow);
 
@@ -95,8 +96,6 @@ public class TraceDbAnzeigen {
 		panel.revalidate();
 		panel.repaint();
 	}
-
-
 
 //-----------------------------------------------
 
@@ -121,8 +120,7 @@ public class TraceDbAnzeigen {
 			TraceDb trace = traceList.get(rowIndex);
 			if (columnIndex == 0) {
 				return trace.getDatum();
-			}
-			else {
+			} else {
 				return trace.getWert();
 			}
 		}
@@ -139,7 +137,6 @@ public class TraceDbAnzeigen {
 				CmUtil.alertError("TraceDb", ex.getMessage());
 			}
 		}
-
 
 	}
 }

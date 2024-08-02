@@ -24,7 +24,6 @@ public class AbwesendTableau extends BasePane implements PropertyChangeListener 
 	private SpielerSelektieren mSpielerSelektieren;
 	private KalenderAbwesend abwesendKalender;
 
-
 	/**
 	 * @param scene
 	 */
@@ -34,6 +33,7 @@ public class AbwesendTableau extends BasePane implements PropertyChangeListener 
 
 	/**
 	 * Wird aufgerufen, wenn angezeigt werden soll
+	 * 
 	 * @return
 	 */
 	public JComponent getPanel() {
@@ -45,12 +45,12 @@ public class AbwesendTableau extends BasePane implements PropertyChangeListener 
 		return abwesendKalender.getBasePane();
 	}
 
-
 	/**
 	 * Die Abwesenheiten anzeigen
 	 */
 	/**
 	 * Die Abwesenheiten eines Tableau anzeigen
+	 * 
 	 * @param index wie er in der angezeigten Liste steht
 	 */
 	public void showTableauAbwesend(int index) {
@@ -61,7 +61,7 @@ public class AbwesendTableau extends BasePane implements PropertyChangeListener 
 			}
 			abwesendKalender.clearSpielerList();
 			// Alle Spieler eines Tableau
-			List<Spieler> spielerList = mSpielerSelektieren.getSpielerOfTableau(index+1);
+			List<Spieler> spielerList = mSpielerSelektieren.getSpielerOfTableau(index + 1);
 			for (ListIterator<Spieler> iter = spielerList.listIterator(); iter.hasNext();) {
 				Spieler lSpieler = iter.next();
 				abwesendKalender.addSpieler(lSpieler, true);
@@ -74,9 +74,9 @@ public class AbwesendTableau extends BasePane implements PropertyChangeListener 
 	 * Wird aufgerufen, wenn Doppelklick in der Spieler-Liste
 	 */
 	@Override
-    public void propertyChange(PropertyChangeEvent event) {
+	public void propertyChange(PropertyChangeEvent event) {
 		// nichts machen
-   }
+	}
 
 	@Override
 	protected void saveData() {

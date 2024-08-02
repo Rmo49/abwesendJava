@@ -24,7 +24,7 @@ public class SpielerVonFileTest extends TestCase {
 	 * Datum lesen
 	 */
 	public void test_getTableauId() {
-//		SpielerImportFile svf = new SpielerImportFile();
+//		SpielerImportCsv svf = new SpielerImportCsv();
 //		svf.startSpielerEinlesen(dirName, fileName, tableauName)
 	}
 

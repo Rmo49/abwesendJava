@@ -46,12 +46,11 @@ import com.rmo.abwesend.util.Config;
 import com.rmo.abwesend.util.Trace;
 import com.rmo.abwesend.view.MainFrame;
 
-
 /**
- * Zeigt die Liste der Spieler und Selektions-Möglichkeiten.
- * In einem Eingabefeld kann der Name (oder Anfangsbuchstaben) eines Spielers
- * eingegeben werden. Nach dem 2 Buchstaben wird eine entsprechende Liste
- * angezeigt. Gibt die SpielerID bekannt, wenn ein Spieler selektiert.
+ * Zeigt die Liste der Spieler und Selektions-Möglichkeiten. In einem
+ * Eingabefeld kann der Name (oder Anfangsbuchstaben) eines Spielers eingegeben
+ * werden. Nach dem 2 Buchstaben wird eine entsprechende Liste angezeigt. Gibt
+ * die SpielerID bekannt, wenn ein Spieler selektiert.
  *
  * @author Ruedi
  *
@@ -121,6 +120,7 @@ public class SpielerSelektieren {
 
 	/**
 	 * Die Selektion des Tableaux
+	 * 
 	 * @return
 	 */
 	private JComponent addSelectionTableau() {
@@ -179,12 +179,13 @@ public class SpielerSelektieren {
 
 	/**
 	 * Die Liste mit den Spielern
+	 * 
 	 * @return
 	 */
 	private JComponent addSpielerList() {
 		spielerTable = new JTable(spielerData);
-	    JScrollPane scroll = new JScrollPane(spielerTable);
-		Dimension dim = new Dimension(LISTVIEW_WIDTH +30, LISTVIEW_HEIGHT);
+		JScrollPane scroll = new JScrollPane(spielerTable);
+		Dimension dim = new Dimension(LISTVIEW_WIDTH + 30, LISTVIEW_HEIGHT);
 		scroll.setPreferredSize(dim);
 		addTableListener(spielerTable);
 
@@ -193,27 +194,24 @@ public class SpielerSelektieren {
 
 	/**
 	 * Listener um die ID des selektierten Spielers zu sichern.
+	 * 
 	 * @param spielerTable
 	 */
 	private void addTableListener(JTable table) {
-		table.getSelectionModel().addListSelectionListener(
-	        new ListSelectionListener() {
-	            @Override
-				public void valueChanged(ListSelectionEvent event) {
-	                selectedSpielerIndex = table.getSelectedRow();
-	                if (selectedSpielerIndex >= 0) {
-	                	// die Id des Spieler sichern
-	                	selectedSpielerId = spielerData.getId(selectedSpielerIndex);
-	                }
-	                else {
-	                	selectedSpielerId = -1;
-	                }
-	                mainFrame.setEnable();
-	            }
-	        }
-		);
+		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent event) {
+				selectedSpielerIndex = table.getSelectedRow();
+				if (selectedSpielerIndex >= 0) {
+					// die Id des Spieler sichern
+					selectedSpielerId = spielerData.getId(selectedSpielerIndex);
+				} else {
+					selectedSpielerId = -1;
+				}
+				mainFrame.setEnable();
+			}
+		});
 	}
-
 
 	/**
 	 * , Wenn Tableau selektiert, die Tabelle mit den Spielern neu einlesen
@@ -223,8 +221,7 @@ public class SpielerSelektieren {
 		if (selectedTableauIndex <= 0) {
 			// wenn leeres Feld selektiert
 			tableauNames = spielerData.getAllSpieler();
-		}
-		else {
+		} else {
 			// da erstes leer, ist die Liste um eine Position versetzt.
 			Tableau tableau = tableauListModel.getElementAt(selectedTableauIndex);
 			try {
@@ -237,8 +234,7 @@ public class SpielerSelektieren {
 					}
 				}
 				tableauNames.sort(spielerKurzComparator);
-			}
-			catch (Exception ex) {
+			} catch (Exception ex) {
 				CmUtil.alertError("Probleme bei Tableau lesen.", ex);
 			}
 		}
@@ -255,27 +251,26 @@ public class SpielerSelektieren {
 	/**
 	 * Der Comparator für das Soriteren der Namen
 	 */
-	Comparator<SpielerKurz> spielerKurzComparator = new Comparator<SpielerKurz>() {
+	Comparator<SpielerKurz> spielerKurzComparator = new Comparator<>() {
 		@Override
 		public int compare(SpielerKurz o1, SpielerKurz o2) {
 			return o1.getName().compareTo(o2.getName());
 		}
 	};
 
-
 	/**
 	 * Der Comparator für das Soriteren der Namen
 	 */
-	Comparator<Spieler> spielerComparator = new Comparator<Spieler>() {
+	Comparator<Spieler> spielerComparator = new Comparator<>() {
 		@Override
 		public int compare(Spieler o1, Spieler o2) {
 			return o1.getName().compareTo(o2.getName());
 		}
 	};
 
-
 	/**
 	 * Die Buttons unterhalb der Liste.
+	 * 
 	 * @return
 	 */
 	private JComponent addButtons() {
@@ -303,11 +298,11 @@ public class SpielerSelektieren {
 		btnPane.add(btnZusaetzlich);
 
 		return btnPane;
-}
+	}
 
 	/**
-	 * Wenn an Aenderungen interessiert.
-	 * Listener von der gleichen Klasse nur einmal dazufügen.
+	 * Wenn an Aenderungen interessiert. Listener von der gleichen Klasse nur einmal
+	 * dazufügen.
 	 *
 	 * @param newListener
 	 */
@@ -327,9 +322,9 @@ public class SpielerSelektieren {
 				String sucheName = suchField.getText();
 				// die folgenden zeilen nur bei JDK 1.8
 //				if (Config.javaVersion <= 8) {
-					if (Character.isLetter(e.getKeyChar()) ) {
-						sucheName = sucheName + e.getKeyChar();
-					}
+				if (Character.isLetter(e.getKeyChar())) {
+					sucheName = sucheName + e.getKeyChar();
+				}
 //				}
 				spielerData.setSuchSpielerData(sucheName.toLowerCase());
 				anzahlSpieler.setText(spielerData.getAnzahlSpieler());
@@ -348,22 +343,21 @@ public class SpielerSelektieren {
 			}
 		});
 
-
 		// Doppelklick in der Liste
 		spielerTable.addMouseListener(new MouseAdapter() {
-		    @Override
+			@Override
 			public void mousePressed(MouseEvent mouseEvent) {
-		        if (mouseEvent.getClickCount() == 2 && selectedSpielerId >= 0) {
-		        	mainFrame.showSpielerNext(selectedSpielerId);
-		        }
-		    }
+				if (mouseEvent.getClickCount() == 2 && selectedSpielerId >= 0) {
+					mainFrame.showSpielerNext(selectedSpielerId);
+				}
+			}
 		});
 
 	}
 
-
 	/**
 	 * Die Spieler eines Tableau
+	 * 
 	 * @param index index wie er in der angezeigten Liste steht
 	 * @return
 	 */
@@ -378,8 +372,7 @@ public class SpielerSelektieren {
 				spielerList.add(lSpieler);
 			}
 			spielerList.sort(spielerComparator);
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 //			alertError("Probleme bei Tableau lesen.", ex);
 		}
 		return spielerList;
@@ -387,22 +380,22 @@ public class SpielerSelektieren {
 
 	/**
 	 * Für die Anzeige der Tableau
+	 * 
 	 * @author ruedi
 	 *
 	 */
 	private class ComboBoxRenderer extends DefaultListCellRenderer {
 		private static final long serialVersionUID = 8295447589224463493L;
 
-        @Override
-        public Component getListCellRendererComponent(JList list, Object value,
-                int index, boolean isSelected, boolean cellHasFocus) {
-            JLabel label = (JLabel) super.getListCellRendererComponent(list,
-                    value, index, isSelected, cellHasFocus);
-            Tableau tableau = (Tableau) value;
-            label.setText(tableau.getBezeichnung());
-            return label;
-        }
-    }
+		@Override
+		public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+				boolean cellHasFocus) {
+			JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+			Tableau tableau = (Tableau) value;
+			label.setText(tableau.getBezeichnung());
+			return label;
+		}
+	}
 
 	/**
 	 * Refresh the List after change, will read the new List again.
@@ -419,6 +412,7 @@ public class SpielerSelektieren {
 
 	/**
 	 * Getter
+	 * 
 	 * @return
 	 */
 	public int getSelectedTableauIndex() {
@@ -432,24 +426,24 @@ public class SpielerSelektieren {
 
 	/**
 	 * Die spielerID des selektierten Spielers
+	 * 
 	 * @return ID, oder -1 wenn nichts selektiert
 	 */
 	public int getSelectedSpielerId() {
 		return selectedSpielerId;
 	}
 
-
 	public void setBtnEnalble(boolean enable) {
 		btnZusaetzlich.setEnabled(enable);
 	}
-
 
 //--- Model der Spieler Kurz Daten ------------------------------------
 
 	private class SpielerTableModel extends DefaultTableModel { // AbstractTableModel {
 
 		private static final long serialVersionUID = -8873369194794951026L;
-		// Alle Namen, ist die Basis, diese wird anfänglich angezeigt, von der DB gelesen
+		// Alle Namen, ist die Basis, diese wird anfänglich angezeigt, von der DB
+		// gelesen
 		private List<SpielerKurz> spielerAll;
 		// die Spieler die von Tableau Anzeige selektiert wurden.
 		private List<SpielerKurz> spielerTableau;
@@ -471,8 +465,7 @@ public class SpielerSelektieren {
 		public int getRowCount() {
 			if (spielerAnzeige != null) {
 				return spielerAnzeige.size();
-			}
-			else {
+			} else {
 				return 0;
 			}
 		}
@@ -517,6 +510,7 @@ public class SpielerSelektieren {
 
 		/**
 		 * Die ID des Tupels von der row
+		 * 
 		 * @param row
 		 * @return
 		 */
@@ -527,6 +521,7 @@ public class SpielerSelektieren {
 
 		/**
 		 * Die Anzahl Spieler in der Liste
+		 * 
 		 * @return
 		 */
 		public String getAnzahlSpieler() {
@@ -536,6 +531,7 @@ public class SpielerSelektieren {
 
 		/**
 		 * Ein Spieler aus spielerAll lesen
+		 * 
 		 * @param spielerId
 		 * @return
 		 */
@@ -548,7 +544,6 @@ public class SpielerSelektieren {
 			return null;
 		}
 
-
 		/**
 		 * Alle Spieler setzen, wenn nichts übergeben
 		 *
@@ -557,8 +552,7 @@ public class SpielerSelektieren {
 			// alte Daten löschen, wenn bereits vorhanden
 			if (spielerAnzeige != null && spielerAnzeige.size() > 0) {
 				spielerAnzeige.clear();
-			}
-			else {
+			} else {
 				spielerAnzeige = new ArrayList<>();
 			}
 			for (SpielerKurz idName : spielerAll) {
@@ -568,14 +562,14 @@ public class SpielerSelektieren {
 		}
 
 		/**
-		 * Wenn Tableau selektiert, wird eine Liste übergeben, alle Spieler von diesem Tableau.
+		 * Wenn Tableau selektiert, wird eine Liste übergeben, alle Spieler von diesem
+		 * Tableau.
 		 */
 		public void setTableauSpielerData(List<SpielerKurz> tableauNames) {
 			// alte Daten löschen
 			if (spielerTableau != null && spielerTableau.size() > 0) {
 				spielerTableau.clear();
-			}
-			else {
+			} else {
 				spielerTableau = new ArrayList<>();
 			}
 			for (SpielerKurz idName : tableauNames) {
@@ -583,20 +577,18 @@ public class SpielerSelektieren {
 			}
 		}
 
-
 		/**
 		 * Spieler mit dem gesuchten Namen in die "spielerListe" schreiben
 		 *
-		 * @param suchName
-		 *            Teil eines Namens, wenn < 1 dann werden alle Namen übernommen.
+		 * @param suchName Teil eines Namens, wenn < 1 dann werden alle Namen
+		 *                 übernommen.
 		 */
 		private void setSuchSpielerData(String suchName) {
 			// alte Daten löschen
 			if (spielerAnzeige != null && spielerAnzeige.size() > 0) {
 				// alte Daten löschen, wenn bereits vorhanden
 				spielerAnzeige.clear();
-			}
-			else {
+			} else {
 				spielerAnzeige = new ArrayList<>();
 			}
 			// alle gesuchten von tableau kopieren
@@ -640,6 +632,7 @@ public class SpielerSelektieren {
 
 		/**
 		 * Getter
+		 * 
 		 * @return
 		 */
 		public List<SpielerKurz> getAllSpieler() {

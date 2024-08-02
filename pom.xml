@@ -114,17 +114,17 @@
 					<artifactId>selenium-support</artifactId>
 				</exclusion>
 			</exclusions>
-			<version>4.9.1</version>
+			<version>4.23.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
-			<version>5.2.3</version>
+			<version>5.3.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
-			<version>5.2.3</version>
+			<version>5.3.0</version>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
@@ -164,5 +164,5 @@
 			<layout>default</layout>
 		 </repository>
 	 </distributionManagement>
-	<version>8-6</version>
+	<version>9-0</version>
 </project>
