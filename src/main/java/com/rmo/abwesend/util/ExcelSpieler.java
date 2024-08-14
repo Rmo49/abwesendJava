@@ -46,7 +46,8 @@ public class ExcelSpieler {
 	private int colVorname1 = -1;
 	private int colName2 = -1;
 	private int colVorname2 = -1;
-	private boolean colAllSet = true;
+	private boolean noDoppel = false;
+	private boolean colName1Set = false;
 	private boolean indexRowFound = false;
 
 	private String mKonkurrenz = Config.spielerColKonkurrenz;
@@ -195,17 +196,19 @@ public class ExcelSpieler {
 		if (colName1 < 0) {
 			addFehlerStr(mName1);
 		}
-		if (colName1 < 0) {
-			addFehlerStr(mName1);
+		else {
+			colName1Set = true;
 		}
 		if (colVorname1 < 0) {
 			addFehlerStr(mVorname1);
 		}
 		if (colName2 < 0) {
 			addFehlerStr(mName2);
+			noDoppel = true;
 		}
 		if (colVorname2 < 0) {
 			addFehlerStr(mVorname2);
+			noDoppel = true;
 		}
 	}
 
@@ -218,7 +221,6 @@ public class ExcelSpieler {
 		fehlerStr.append("Spalte: '");
 		fehlerStr.append(indexStr);
 		fehlerStr.append("' nicht gefunden \n");
-		colAllSet = false;
 	}
 
 	/**
@@ -229,7 +231,7 @@ public class ExcelSpieler {
 		if (colKonkurrenz < 0) {
 			getIndexRow(lRow);
 		} else {
-			if (colAllSet) {
+			if (colName1Set) {
 				readRowDetails(lRow);
 			}
 		}
@@ -247,11 +249,13 @@ public class ExcelSpieler {
 			String konkurrenz = lRow.getCell(colKonkurrenz).getStringCellValue();
 			addSpielerTableau(spielerId, konkurrenz);
 
-			String name2 = lRow.getCell(colName2).getStringCellValue();
-			if (!name2.isBlank()) {
-				// wenn ein Doppelpartner vorhanden
-				spielerId = addSpieler(name2, lRow.getCell(colVorname2).getStringCellValue());
-				addSpielerTableau(spielerId, konkurrenz);
+			if (! noDoppel) {
+				String name2 = lRow.getCell(colName2).getStringCellValue();
+				if (!name2.isBlank()) {
+					// wenn ein Doppelpartner vorhanden
+					spielerId = addSpieler(name2, lRow.getCell(colVorname2).getStringCellValue());
+					addSpielerTableau(spielerId, konkurrenz);
+				}
 			}
 		} catch (Exception ex) {
 			Trace.println(3, "ExcelSpieler einlesen " + ex.toString());

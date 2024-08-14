@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import com.rmo.abwesend.util.Config;
-import com.rmo.abwesend.util.DbPasswordFile;
+import com.rmo.abwesend.util.PasswordFile;
 import com.rmo.abwesend.util.Trace;
 
 /**
@@ -20,7 +20,7 @@ public class DbConnection {
 	public static final String sJdbcDriver = "com.mysql.cj.jdbc.Driver";
 	// public static final String url = "jdbc:mysql://localhost:3306/";
 //	jdbc:mysql://localhost/db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
-	private static DbPasswordFile dbPwFile = null;
+	private static PasswordFile pwFile = null;
 
 	public DbConnection() {
 	}
@@ -51,7 +51,7 @@ public class DbConnection {
 	private static Connection open(String dbName) throws SQLException {
 		// Connection aufbauen
 		Trace.println(0, "DbConnection.open(dbName:" + dbName + ")");
-		dbPwFile = new DbPasswordFile(Config.sDbPwFileName);
+		pwFile = PasswordFile.getInstance();
 		String dbUrl1 = "";
 		try {
 			if (!isConnected()) {
@@ -68,7 +68,7 @@ public class DbConnection {
 				dbUrlTemp.append(Config.dbName);
 				dbUrlTemp.append(Config.dbUrlSetting);
 				dbUrl1 = dbUrlTemp.toString();
-				String dbPw = dbPwFile.getDbPassword();
+				String dbPw = pwFile.getDbPassword();
 				sConnection = DriverManager.getConnection(dbUrl1, Config.get(Config.dbUserKey), dbPw);
 			}
 			sConnection.setSchema(dbName); // hat keine Auswirkungen
@@ -98,7 +98,7 @@ public class DbConnection {
 	private static Connection openLocal(String dbName) throws SQLException {
 		// Connection aufbauen
 		Trace.println(0, "DbConnection.openLocal(dbName:" + dbName + ")");
-		dbPwFile = new DbPasswordFile(Config.sDbPwFileName);
+		pwFile = PasswordFile.getInstance();
 		String dbUrl1 = "";
 		try {
 			if (!isConnected()) {
@@ -114,7 +114,7 @@ public class DbConnection {
 				}
 				dbUrlTemp.append(Config.dbPort);
 				dbUrl1 = dbUrlTemp.toString();
-				String dbPw = dbPwFile.getDbPassword();
+				String dbPw = pwFile.getDbPassword();
 				sConnection = DriverManager.getConnection(dbUrl1, Config.get(Config.dbUserKey), dbPw);
 			}
 			sConnection.setSchema(dbName); // hat keine Auswirkungen

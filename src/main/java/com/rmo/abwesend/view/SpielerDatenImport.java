@@ -15,6 +15,7 @@ import java.util.Iterator;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -32,6 +33,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+import com.rmo.abwesend.model.SpielerTableauData;
 import com.rmo.abwesend.util.Config;
 import com.rmo.abwesend.util.ExcelSpieler;
 import com.rmo.abwesend.util.Trace;
@@ -53,7 +55,7 @@ public class SpielerDatenImport extends BasePane implements ActionListener, Prop
 	private JFrame mainFrame;
 	private WebDriver driver;
 	private JButton btnEinlesen;
-//	private JCheckBox spieleLoeschen;
+	private JCheckBox tableauLoeschen;
 
 	// Progress dialog
 	private JDialog dialog;
@@ -141,6 +143,10 @@ public class SpielerDatenImport extends BasePane implements ActionListener, Prop
 
 		pane.add(new JLabel(Config.spielerColVorname2Key), getConstraintFirst(0, row));
 		pane.add(new JLabel(Config.spielerColVorname2), getConstraintNext(1, row++));
+		
+		tableauLoeschen = new JCheckBox("Beziehung Spieler->Tableau zuerst löschen");
+		tableauLoeschen.setSelected(false);
+		pane.add(tableauLoeschen, getConstraintNext(1, row++));
 
 		btnEinlesen = new JButton("Spieler einlesen");
 		btnEinlesen.addActionListener(new ActionListener() {
@@ -384,6 +390,9 @@ public class SpielerDatenImport extends BasePane implements ActionListener, Prop
 	 */
 	@Override
 	public void actionPerformed(ActionEvent evt) {
+		if (tableauLoeschen.isSelected()) {
+			spielerTabLoeschen();
+		}
 		btnStart.setEnabled(false);
 		dialog.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		// Instances of javax.swing.SwingWorker are not reusuable, so
@@ -394,6 +403,19 @@ public class SpielerDatenImport extends BasePane implements ActionListener, Prop
 		// => siehe MyTask.doInBackground()
 	}
 
+	
+	/**
+	 * Alle Beziehungen Spieler->Tableau löschen
+	 */
+	private void spielerTabLoeschen() {
+		try {
+			SpielerTableauData.instance().deleteAllRow();
+		} catch (Exception ex) {
+			Trace.println(3, "Fehler bei Spieler->Tableau löschen: " + ex.toString());
+		}
+		Trace.println(3, "Alle Beziehungen Spieler->Tableau gelöscht");
+	}
+	
 	/**
 	 * Sichern der geänderten Werte.
 	 */

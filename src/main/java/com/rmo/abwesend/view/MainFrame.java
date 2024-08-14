@@ -21,9 +21,9 @@ import com.rmo.abwesend.model.DbConnection;
 import com.rmo.abwesend.model.TennisDataBase;
 import com.rmo.abwesend.util.Config;
 import com.rmo.abwesend.view.util.DbActions;
+import com.rmo.abwesend.view.util.MailsImport;
 import com.rmo.abwesend.view.util.MailVersenden;
 import com.rmo.abwesend.view.util.SpielerExport;
-import com.rmo.abwesend.view.util.SpielerImport;
 import com.rmo.abwesend.view.util.SpielerSelektieren;
 import com.rmo.abwesend.view.util.TraceDbAnzeigen;
 import com.rmo.abwesend.view.util.VonBisDatum;
@@ -204,25 +204,6 @@ public class MainFrame extends JFrame {
 		});
 		menuSetup.add(menuMailVersenden);
 
-//		JMenuItem menuMailVersendenSwt = new JMenuItem("Mail versenden SWT");
-//		menuMailVersendenSwt.addActionListener(new ActionListener() {
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				Display display = new Display();
-//				Shell shell = new Shell(display);
-//				shell.setLayout(new GridLayout(1, false));
-//				MailVersendenSwt mailSwt = new MailVersendenSwt(shell, SWT.NONE);
-//				shell.pack();
-//				shell.open();
-//				while (!shell.isDisposed()) {
-//					if (!display.readAndDispatch())
-//						display.sleep();
-//				}
-//				display.dispose();
-//			}
-//		});
-//		menuSetup.add(menuMailVersendenSwt);
-
 		JMenuItem menuTableauVerwalten = new JMenuItem("Tableaux verwalten");
 		menuTableauVerwalten.addActionListener(new ActionListener() {
 			@Override
@@ -233,15 +214,15 @@ public class MainFrame extends JFrame {
 		});
 		menuSetup.add(menuTableauVerwalten);
 
-		JMenuItem menuDatenEinlesen = new JMenuItem("Daten einlesen");
-		menuDatenEinlesen.addActionListener(new ActionListener() {
+		JMenuItem menuMailsEinlesen = new JMenuItem("Mails einlesen");
+		menuMailsEinlesen.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				SpielerImport spielerEinlesen = new SpielerImport();
-				setPaneCenter(spielerEinlesen.getPanel());
+				MailsImport mailsEinlesen = new MailsImport();
+				setPaneCenter(mailsEinlesen.getPanel());
 			}
 		});
-		menuSetup.add(menuDatenEinlesen);
+		menuSetup.add(menuMailsEinlesen);
 
 		JMenuItem menuSpielerEinlesen = new JMenuItem("Spieler Excel einlesen");
 		menuSpielerEinlesen.addActionListener(new ActionListener() {

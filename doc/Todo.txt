@@ -1,21 +1,15 @@
-
-Bei Benutzer noch dazufügen, das was er gewählt hat
-	anzeigeBegin=2023-08-18
-	anzeigeEnd=2023-08-18
-	anzeigeTableauList=10
-	
+Spieler von Excel
+- Button einfügen: Spieler -> Tableau löschen
 
 DB Connection
 - Wenn keine Daten, kann nix eingegeben werden.
 
 mail
-- versenden: Test löschen, wird nicht mehr gebraucht
-- Passwort verschlüsseln wenn möglich, oder in seperatem file
+- Passwort: auch in Datei "DBPasswort" => oder in seperatem file "Passworte"
+- MailCheck einige ID's werden mehrmals gespeichert, wenn beim zweiten Versand keine Abwesenheiten gefunden
+	=> mail senden und Eintrag MailCheck
 
 - Mail versenden, Layout im Setup Fenster von Mail-Text sollte nicht verkleinern
-- Neues Menu im Setup: Mail überprüfen, hat der Spieler einen Eintrag?
-
-
 - evt. SMS senden.
 
 Fehler

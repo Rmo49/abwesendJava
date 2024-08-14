@@ -1,7 +1,6 @@
 package com.rmo.abwesend.view.util;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -13,10 +12,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 
 import com.rmo.abwesend.model.Spieler;
 import com.rmo.abwesend.model.SpielerData;
@@ -25,17 +22,13 @@ import com.rmo.abwesend.util.SpielerImportCsv;
 import com.rmo.abwesend.util.Trace;
 
 /**
- * Spieler von einem File einlesen und die e-mails. Wir normalerweise beim setup
+ * Mail von einem File einlesen. Wird normalerweise beim setup
  * der Daten ausgeführt.
- * 
+ *
  * @author Ruedi
  *
  */
-public class SpielerImport {
-
-	private JTextField tableauName;
-
-//	private JTextField fileNameEmail;
+public class MailsImport {
 
 	public JComponent getPanel() {
 		JPanel pane = new JPanel(new GridBagLayout());
@@ -43,68 +36,6 @@ public class SpielerImport {
 		pane.setBorder(BorderFactory.createLineBorder(Color.black));
 
 		int zeileNr = 0;
-
-		JLabel labelTitel = new JLabel("Spieler einlesen");
-		labelTitel.setFont(Config.fontTitel);
-		pane.add(labelTitel, getConstraintNext(1, zeileNr++));
-
-		JTextArea labelText = new JTextArea(2, 0);
-		labelText.append("Die Spieler müssen in der Form 'Konkurrenz, Name, Vorname, Name, Vorname' \n");
-		labelText.append("in der Datei vorhanden sein. Verwendetert Zeichensatz: UTF-8");
-		labelText.setEditable(false);
-		pane.add(labelText, getConstraintNext(1, zeileNr++));
-
-		JButton btnEinlesenInfo = new JButton("mehr Info");
-		btnEinlesenInfo.setBorderPainted(false);
-		btnEinlesenInfo.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(null,
-						"Die Liste von Swisstennis herunterladen: Spieler > Liste (excel). \n"
-								+ "Das zweite Name-Paar ist der Doppelpartner, falls vorhanden. \n"
-								+ "Wenn der Spieler noch nicht vorhanden ist, wird ein neuer angelegt.\n"
-								+ "Der Spieler wird auch im Tableau eingetragen, falls eine Übereinstimmung der Bezeichnung \n"
-								+ "mit Swisstennis gefunden wird. (siehe auch: Setup > Tableaux verwalten)",
-						"Spieler einlesen", JOptionPane.INFORMATION_MESSAGE);
-			}
-		});
-		pane.add(btnEinlesenInfo, getConstraintNext(1, zeileNr++));
-
-		pane.add(new JLabel("Einstellungen in AbwesendConfig.txt"), getConstraintNext(1, zeileNr++));
-
-		pane.add(new JLabel(Config.spielerImportDirKey), getConstraintFirst(0, zeileNr));
-		pane.add(new JLabel(Config.spielerImportDir), getConstraintNext(1, zeileNr++));
-
-		pane.add(new JLabel(Config.spielerImportFileKey), getConstraintFirst(0, zeileNr));
-		pane.add(new JLabel(Config.spielerImportFile), getConstraintNext(1, zeileNr++));
-
-		pane.add(new JLabel(Config.spielerImportSplitCharKey), getConstraintFirst(0, zeileNr));
-		pane.add(new JLabel(Config.spielerImportSplitChar), getConstraintNext(1, zeileNr++));
-
-		pane.add(new JLabel("nur diese Konkurrenz"), getConstraintFirst(0, zeileNr));
-		tableauName = new JTextField();
-		tableauName.setPreferredSize(new Dimension(100, 20));
-		pane.add(tableauName, getConstraintNext(1, zeileNr++));
-
-		JButton btnSpieler = new JButton("Spieler einlesen");
-		btnSpieler.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				spielerEinlesen();
-			}
-		});
-		pane.add(btnSpieler, getConstraintNext(1, zeileNr++));
-
-		JButton btnSpieler2 = new JButton("Spieler einlesen (Excel)");
-		btnSpieler.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				spielerEinlesenExcel();
-			}
-		});
-		pane.add(btnSpieler2, getConstraintNext(1, zeileNr++));
-
-		pane.add(new JLabel("--------------------------------"), getConstraintNext(1, zeileNr++));
 
 		JLabel labelTitel2 = new JLabel("E-Mail einlesen");
 		labelTitel2.setFont(Config.fontTitel);
@@ -147,7 +78,7 @@ public class SpielerImport {
 
 	/**
 	 * Den Gridbag der für alle Darstellungen verwendet wird
-	 * 
+	 *
 	 * @param row
 	 * @return
 	 */
@@ -163,7 +94,7 @@ public class SpielerImport {
 
 	/**
 	 * Den Gridbag der für alle Darstellungen verwendet wird
-	 * 
+	 *
 	 * @param row
 	 * @return
 	 */
@@ -177,41 +108,6 @@ public class SpielerImport {
 		return gbc;
 	}
 
-	/**
-	 * Spieler einlensen von File
-	 */
-	private void spielerEinlesen() {
-		SpielerImportCsv spielerVonFile = new SpielerImportCsv();
-		boolean fehler = true;
-		try {
-			fehler = spielerVonFile.startSpielerEinlesen(tableauName.getText());
-		} catch (Exception ex) {
-			CmUtil.alertError("Spieler einlesen", ex);
-			return;
-		}
-		if (fehler) {
-			CmUtil.alertWarning("Spieler einlesen", "Fehler beim Lesen, siehe Trace");
-			Trace.flush();
-		}
-	}
-
-	/**
-	 * Spieler einlensen von File
-	 */
-	private void spielerEinlesenExcel() {
-		SpielerImportCsv spielerVonFile = new SpielerImportCsv();
-		boolean fehler = true;
-		try {
-			fehler = spielerVonFile.startSpielerEinlesen(tableauName.getText());
-		} catch (Exception ex) {
-			CmUtil.alertError("Spieler einlesen", ex);
-			return;
-		}
-		if (fehler) {
-			CmUtil.alertWarning("Spieler einlesen", "Fehler beim Lesen, siehe Trace");
-			Trace.flush();
-		}
-	}
 
 	/**
 	 * Einlensen von File

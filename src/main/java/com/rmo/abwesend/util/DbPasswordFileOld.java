@@ -12,7 +12,7 @@ import com.rmo.abwesend.view.util.CmUtil;
  * Das DB-Passwort in ein File schreiben Wenn dieses File vorhanden ist, kann
  * eine Verbindung zur DB hergestellt werden.
  */
-public class DbPasswordFile {
+public class DbPasswordFileOld{
 	/** Name des Files */
 	private String mFileName = null;
 	/** Das File mit dem Password */
@@ -23,8 +23,10 @@ public class DbPasswordFile {
 	/**
 	 * MailControl constructor comment.
 	 */
-	public DbPasswordFile(String fileName) {
-		mFileName = Config.sMailControlPath = Config.sPath + "/" + fileName;
+	public DbPasswordFileOld(String fileName) {
+		// TODO stimmt das, am 6.8.24 geänder
+		//mFileName = Config.sMailControlPath = Config.sPath + "/" + fileName;
+		mFileName = Config.sPath + "/" + fileName;
 	}
 
 	/**

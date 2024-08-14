@@ -56,7 +56,7 @@ public class MailControl {
 	 */
 	private static void makeWriters() {
 		try {
-			StringBuffer fileName = new StringBuffer(Config.sMailControl);
+			StringBuffer fileName = new StringBuffer(Config.sMailControlFileName);
 			Date date = new Date();
 			fileName.append(Config.sdfDatum.format(date));
 			fileName.append(".txt");

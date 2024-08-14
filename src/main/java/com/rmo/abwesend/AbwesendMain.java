@@ -19,7 +19,7 @@ import com.rmo.abwesend.model.DbConnection;
 import com.rmo.abwesend.model.TennisDataBase;
 import com.rmo.abwesend.model.TraceDbData;
 import com.rmo.abwesend.util.Config;
-import com.rmo.abwesend.util.DbPasswordFile;
+import com.rmo.abwesend.util.PasswordFile;
 import com.rmo.abwesend.util.Trace;
 import com.rmo.abwesend.view.MainFrame;
 import com.rmo.abwesend.view.util.CmUtil;
@@ -33,7 +33,7 @@ import com.rmo.abwesend.view.util.CmUtil;
  */
 public class AbwesendMain {
 
-	private final static String version = "TCA CM abwesend, (V9.0)";
+	private final static String version = "TCA CM abwesend, (V9.3)";
 //	private static JOptionPane startFrame;
 
 	public AbwesendMain() {
@@ -48,8 +48,11 @@ public class AbwesendMain {
 		}
 
 		if (!checkDbPasswordFile()) {
-			CmUtil.alertWarning("Passwort Datenbank", "Passwort Datei für die Datenbank ist nicht vorhanden,\n"
-					+ "Muss zuerst angelegt werden, siehe auch Trace.txt, \n" + "in: " + Config.sPath);
+			CmUtil.alertWarning("Passwort Datenbank",
+					"Passwort Datei '" + Config.sPwFileName + "' für die Datenbank ist nicht vorhanden,\n"
+					+ "oder enthält kein Passwort für 'DB:' \n"
+					+ "Muss zuerst angelegt werden in: " + Config.sPath + "\n"
+					+ "Siehe auch Trace.txt");
 			return;
 		}
 
@@ -145,36 +148,14 @@ public class AbwesendMain {
 	 * @return
 	 */
 	private static boolean checkDbPasswordFile() {
-		DbPasswordFile dbPwFile = new DbPasswordFile(Config.sDbPwFileName);
-		if (dbPwFile.getDbPassword() == null) {
+		PasswordFile pwFile = PasswordFile.getInstance();
+		if (pwFile.getDbPassword() == null) {
 			return false;
 		} else {
 			return true;
 		}
 	}
 
-	/**
-	 * Testen, ob Zugriff auf DB
-	 *
-	 * @return
-	 */
-//	private static boolean checkDbConnection() {
-//		try {
-//			// test Connection zuerst
-//			DbConnection.getConnection();
-//		} catch (SQLException ex) {
-//			if (ex.getMessage().contains("Access denied")) {
-//				CmUtil.alertError(
-//						"Verbindung zur Datenbank kann nicht hergestellt werden," + " wahrscheinlich falsches Passwort",
-//						ex);
-//				return false;
-//			}
-//			CmUtil.alertError("Verbindung zur Datenbank kann nicht hergestellt werden,\n"
-//					+ "Ist eine Internetverbindung vorhanden?", ex);
-//			return false;
-//		}
-//		return true;
-//	}
 
 	/**
 	 * Trace schreiben, wer sich eingelogged hat.

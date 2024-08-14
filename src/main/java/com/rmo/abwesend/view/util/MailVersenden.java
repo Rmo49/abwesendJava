@@ -49,6 +49,7 @@ import com.rmo.abwesend.model.SpielerTableauData;
 import com.rmo.abwesend.model.Tableau;
 import com.rmo.abwesend.model.TableauData;
 import com.rmo.abwesend.util.Config;
+import com.rmo.abwesend.util.MailCheckList;
 import com.rmo.abwesend.util.MailFromFile;
 import com.rmo.abwesend.util.MailGenerator;
 import com.rmo.abwesend.util.MailSenden;
@@ -80,10 +81,14 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 	private String tableauSelected;
 	private JCheckBox anAlle;
 	private JCheckBox keineAbwesenheit;
-
+	private JCheckBox matches;
+	private JCheckBox checkMail;
+	private String mailCheckFileName;
+	private JTextField mailCheckFile;
+	
 	private MailGenerator mailGenerator;
 	private MailSenden mailSenden;
-//	private MailToFile mailToFile = null;
+
 
 	// Progress dialog
 	private JDialog dialog;
@@ -153,17 +158,6 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 		});
 		paneSel.add(anAlle);
 
-		paneSel.add(new JLabel(" /  oder noch "));
-		keineAbwesenheit = new JCheckBox("keine Abwensenheit");
-		keineAbwesenheit.setSelected(false);
-		keineAbwesenheit.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				keineAbwesenheitAction();
-			}
-		});
-		paneSel.add(keineAbwesenheit);
-
 		paneSel.add(new JLabel(" /  oder von Tableau: "));
 		ArrayList<String> tableauString = new ArrayList<>();
 		// Leerstring wenn nichts gewählt
@@ -188,10 +182,32 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 		paneSel.add(tableauCombo);
 		compPanel.add(paneSel, getConstraintNext(1, zeileNr++));
 
+		// --- mail wenn noch keine Abwesenheiten eingetragen
+		JPanel paneAbwesend = new JPanel(new FlowLayout());
+		keineAbwesenheit = new JCheckBox("Abwensenheit noch nicht eingegeben");
+		keineAbwesenheit.setSelected(false);
+		keineAbwesenheit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				keineAbwesenheitAction();
+			}
+		});
+		paneAbwesend.add(keineAbwesenheit);
+		compPanel.add(paneAbwesend, getConstraintNext(1, zeileNr++));
+
 		// --- Match von ... bis
 		JPanel paneMatch = new JPanel(new FlowLayout());
-		paneMatch.add(new JLabel("/ oder Datum der Matches ab: "));
-		// DatumSpanne
+		matches = new JCheckBox("Nächste Spiele von: ");
+		matches.setSelected(false);
+		matches.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				matchesAction();
+			}
+		});
+		paneMatch.add(matches);
+		
+		// --- DatumSpanne
 		vonDatum = new JFormattedTextField(Config.sdfDatum);
 		vonDatum.setPreferredSize(Config.datumFeldSize);
 		paneMatch.add(vonDatum);
@@ -201,6 +217,26 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 		paneMatch.add(bisDatum);
 		compPanel.add(paneMatch, getConstraintNext(1, zeileNr++));
 
+		JPanel paneMailCheck = new JPanel(new FlowLayout());
+		checkMail = new JCheckBox("Keine Mails in: ");
+		checkMail.setSelected(false);
+		checkMail.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				checkMailAction();
+			}
+		});
+		paneMailCheck.add(checkMail);
+
+		mailCheckFile = new JTextField();
+		mailCheckFile.setText(mailCheckFileName);
+		mailCheckFile.setPreferredSize(new Dimension(450, Config.textFieldHeigth));
+		mailCheckFile.setEditable(true);
+
+		paneMailCheck.add(mailCheckFile);
+		compPanel.add(paneMailCheck, getConstraintNext(1, zeileNr++));
+
+		// --- mail adresse
 		compPanel.add(new JLabel("TO:"), getConstraintFirst(0, zeileNr));
 
 		JPanel paneTo = new JPanel(new FlowLayout());
@@ -292,6 +328,7 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 		}
 		keineAbwesenheit.setEnabled(enable);
 		tableauCombo.setEnabled(enable);
+		matches.setEnabled(enable);
 		vonDatum.setEnabled(enable);
 		bisDatum.setEditable(enable);
 	}
@@ -303,11 +340,30 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 		boolean enable = true;
 		if (keineAbwesenheit.isSelected()) {
 			enable = false;
+			mailCheckFileName = Config.sMailCheckPath + "/" + Config.sMailCheckAbwesend;
+			mailCheckFile.setText(mailCheckFileName);
 		}
 		anAlle.setEnabled(enable);
 		tableauCombo.setEnabled(enable);
+		matches.setEnabled(enable);
 		vonDatum.setEnabled(enable);
 		bisDatum.setEditable(enable);
+	}
+
+	/**
+	 * Wenn matches senden
+	 */
+	private void matchesAction() {
+		boolean enable = true;
+		if (matches.isSelected()) {
+			matches.setEnabled(enable);
+			vonDatum.setEnabled(enable);
+			bisDatum.setEditable(enable);
+			enable = false;
+		}
+		anAlle.setEnabled(enable);
+		tableauCombo.setEnabled(enable);
+		keineAbwesenheit.setEnabled(enable);
 	}
 
 	/**
@@ -320,8 +376,20 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 		}
 		anAlle.setEnabled(enable);
 		keineAbwesenheit.setEnabled(enable);
+		matches.setEnabled(enable);
 		vonDatum.setEnabled(enable);
 		bisDatum.setEditable(enable);
+	}
+
+	/**
+	 * Wenn checkMail selektiert etwas selektiert
+	 */
+	private void checkMailAction() {	
+		if (checkMail.isSelected()) {
+			mailCheckFile.setEnabled(true);
+		} else {
+			mailCheckFile.setEnabled(false);
+		}
 	}
 
 	/**
@@ -372,7 +440,9 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 	}
 
 	/**
-	 * Die Liste der Matches erstellen und dann den mail-Generator aufrufen.
+	 * Die nötingen Infos zusammenstellen, dass die mail versendet weden können. Die
+	 * Liste der Matches erstellen und dann den mail-Generator aufrufen. Welche
+	 * mails gesendet werden wird in doInBackgground des Tasks evaluiert.
 	 */
 	private void generateMails() {
 		doGenerate = true;
@@ -394,7 +464,6 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 				anAlle.isSelected(), keineAbwesenheit.isSelected());
 		// Popup anzeigen, das dann den Prozess startet
 		showPopup();
-
 	}
 
 	/**
@@ -471,7 +540,7 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 			dialog = new JDialog(mainFrame, "Mails senden");
 			dialog.setLocationRelativeTo(btnMailSenden);
 		}
-		dialog.setSize(200, 250);
+		dialog.setSize(500, 250);
 		dialog.setModal(true);
 
 		JPanel panel = new JPanel();
@@ -547,6 +616,7 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 		}
 	}
 
+	
 //-------- MyTask für versenden der mails ------------------------------------
 	class TaskMail extends SwingWorker<Void, Void> {
 
@@ -554,6 +624,7 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 		// für Progress
 		double last = 200;
 		int progress = 0;
+		MailCheckList mailCheckList = null;
 
 		/*
 		 * Main task. Executed in background thread. Hier wird das einlesen ausgeführt.
@@ -589,6 +660,7 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 		 * @return
 		 */
 		private void generateAlleSpieler() {
+			Trace.println(3, "MailVersenden.generateAlleSpieler()");		
 			List<Spieler> listSpieler = null;
 			try {
 				listSpieler = SpielerData.instance().readAllSpieler();
@@ -615,6 +687,7 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 		 * @return
 		 */
 		private void generateKeineAbwesenheit() {
+			Trace.println(3, "MailVersenden.generateKeineAbwesenheit()");
 			List<Spieler> listSpieler = null;
 			try {
 				listSpieler = SpielerData.instance().readAllSpieler();
@@ -623,6 +696,9 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 			}
 			int pos = 0; // für die Berechnung des Fortschrittes
 			last = listSpieler.size();
+			
+			// immer aktivieren für kontrolle
+			mailCheckList = new MailCheckList(mailCheckFileName);
 
 			for (Spieler spieler : listSpieler) {
 				double k = pos / last * 100;
@@ -631,9 +707,18 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 
 				// wenn keine Abwesenheit eingetragen
 				if (!spieler.hasAbwesenheit()) {
-					mailGenerator.generateMail(spieler);
+					// wenn noch kein mail vesendet
+					if (checkMail.isSelected()) {
+						if (checkSpielerMail(spieler.getId())) {
+							mailGenerator.generateMail(spieler);
+						}
+					} else {
+						mailGenerator.generateMail(spieler);
+					}
+					mailCheckList.addMailSent(spieler.getId());
 				}
 			}
+			mailCheckList.save();
 			mailGenerator.closeFile();
 		}
 
@@ -662,6 +747,7 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 		 * Iteration über die ganze Liste der selektierten Matches.
 		 */
 		private void generateMatches() {
+			Trace.println(3, "MailVersenden.generateMatches()");
 			int spielerIdLast = -1;
 			int pos = 0; // für die Berechnung des Fortschrittes
 			Match match = null;
@@ -699,6 +785,21 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 			// noch den letzten match senden
 			mailGenerator.generateMail(listMatchSpieler);
 			mailGenerator.closeFile();
+		}
+
+		/**
+		 * Prüfen, ob ein mail gesendet werden soll. Wenn das datum > als das für den
+		 * Spieler gespeicherte dann mail senden, diese Datum wieder in der Liste
+		 * eintragen
+		 * 
+		 * @param datum das geprüft wird
+		 * @return true wenn datum > als das gespeicherte
+		 */
+		private boolean checkSpielerMail(int spielerId) {
+			if (checkMail.isSelected()) {
+				return mailCheckList.canSend(spielerId);
+			}
+			return true;
 		}
 
 		/**
@@ -753,17 +854,6 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 			return sb.toString();
 		}
 
-		/*
-		 * die mail in ein File schreiben, zu Testzwechen
-		 */
-//		private void writeMailToFile(String toAdresse, String betreff, String message) {
-//			if (mailToFile == null) {
-//				mailToFile = new MailToFile(Config.sMailTestPath);
-//			}
-//			mailToFile.println(toAdresse);
-//			mailToFile.println(betreff);
-//			mailToFile.println(message);
-//		}
 
 		/*
 		 * Executed in event dispatching thread. Wenn erledigt wird diese Methode

@@ -251,7 +251,7 @@ public class SpielerSelektieren {
 	/**
 	 * Der Comparator für das Soriteren der Namen
 	 */
-	Comparator<SpielerKurz> spielerKurzComparator = new Comparator<>() {
+	Comparator<SpielerKurz> spielerKurzComparator = new Comparator<SpielerKurz>() {
 		@Override
 		public int compare(SpielerKurz o1, SpielerKurz o2) {
 			return o1.getName().compareTo(o2.getName());
@@ -261,7 +261,7 @@ public class SpielerSelektieren {
 	/**
 	 * Der Comparator für das Soriteren der Namen
 	 */
-	Comparator<Spieler> spielerComparator = new Comparator<>() {
+	Comparator<Spieler> spielerComparator = new Comparator<Spieler>() {
 		@Override
 		public int compare(Spieler o1, Spieler o2) {
 			return o1.getName().compareTo(o2.getName());

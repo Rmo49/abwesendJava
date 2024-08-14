@@ -67,12 +67,15 @@ public class Config {
 	public static final String sTraceFileName = "Trace.txt";
 	public static final String sMailToSend = "MailToSend.txt";
 	public static String sMailToSendPath = "";
-	public static final String sMailControl = "MailControl";
+	// extension wird später angehängt
+	public static final String sMailControlFileName = "MailControl";
 	public static String sMailControlPath = "";
-	public static final String sMailTest = "MailTest.txt";
-	public static String sMailTestPath = "";
+	public static String sMailCheckPath = "";
+	public static final String sMailCheckAbwesend = "MailCheckAbwesend.txt";
+	
 
 	public static final String sDbPwFileName = "DbPassword.txt";
+	public static final String sPwFileName = "Passwords.txt";
 
 	/** Die Properties, gespeichert in der Config-Datei */
 	private static Properties mProperties;
@@ -104,8 +107,6 @@ public class Config {
 	public static String dbUrlSetting = "?useLegacyDatetimeCode=false&serverTimezone=UTC";
 	public static final String dbUserKey = "db.username";
 	public static String dbUser = "javacon";
-//	public static final String dbPasswordKey = "db.password";
-//	public static String dbPassword = "Tennis4123";
 
 	// --- Download von der Tennis-Homepage (Properties)
 	public static final String webDriverKey = "browser.webdriverTyp";
@@ -224,7 +225,7 @@ public class Config {
 
 	// --- mail senden
 	public static final String emailUser = "email.user";
-	public static final String emailPassword = "email.passwort";
+//	public static final String emailPassword = "email.passwort";
 	public static final String emailHostImap = "email.hostImap";
 	public static final String emailHostSmtp = "email.hostSmtp";
 	public static final String emailSmtpPort = "email.smtpPort";
@@ -305,7 +306,7 @@ public class Config {
 
 		// das file für mails versenden
 		sMailToSendPath = sPath + "/" + sMailToSend;
-		sMailTestPath = sPath + "/" + sMailTest;
+		sMailCheckPath = sPath;
 	}
 
 	/**
@@ -555,9 +556,6 @@ public class Config {
 		if (mProperties.getProperty(emailUser) == null) {
 			mProperties.setProperty(emailUser, "cm@tcallschwil.ch");
 		}
-		if (mProperties.getProperty(emailPassword) == null) {
-			mProperties.setProperty(emailPassword, "xxx");
-		}
 		if (mProperties.getProperty(emailHostImap) == null) {
 			mProperties.setProperty(emailHostImap, "imap.mail.hostpoint.ch");
 		}
@@ -736,7 +734,7 @@ public class Config {
 			mPropertyList.add(properityKeys.nextElement());
 		}
 
-		Collections.sort(mPropertyList, new Comparator<>() {
+		Collections.sort(mPropertyList, new Comparator<Object>() {
 
 			@Override
 			public int compare(Object o1, Object o2) {

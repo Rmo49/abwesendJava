@@ -12,7 +12,7 @@ public class MailFromFile {
 	/** Stringbuffer für Message */
 	/** Das File von dem gelesen wird */
 	private FileInputStream fstream = null;
-	private BufferedReader br = null;
+	private BufferedReader buffReader = null;
 
 	/**
 	 * MailControl constructor comment.
@@ -36,7 +36,7 @@ public class MailFromFile {
 			makeReader();
 		}
 		try {
-			return br.readLine();
+			return buffReader.readLine();
 		} catch (IOException ex) {
 			return "";
 		}
@@ -57,7 +57,7 @@ public class MailFromFile {
 		String line = "";
 		while (line != null) {
 			try {
-				line = br.readLine();
+				line = buffReader.readLine();
 			} catch (IOException ex) {
 				break;
 			}
@@ -80,7 +80,7 @@ public class MailFromFile {
 	private void makeReader() {
 		try {
 			fstream = new FileInputStream(Config.sMailToSendPath);
-			br = new BufferedReader(new InputStreamReader(fstream));
+			buffReader = new BufferedReader(new InputStreamReader(fstream));
 		} catch (IOException ex) {
 			Trace.println(0, "MailControl.makeReader: " + ex.getMessage());
 		}
