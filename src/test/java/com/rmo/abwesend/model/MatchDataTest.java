@@ -168,7 +168,7 @@ public class MatchDataTest extends TestCase {
     			List<Match> matches = MatchData.instance().readAll(spielerListe.get(0).getId());
     			Match match = matches.get(0);
     			assertEquals(spielerListe.get(0).getId(), match.getSpielerId());
-    			assertNotNull(match.getDatum());		
+    			assertNotNull(match.getDatumZeit());		
     		}
 	    	catch (Exception ex) {
 	    		fail(ex.getMessage());

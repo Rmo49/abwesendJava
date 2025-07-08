@@ -1,16 +1,18 @@
-Spieler von Excel
-- Button einfügen: Spieler -> Tableau löschen
 
 DB Connection
 - Wenn keine Daten, kann nix eingegeben werden.
 
+
 mail
-- Passwort: auch in Datei "DBPasswort" => oder in seperatem file "Passworte"
-- MailCheck einige ID's werden mehrmals gespeichert, wenn beim zweiten Versand keine Abwesenheiten gefunden
-	=> mail senden und Eintrag MailCheck
+
 
 - Mail versenden, Layout im Setup Fenster von Mail-Text sollte nicht verkleinern
 - evt. SMS senden.
+	Beispiele für solche Dienste sind Twilio, Nexmo (jetzt Teil von Vonage) oder MessageBird.
+	Twilio: $0.0725 per SMS
+	Vonage: https://www.vonage.com/communications-apis/sms/ , $0.07885 per message
+
+	
 
 Fehler
 - Abwesend eintragen wenn Wert geändert und verlassen will, fragen ob Speichern

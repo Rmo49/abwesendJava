@@ -304,11 +304,11 @@ public class KalenderBase extends JComponent {
 		try {
 			matches = MatchData.instance().readAll(pSpieler.getId());
 		} catch (Exception ex) {
-			// TODO wenn fehler
+			// wenn fehler nix tun
 		}
 		if (matches != null && matches.size() > 0) {
 			for (Match match : matches) {
-				int pos = (int) getPos(match.getDatum());
+				int pos = (int) getPos(match.getDatumZeit());
 				if (pos >= 0 && pos < Config.showEndNumber) {
 					pSpieler.setSpielAt(pos, match.getSpielTyp() + match.getZeit(), true);
 				}

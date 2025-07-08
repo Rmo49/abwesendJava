@@ -1,6 +1,5 @@
 package com.rmo.abwesend.model;
 
-import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,8 +18,10 @@ public class TennisDataBase {
 
 	/** Verbindung zu Data bean */
 	private static String useName = "USE " + Config.dbName;
-
+	public static final int numberOfTabels = 7;
+	
 	private static String dbError;
+	private static String tableMissing;
 
 	/**
 	 * Prüft, ob eine DB vorhanden, liest die Tabelle config
@@ -36,22 +37,14 @@ public class TennisDataBase {
 			dbError = "";
 		}
 		try {
-			Connection conn = DbConnection.getConnection();
-			DatabaseMetaData dbmd = conn.getMetaData();
-
-			ResultSet tables = dbmd.getTables(null, null, ConfigDbData.tableName, null);
-			if (tables.next()) {
-				// Table exists
-				return true;
-			} else {
-				dbError = "keine Tabellen in der DB gefunden";
-				return false;
-			}
+			// Connection aufbauen
+			DbConnection.getConnection();
 		} catch (SQLException ex) {
 			dbError = "TennisDataBase.dbExists(), Fehler: " + ex.getMessage();
 			Trace.println(1, "TennisDataBase.dbExists(), Fehler: " + ex.getMessage());
 			return false;
 		}
+		return true;
 	}
 
 	/**
@@ -61,6 +54,91 @@ public class TennisDataBase {
 	 */
 	public static String getDbError() {
 		return dbError;
+	}
+
+	/**
+	 * Prüfen, ob alle Tabellen vorhanden sind.
+	 * 
+	 * @return
+	 */
+	public static boolean allTablesExist() {
+		StringBuffer tableFehlt = new StringBuffer();
+		checkTable(ConfigDbData.tableName, tableFehlt);
+		checkTable(BenutzerData.tableName, tableFehlt);
+
+		// TODO weitere Tabllen dazufügen
+		if (tableFehlt.length() < 1) {
+			return true;
+		}
+		tableMissing = tableFehlt.toString();
+		return false;
+	}
+
+	/**
+	 * Tabelle prüfen, wenn nicht existiert, Name dem Buffer anhängen.
+	 * 
+	 * @param tableName, die Tabekke
+	 * @param noTable,   die Liste der Tabllen
+	 * @return
+	 */
+	private static StringBuffer checkTable(String tableName, StringBuffer noTable) {
+		if (!tableExist(tableName)) {
+			noTable.append(tableName);
+			noTable.append(", ");
+		}
+		return noTable;
+	}
+
+	/**
+	 * Prüfen, ob die Tabelle existiert
+	 */
+	public static boolean tableExist(String tableName) {
+		try {
+			DatabaseMetaData dbmd = DbConnection.getConnection().getMetaData();
+
+			// prüfen, ob Tabelle exisitert
+			ResultSet tables = dbmd.getTables(null, null, tableName, new String[] { "TABLE" });
+			if (tables.next()) {
+				// Table exists
+//				String na = tables.getString("Table_NAME");
+				// System.out.println(na);
+				return true;
+			} else {
+				return false;
+			}
+		} catch (SQLException ex) {
+			dbError = "TennisDataBase.tableExists(), Fehler: " + ex.getMessage();
+			Trace.println(1, "TennisDataBase.tableExists(), Fehler: " + ex.getMessage());
+			return false;
+		}
+	}
+
+	/**
+	 * Prüfen, ob alle Tabellen voerhanden sind.
+	 */
+	public static int countTables(String dbName) {
+		int anzahl = 0;
+		try {
+			DatabaseMetaData dbmd = DbConnection.getConnection().getMetaData();
+			// prüfen, ob Tabelle exisitert
+			ResultSet tables = dbmd.getTables(dbName, null, "%", new String[] { "TABLE" });
+
+			while (tables.next()) {
+				anzahl++;
+				// Table exists
+				// String na = tables.getString("Table_NAME");
+				// System.out.println(na);
+			}
+		} catch (SQLException ex) {
+			dbError = "TennisDataBase.tableExists(), Fehler: " + ex.getMessage();
+			Trace.println(1, "TennisDataBase.tableExists(), Fehler: " + ex.getMessage());
+			return 0;
+		}
+		return anzahl;
+	}
+
+	public static String getTableMissing() {
+		return tableMissing;
 	}
 
 	/**
@@ -86,27 +164,34 @@ public class TennisDataBase {
 	 *
 	 * @throws SQLException
 	 */
-	public static void generateNewTables() throws SQLException {
+	public static boolean generateNewTables() {
 		generateDb();
+		try {
+			Statement statement = DbConnection.getConnection().createStatement();
 
-		Statement statement = DbConnection.getConnection().createStatement();
+			statement.execute(useName);
+			statement.execute(SpielerData.createTable());
+			statement.execute(TableauData.createTable());
+			statement.execute(SpielerTableauData.createTable2());
+			statement.execute(MatchData.createTable2());
+			statement.execute(ConfigDbData.createTable());
+			statement.execute(TraceDbData.createTable());
+			statement.execute(MailData.createTable());
 
-		statement.execute(useName);
-		statement.execute(SpielerData.createTable());
-		statement.execute(TableauData.createTable());
-		statement.execute(SpielerTableauData.createTable2());
-		statement.execute(MatchData.createTable2());
-		statement.execute(ConfigDbData.createTable());
-		statement.execute(TraceDbData.createTable());
-		statement.execute(MailData.createTable());
-
-		statement.close();
+			statement.close();
+		} catch (SQLException ex) {
+			Trace.println(1, "TennisDataBase.generateNewTables(), Fehler: " + ex.getMessage());
+			return false;
+		}
+		return true;
 	}
 
+	/**
+	 * Eine neue DB anlegen
+	 */
 	public static void generateDb() {
 		boolean gefunden = false;
 		try {
-
 			ResultSet resultSet = DbConnection.getConnection().getMetaData().getCatalogs();
 
 			while (resultSet.next()) {
@@ -130,6 +215,5 @@ public class TennisDataBase {
 				Trace.println(1, "TennisDataBase.generateDb(), Fehler: " + ex.getMessage());
 			}
 		}
-
 	}
 }

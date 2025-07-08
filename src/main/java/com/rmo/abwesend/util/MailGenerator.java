@@ -59,7 +59,7 @@ public class MailGenerator {
 	}
 
 	/**
-	 * Eine mail an einen Spieler senden
+	 * Eine mail an einen Spieler in ein File schreiben
 	 * 
 	 * @param matches      alle matches eines Spielers
 	 * @param test         wenn in Test-Mode
@@ -135,7 +135,7 @@ public class MailGenerator {
 			for (Match match : matches) {
 				Date datum = null;
 				try {
-					datum = Config.sdfDb.parse(match.getDatum());
+					datum = Config.sdfDb.parse(match.getDatumZeit());
 				} catch (Exception ex) {
 					// nix tun sollte nicht passieren
 				}

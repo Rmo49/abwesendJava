@@ -37,15 +37,19 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+import com.rmo.abwesend.model.Match;
 import com.rmo.abwesend.model.MatchData;
+import com.rmo.abwesend.model.SpielerData;
+import com.rmo.abwesend.model.SpielerKurz;
 import com.rmo.abwesend.util.Config;
 import com.rmo.abwesend.util.ExcelSpielplan;
 import com.rmo.abwesend.util.Trace;
 import com.rmo.abwesend.view.util.CmUtil;
 
 /**
- * Spiele von einem excel-File einlesen Zuerst wird das File mit den Spieldaten
- * heruntergeladen von Swisstennis und dann werden die Daten eingelesen.
+ * Spiele von einem excel-File von Swisstennis einlesen Zuerst wird das File mit
+ * den Spieldaten heruntergeladen von Swisstennis und dann werden die Daten
+ * eingelesen.
  * 
  * @author Ruedi
  *
@@ -58,6 +62,8 @@ public class MatchesImport extends BasePane implements ActionListener, PropertyC
 	private WebDriver driver;
 	private JButton btnEinlesen;
 	private JCheckBox spieleLoeschen;
+	private JButton btnCheckMatches;
+
 
 	// Progress dialog
 	private JDialog dialog;
@@ -128,6 +134,7 @@ public class MatchesImport extends BasePane implements ActionListener, PropertyC
 
 		pane.add(new JLabel(" "), getConstraintFirst(0, row++));
 
+		// --- Spieldaten einlesen
 		JLabel labelTitel2 = new JLabel("Spieldaten einlesen");
 		labelTitel2.setFont(Config.fontTitel);
 		gbc = getConstraintNext(0, row++);
@@ -175,6 +182,22 @@ public class MatchesImport extends BasePane implements ActionListener, PropertyC
 		});
 		pane.add(btnEinlesen, getConstraintFirst(0, row++));
 
+		// --- Gibt es Matches zur gleichen Zeit?
+		
+		pane.add(new JLabel(" "), getConstraintFirst(0, row++));
+
+		btnCheckMatches = new JButton("Matches überprüfen");
+		btnCheckMatches.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				btnCheckMatches.setEnabled(false);
+				
+				CmUtil.info("Spielzeiten geprüft ", checkTimeOfPlayer());
+			}
+		});
+				
+		pane.add(btnCheckMatches, getConstraintFirst(0, row++));
+		
 		return pane;
 	}
 
@@ -351,6 +374,7 @@ public class MatchesImport extends BasePane implements ActionListener, PropertyC
 		btnStart.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnStart.setEnabled(true);
 		btnStart.addActionListener(this);
+		// siehe => MyTask.doInBackground
 		panel.add(btnStart);
 		addSpace(panel);
 
@@ -416,7 +440,7 @@ public class MatchesImport extends BasePane implements ActionListener, PropertyC
 		// we create new instances as needed.
 		task = new MyTask();
 		task.addPropertyChangeListener(this);
-		task.execute();
+		task.execute(); // <== weiter in Klasse MyTask.doInBackground()
 	}
 
 	/**
@@ -434,6 +458,68 @@ public class MatchesImport extends BasePane implements ActionListener, PropertyC
 			progressBar.setValue(progress);
 //			message.setText("Progress: " + task.getProgress());
 		}
+	}
+
+	/**
+	 * Prüfen, ob ein Spieler zur gleichen Zeit geplant wurde
+	 */
+	private String checkTimeOfPlayer() {
+		Trace.println(4, "Start Zeiten überprüfen");
+		StringBuffer buff = new StringBuffer();
+		List<SpielerKurz> spielerList = null;
+		try {
+			spielerList = SpielerData.instance().readAllKurz();
+		} catch (Exception ex) {
+			Trace.println(3, "Fehler beim Spieler lesen. " + ex.getMessage());
+		}
+		List<Match> matches = null;
+		for (SpielerKurz spk : spielerList) {
+			try {
+				matches = MatchData.instance().readAll(spk.getId());
+			} catch (Exception ex) {
+				// wenn keine Matches dann ok
+			}
+			if (matches != null && matches.size() > 0) {
+				matchesVergleichen(matches, spk);
+			}
+		}
+		buff.append("Spieler check, siehe Trace");
+		return buff.toString();
+	}
+
+	/**
+	 * Die Liste der Matches vergleichen und wenn zur gleichen Zeit message setzen
+	 * 
+	 * @param matches
+	 */
+	private void matchesVergleichen(List<Match> matches, SpielerKurz spk) {
+		// Datum werden in soriterter Reihenfolge geliefert,
+		// ist ein String "2024-08-16 19:00"
+		String datumLast = "";
+		int zeitLast = 0;
+		for (Match match : matches) { // hier prüfen
+			String datum = match.getDatum();
+			if (datumLast.length() > 0) {
+				if (datumLast.compareTo(datum) == 0) {
+					// gleiches Datum
+					if (zeitLast > 0) {
+						// TODO hier prüfen
+						if (zeitLast+2 > match.getZeitAsInt()) {
+							Trace.println(5, "Check Spiel von Spieler: " + spk.getName() +" am " + match.getDatumZeit());
+						}
+					}
+				}
+				else {
+					// nächstes Datum
+					datumLast = match.getDatum();
+					zeitLast = match.getZeitAsInt();
+				}
+			}
+			// hier setzen für den nächsten Durchgang
+			datumLast = match.getDatum();
+			zeitLast = match.getZeitAsInt();
+		}
+
 	}
 
 //-------- MyTask für Einlesen der Match-Daten vom File.
@@ -489,11 +575,14 @@ public class MatchesImport extends BasePane implements ActionListener, PropertyC
 		@Override
 		public void done() {
 //	            Toolkit.getDefaultToolkit().beep();
+//			String check = checkTimeOfPlayer();
+//			message.setText(check);
 			btnLoeschen.setEnabled(true);
 			btnSchliessen.setEnabled(true);
 //	            setCursor(null); //turn off the wait cursor
 			message.append(excelPlan.readEnd());
 			dialog.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		}
+
 	}
 }

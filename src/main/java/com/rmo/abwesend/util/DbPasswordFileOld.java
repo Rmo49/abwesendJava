@@ -9,6 +9,7 @@ import javax.xml.bind.DatatypeConverter;
 import com.rmo.abwesend.view.util.CmUtil;
 
 /**
+ * TODO ganze Klasse löschen, 25.07.07
  * Das DB-Passwort in ein File schreiben Wenn dieses File vorhanden ist, kann
  * eine Verbindung zur DB hergestellt werden.
  */
@@ -24,8 +25,6 @@ public class DbPasswordFileOld{
 	 * MailControl constructor comment.
 	 */
 	public DbPasswordFileOld(String fileName) {
-		// TODO stimmt das, am 6.8.24 geänder
-		//mFileName = Config.sMailControlPath = Config.sPath + "/" + fileName;
 		mFileName = Config.sPath + "/" + fileName;
 	}
 

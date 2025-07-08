@@ -319,7 +319,7 @@ public class SpielerDatenImport extends BasePane implements ActionListener, Prop
 		// Ein Popup-Window erstellen
 		dialog = new JDialog(mainFrame, "Spieler importieren");
 		dialog.setLocationRelativeTo(btnEinlesen);
-		dialog.setSize(200, 250);
+		dialog.setSize(350, 400);
 		dialog.setModal(true);
 
 		JPanel panel = new JPanel();
@@ -341,6 +341,7 @@ public class SpielerDatenImport extends BasePane implements ActionListener, Prop
 		panel.add(progressBar);
 		addSpace(panel);
 
+		// TODO Aerea grösse beschränken, mit Slider an der Seite
 		message = new JTextArea(5, 1);
 		message.setMargin(new Insets(5, 5, 5, 5));
 		message.setEditable(false);
@@ -463,6 +464,7 @@ public class SpielerDatenImport extends BasePane implements ActionListener, Prop
 			while (iterator.hasNext()) {
 				i++;
 				Row lRow = iterator.next();
+
 				excelSpieler.readLine(lRow); // <=== hier wird verarbeitet
 				double k = i / last * 100;
 				progress = (int) k;

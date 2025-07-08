@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class BenutzerData {
 
+	public static final String tableName = "benutzer";
 	/**
 	 * Das Create Statement für diese Tabelle
 	 * 
@@ -19,7 +20,8 @@ public class BenutzerData {
 	 */
 	public static String createTable() {
 		StringBuffer sb = new StringBuffer(300);
-		sb.append(" CREATE TABLE IF NOT EXISTS benutzer (");
+		sb.append(" CREATE TABLE IF NOT EXISTS ");
+		sb.append(tableName);
 		sb.append(" name VARCHAR(20) NOT NULL, passwort VARCHAR(20) DEFAULT NULL");
 		sb.append(");");
 		return sb.toString();

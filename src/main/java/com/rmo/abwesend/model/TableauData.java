@@ -23,8 +23,8 @@ public class TableauData {
 		StringBuffer sb = new StringBuffer(300);
 		sb.append(" CREATE TABLE IF NOT EXISTS tableau (");
 		sb.append(
-				" tableauID INT unsigned NOT NULL AUTO_INCREMENT, bezeichnung VARCHAR(25) DEFAULT NULL, position VARCHAR(2) DEFAULT NULL,");
-		sb.append(" konkurrenz VARCHAR(25) DEFAULT NULL, PRIMARY KEY (tableauID)");
+				" tableauID INT unsigned NOT NULL AUTO_INCREMENT, bezeichnung VARCHAR(50) DEFAULT NULL, position VARCHAR(2) DEFAULT NULL,");
+		sb.append(" konkurrenz VARCHAR(50) DEFAULT NULL, PRIMARY KEY (tableauID)");
 		sb.append(");");
 		return sb.toString();
 	}

@@ -42,7 +42,7 @@ public class AbwesendMain {
 
 		// die Einstellungen vom File lesen (enthält Adresse von DB)
 		if (!readProperties()) {
-			JOptionPane.showMessageDialog(null, "kann Config nicht lesen, ist die Verbindung mit dem Internet ok?",
+			JOptionPane.showMessageDialog(null, "kann Config Daten nicht lesen",
 					"Config lesen", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
@@ -50,7 +50,7 @@ public class AbwesendMain {
 		if (!checkDbPasswordFile()) {
 			CmUtil.alertWarning("Passwort Datenbank",
 					"Passwort Datei '" + Config.sPwFileName + "' für die Datenbank ist nicht vorhanden,\n"
-					+ "oder enthält kein Passwort für 'DB:' \n"
+					+ "oder enthält kein Passwort für 'DB=' \n"
 					+ "Muss zuerst angelegt werden in: " + Config.sPath + "\n"
 					+ "Siehe auch Trace.txt");
 			return;
@@ -58,9 +58,24 @@ public class AbwesendMain {
 
 		// prüfen, ob DB vorhanden, dann normal weiter
 		if (TennisDataBase.dbExists()) {
+			if (TennisDataBase.countTables("tennis") < TennisDataBase.numberOfTabels) {
+				int wahl = JOptionPane.showConfirmDialog(null, "Einige Tabellen fehlen, diese anlegen?", "Start", 
+						JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null);
+				if (wahl == JOptionPane.YES_OPTION) {
+					if (TennisDataBase.generateNewTables()) {
+						// alles ok
+					}
+					else {
+						JOptionPane.showMessageDialog(null, "Probleme bei Tabllen anlegen, siehe Trace",
+								"Neue Tabellen", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+			}
 			readConfiguration();
-		} else {
-			CmUtil.alertError("Database check", TennisDataBase.getDbError());
+		}
+		else {
+			JOptionPane.showMessageDialog(null, "Kann Datenbank nicht lesen, siehe Trace",
+					"DB öffnen", JOptionPane.ERROR_MESSAGE);
 		}
 
 		mainFrame = new MainFrame(version);
@@ -97,6 +112,7 @@ public class AbwesendMain {
 		mainFrame.setVisible(true);
 	}
 
+	
 	/**
 	 * Alle Configuration daten lesen
 	 *
@@ -124,7 +140,7 @@ public class AbwesendMain {
 	 * @return
 	 */
 	private static boolean readConfiguration() {
-		// DB-File vorhanden
+		// DB-Eintrag vorhanden?
 
 		try {
 			// Config von DB einlesen
@@ -139,8 +155,8 @@ public class AbwesendMain {
 			return true;
 		}
 		return true;
-
 	}
+	
 
 	/**
 	 * prüfen, ob Passwort-File vorhanden ist, wenn ein Passwort zurückgegeben wird.

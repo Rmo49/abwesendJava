@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -38,7 +37,7 @@ import com.rmo.abwesend.model.TraceDbData;
 import com.rmo.abwesend.util.Config;
 
 /**
- * Spieler von einem File einlesen
+ * Aktionen auf der DB ausführen
  * 
  * @author Ruedi
  *
@@ -247,9 +246,15 @@ public class DbActions {
 		@Override
 		public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
 				boolean cellHasFocus) {
-			JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-			Tableau tableau = (Tableau) value;
-			label.setText(tableau.getBezeichnung());
+			JLabel label;
+			if (value == null) {
+				label = new JLabel();
+				label.setText("xx");
+			} else {
+				label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+				Tableau tableau = (Tableau) value;
+				label.setText(tableau.getBezeichnung());
+			}
 			return label;
 		}
 	}
@@ -258,11 +263,10 @@ public class DbActions {
 	 * Eine neue DB anlegen
 	 */
 	private void startNewDb() {
-		try {
-			TennisDataBase.generateNewTables();
+		if (TennisDataBase.generateNewTables()) {
 			CmUtil.info("DB generieren", "Datenbank generiert, >>> Programm neu starten");
-		} catch (SQLException ex) {
-			CmUtil.alertError("DB generieren", "Fehler: " + ex.getMessage());
+		} else {
+			CmUtil.info("DB generieren", "Fehler siehe Trace");
 		}
 	}
 

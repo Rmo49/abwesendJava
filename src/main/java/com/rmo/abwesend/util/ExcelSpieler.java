@@ -154,6 +154,9 @@ public class ExcelSpieler {
 	 */
 	private void getIndexRow(Row lRow) {
 		Cell cell = lRow.getCell(0);
+		if (cell == null) {
+			return;
+		}
 		if (cell.getStringCellValue().compareToIgnoreCase(mKonkurrenz) == 0) {
 			// Zeile mit Index gefunden
 			Trace.println(4, "ExcelSpieler Indexzeile gefunden");
@@ -163,7 +166,7 @@ public class ExcelSpieler {
 	}
 
 	/**
-	 * Die Kolonnen-Nummer setzen TODO: wenn nicht gefunden, dann Fehlermeldung
+	 * Die Kolonnen-Nummer setzen
 	 * 
 	 * @param lRow
 	 */
@@ -188,6 +191,7 @@ public class ExcelSpieler {
 
 	/**
 	 * Überprüft, ob alle cols gesetzt sind.
+	 * Wenn nicht, das wird eine Fehlermeldung ausgegeben
 	 */
 	private void checkColSet() {
 		if (colKonkurrenz < 0) {
@@ -225,12 +229,14 @@ public class ExcelSpieler {
 
 	/**
 	 * Wird vom Prozess aufgerufen, einlesen einer Zeile.
+	 * Sucht zuerst die Zeile des ersten Eintrages
 	 */
 	public void readLine(Row lRow) {
-		// zuerst die Colnummern setzen
 		if (colKonkurrenz < 0) {
+			// zuerst die Col-nummern setzen
 			getIndexRow(lRow);
 		} else {
+			// wenn die Col gefunden ist
 			if (colName1Set) {
 				readRowDetails(lRow);
 			}
@@ -250,11 +256,14 @@ public class ExcelSpieler {
 			addSpielerTableau(spielerId, konkurrenz);
 
 			if (! noDoppel) {
-				String name2 = lRow.getCell(colName2).getStringCellValue();
-				if (!name2.isBlank()) {
-					// wenn ein Doppelpartner vorhanden
-					spielerId = addSpieler(name2, lRow.getCell(colVorname2).getStringCellValue());
-					addSpielerTableau(spielerId, konkurrenz);
+				Cell cell = lRow.getCell(colName2);
+				if (cell != null) {
+					String name2 = lRow.getCell(colName2).getStringCellValue();
+					if (!name2.isBlank()) {
+						// wenn ein Doppelpartner vorhanden
+						spielerId = addSpieler(name2, lRow.getCell(colVorname2).getStringCellValue());
+						addSpielerTableau(spielerId, konkurrenz);
+					}
 				}
 			}
 		} catch (Exception ex) {
@@ -298,7 +307,7 @@ public class ExcelSpieler {
 	/**
 	 * Die Id bestimmen
 	 * 
-	 * @param konkSuche    nach der gesucht wird
+	 * @param konkSuche    Konkurrenz nach der gesucht wird
 	 * @param tableauList
 	 * @param tableauName, wenn > 0 muss dieser Name in der TableauBezeichung
 	 *                     vorhanden sein. @return, -1 wenn nicht gefunden, sonst
@@ -319,12 +328,26 @@ public class ExcelSpieler {
 		}
 		if (id < 0) {
 			Trace.println(5, " <== Tableau nicht gefunden");
+			addTableauFehler(konkSuche);
+			fehler = true;
 		} else {
 			Trace.println(5, "");
 		}
 		return id;
 	}
 
+	/**
+	 * Fehlende Tableau in Fehlerlsite einfügen
+	 * @param konkSuche
+	 */
+	private void addTableauFehler(String konkSuche) {
+		if (fehlerStr.indexOf(konkSuche) >= 0) {
+			// nix tun schon vorhanden
+			return;
+		}
+		fehlerStr.append(konkSuche + " nicht gefunden \n");
+	}
+	
 	/**
 	 * Vergleicht 2 Strings
 	 * 

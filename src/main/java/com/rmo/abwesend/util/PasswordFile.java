@@ -13,8 +13,12 @@ public class PasswordFile {
 	private String mFileName = null;
 	/** Das File mit dem Password */
 	private FileReader fileReader = null;
+	/** Tag für das DB Passwort, muss im Passwort-File vorhanden sein */
+	private final String dbPwTag = "DB=";
 	/** Das Passwort für Datenbank, einmal lesen immer verwenden */
 	private static String dbPassword = null;
+	/** Tag für das mail-Passwort */
+	private final String mailPwTag = "Mail=";
 	/** Das Passwort für Mails versenden, einmal lesen immer verwenden */
 	private static String mailPassword = null;
 
@@ -35,13 +39,13 @@ public class PasswordFile {
 
 	/**
 	 * Gibt das gespeicherte Passwort zurück. Wenn kein File vorhanden, dann NULL;
-	 *
+	 * 
 	 * @return
 	 */
 	public String getDbPassword() {
 		Trace.println(2, "DbPasswordFile.getDbPassword() file: " + mFileName);
 		if (dbPassword == null) {
-			dbPassword = readPassword("DB=");
+			dbPassword = readPassword(dbPwTag);
 		}
 		return dbPassword;
 	}
@@ -55,7 +59,7 @@ public class PasswordFile {
 	public String getMailPassword() {
 		Trace.println(2, "DbPasswordFile.getMailPassword() file: " + mFileName);
 		if (mailPassword == null) {
-			mailPassword = readPassword("Mail=");
+			mailPassword = readPassword(mailPwTag);
 		}
 		return mailPassword;
 	}
@@ -63,11 +67,11 @@ public class PasswordFile {
 
 
 	/**
-	 * Das Passwort vom File lesen
-	 * @param pwType das Passwort das gesucht wird
+	 * Das Passwort vom File lesen, das dem pwType entspricht
+	 * @param pwTag die Bezeichnung des Passworts das gesucht wird
 	 * @return
 	 */
-	private String readPassword(String pwType) {
+	private String readPassword(String pwTag) {
 		String password = null;
 		try {
 			if (fileReader == null) {
@@ -77,8 +81,8 @@ public class PasswordFile {
 
 			String line = buffReader.readLine();
 			while (line != null) {
-				if (line.startsWith(pwType)) {
-					int len = pwType.length();
+				if (line.startsWith(pwTag)) {
+					int len = pwTag.length();
 					password = line.substring(len);
 					break;
 				}

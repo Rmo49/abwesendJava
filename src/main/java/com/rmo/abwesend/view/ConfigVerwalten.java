@@ -38,8 +38,10 @@ public class ConfigVerwalten extends BasePane {
 	private final int COL1WIDTH = 150;
 	private final int COL2WIDTH = 600;
 	private Dimension EINGABE_FELD = new Dimension(400, 20);
-	// die daten der Tabelle
+	// die daten der Cofig-Tabelle
 	private ConfigTableModel configTableData = new ConfigTableModel();
+	public int zeitRowStart;
+	public int zeitRowEnde;
 	private JTable configTable = new JTable(configTableData);
 
 	// die Tabelle für die Zeiten pro Tag
@@ -51,7 +53,7 @@ public class ConfigVerwalten extends BasePane {
 	private int selectedRowConfig = -1;
 	private int selectedRowZeit = -1;
 	private int selectedColZeit = -1;
-	private JTextField configWert;
+	private JTextField configWertNew;
 
 	/*
 	 * Der Panel, wir von dem Parent aufgerufen
@@ -105,7 +107,6 @@ public class ConfigVerwalten extends BasePane {
 	 * @return
 	 */
 	private JComponent addZeitTable() {
-
 		zeitTableData = new ZeitTableModel();
 		zeitTable = new JTable(zeitTableData);
 		JScrollPane scrollPane = new JScrollPane(zeitTable);
@@ -117,6 +118,38 @@ public class ConfigVerwalten extends BasePane {
 	}
 
 	/**
+	 * Die Zeit-Strings (zeit.start, zeit.ende) synchron halten mit der Tabelle. 
+	 * Die Tabelle ist der Master
+	 */
+	private void updateZeitStr(int rowIndex) {
+		if (rowIndex == 0) {
+			Config.zeitStartStr = setZeitStr(rowIndex);
+			configTableData.setValueAt(Config.zeitStartStr, zeitRowStart, 1);
+
+		}
+		else {
+			Config.zeitEndeStr = setZeitStr(rowIndex);		
+			configTableData.setValueAt(Config.zeitEndeStr, zeitRowEnde, 1);
+		}
+		configTableData.fireTableDataChanged();
+//		configTableData.fireTableChanged(null);
+	}
+	
+	/**
+	 * Zeitstring aus Tabelle zusammensetzen
+	 * @param row
+	 * @return
+	 */
+	private String setZeitStr(int row) {
+		StringBuffer sb = new StringBuffer(50);
+		for (int i = 0; i < Config.turnierMaxTage; i ++) {
+			sb.append(zeitTableData.getValueAt(row, i));
+			sb.append(";");
+		}
+		return sb.toString();
+	}
+	
+	/**
 	 * Listener der Config-Tabelle, setzt wert in das Feld zum ändern
 	 *
 	 * @param spielerTable
@@ -126,12 +159,16 @@ public class ConfigVerwalten extends BasePane {
 			@Override
 			public void valueChanged(ListSelectionEvent event) {
 				int viewRow = table.getSelectedRow();
+				if ((viewRow == zeitRowStart) || (viewRow == zeitRowEnde)) {
+					// nicht für zeitStrings
+					return;
+				}
 				if (viewRow >= 0) {
 					// den Wert zum ändern übertragen
 					selectedRowZeit = -1;
 					selectedRowConfig = viewRow;
 					String wert = (String) configTableData.getValueAt(selectedRowConfig, 1);
-					configWert.setText(wert);
+					configWertNew.setText(wert);
 				}
 			}
 		});
@@ -146,45 +183,27 @@ public class ConfigVerwalten extends BasePane {
 		table.setCellSelectionEnabled(true);
 		ListSelectionModel cellSelectionModel = table.getSelectionModel();
 		cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	}
 
-		cellSelectionModel.addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent event) {
-				handleZeitEvent(table, event);
-			}
-		});
+		// TODO löschen
+//		cellSelectionModel.addListSelectionListener(new ListSelectionListener() {
+//			@Override
+//			public void valueChanged(ListSelectionEvent event) {
+//				handleZeitEvent(table, event);
+//			}
+//		});
 
 		// Muss auch ColumnModel mit Listener, wenn auf gleicher Zeile selektiert
 		// dann wird kein Listener aufgerufen
-		table.getColumnModel().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent event) {
-				handleZeitEvent(table, event);
-			}
-		});
-	}
+//		table.getColumnModel().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+//			@Override
+//			public void valueChanged(ListSelectionEvent event) {
+				// TODO löschen, wenn nicht mehr gebraucht
+//				handleZeitEvent(table, event);
+//			}
+//		});
+//	}
 
-	/**
-	 * Wenn Listener aufgerufen, werden hier Werte gesetzt
-	 * 
-	 * @param event
-	 */
-	private void handleZeitEvent(JTable table, ListSelectionEvent event) {
-		selectedRowZeit = table.getSelectedRow();
-		selectedColZeit = table.getSelectedColumn();
-		if (selectedRowZeit >= 0) {
-			// den Wert zum ändern übertragen
-			selectedRowConfig = -1;
-			String wert = "0";
-			if (selectedRowZeit == 0) {
-				wert = String.valueOf(Config.zeitStart[selectedColZeit]);
-			}
-			if (selectedRowZeit == 1) {
-				wert = String.valueOf(Config.zeitEnde[selectedColZeit]);
-			}
-			configWert.setText(wert);
-		}
-	}
 
 	/**
 	 * Textfeld und JButton um die Aenderungen zu speichern.
@@ -196,9 +215,9 @@ public class ConfigVerwalten extends BasePane {
 		JLabel label = new JLabel("Config Wert ändern");
 		panel.add(label);
 
-		configWert = new JTextField();
-		configWert.setPreferredSize(EINGABE_FELD);
-		panel.add(configWert);
+		configWertNew = new JTextField();
+		configWertNew.setPreferredSize(EINGABE_FELD);
+		panel.add(configWertNew);
 
 		JButton btnSpeichern = new JButton("Speichern");
 		panel.add(btnSpeichern);
@@ -220,11 +239,11 @@ public class ConfigVerwalten extends BasePane {
 	protected void saveData() {
 //		if (CmUtil.passwordOk()) {
 		if (selectedRowConfig >= 0) {
-			configTable.setValueAt(configWert.getText(), selectedRowConfig, 1);
+			configTable.setValueAt(configWertNew.getText(), selectedRowConfig, 1);
 			configTable.repaint();
 		}
 		if (selectedRowZeit >= 0) {
-			setZeitWerte(Integer.valueOf(configWert.getText()), selectedRowZeit, selectedColZeit);
+			setZeitWerte(Integer.valueOf(configWertNew.getText()), selectedRowZeit, selectedColZeit);
 			zeitTable.repaint();
 		}
 		configTableData.saveAll();
@@ -272,6 +291,13 @@ public class ConfigVerwalten extends BasePane {
 			for (Map.Entry<String, String> mapEntry : keyValueMap.entrySet()) {
 				keys[index] = mapEntry.getKey();
 				values[index] = mapEntry.getValue();
+				// die Zeilen merken von den Zeit-Strings
+				if (mapEntry.getKey().equalsIgnoreCase(Config.zeitStartKey)) {
+					zeitRowStart = index;
+				}
+				if (mapEntry.getKey().equalsIgnoreCase(Config.zeitEndeKey)) {
+					zeitRowEnde = index;
+				}
 				index++;
 			}
 		}
@@ -297,11 +323,7 @@ public class ConfigVerwalten extends BasePane {
 			return "";
 		}
 
-		/*
-		 * if (col == 0) return Integer.valueOf(0).getClass(); else return new
-		 * String().getClass(); }
-		 */
-
+		
 		/**
 		 * Gibt den Wert an der Koordinate row / col zurück.
 		 */
@@ -316,9 +338,9 @@ public class ConfigVerwalten extends BasePane {
 			return "";
 		}
 
+		
 		@Override
 		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-			// Auto-generated method stub
 			if (columnIndex == 0) {
 				keys[rowIndex] = (String) aValue;
 			}
@@ -335,12 +357,6 @@ public class ConfigVerwalten extends BasePane {
 			Config.getKeyValueMap().clear();
 
 			for (int i = 0; i < keys.length; i++) {
-				if (keys[i] == Config.zeitStartKey) {
-					values[i] = getZeitStartStr();
-				}
-				if (keys[i] == Config.zeitEndeKey) {
-					values[i] = getZeitEndeStr();
-				}
 				Config.getKeyValueMap().put(keys[i], values[i]);
 			}
 			try {
@@ -350,29 +366,7 @@ public class ConfigVerwalten extends BasePane {
 			}
 		}
 	}
-
-	/**
-	 * Den Array in einen String konvertieren
-	 * 
-	 * @return
-	 */
-	private String getZeitStartStr() {
-		StringBuffer buffer = new StringBuffer(60);
-		for (int i : Config.zeitStart) {
-			buffer.append(i);
-			buffer.append(";");
-		}
-		return buffer.toString();
-	}
-
-	private String getZeitEndeStr() {
-		StringBuffer buffer = new StringBuffer(60);
-		for (int i : Config.zeitEnde) {
-			buffer.append(i);
-			buffer.append(";");
-		}
-		return buffer.toString();
-	}
+	
 
 	// -----------------------------------------------------
 	/*
@@ -428,10 +422,25 @@ public class ConfigVerwalten extends BasePane {
 			return null;
 		}
 
+		
 		@Override
-		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-			setZeitWerte((int) aValue, rowIndex, columnIndex);
+		public void setValueAt(Object aValue, int rowIndex, int colIndex) {
+			int wert = Integer.valueOf((String) aValue);
+			setZeitWerte(wert, rowIndex, colIndex);
+		    fireTableCellUpdated(rowIndex, colIndex);
+		    updateZeitStr(rowIndex);
 		}
+		
+		
+		/**
+		 * Kann immer editierenc
+		 */
+		@Override
+		public boolean isCellEditable(int rowIndex, int columnIndex) {
+			return true;
+		}
+		
+		
 
 	}
 

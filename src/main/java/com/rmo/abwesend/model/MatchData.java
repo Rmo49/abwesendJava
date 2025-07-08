@@ -182,7 +182,7 @@ public class MatchData {
 		StringBuffer lQuery = new StringBuffer("INSERT INTO matches VALUES (");
 		lQuery.append(pMatch.getSpielerId());
 		lQuery.append(", '");
-		lQuery.append(pMatch.getDatum());
+		lQuery.append(pMatch.getDatumZeit());
 		lQuery.append("', '");
 		lQuery.append(pMatch.getSpielTyp());
 		lQuery.append("');");

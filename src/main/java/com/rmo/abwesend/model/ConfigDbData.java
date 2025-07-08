@@ -17,7 +17,7 @@ import com.rmo.abwesend.util.Config;
  */
 public class ConfigDbData {
 
-	public static String tableName = "config";
+	public static final String tableName = "config";
 
 	/**
 	 * Das Create Statement für diese Tabelle
@@ -128,7 +128,7 @@ public class ConfigDbData {
 	 * Einen Wert lesen
 	 * 
 	 * @param key
-	 * @return
+	 * @return String with value, or null
 	 */
 	public String read(String key) throws SQLException {
 		return find(key);

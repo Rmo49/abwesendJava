@@ -72,7 +72,6 @@ public class Config {
 	public static String sMailControlPath = "";
 	public static String sMailCheckPath = "";
 	public static final String sMailCheckAbwesend = "MailCheckAbwesend.txt";
-	
 
 	public static final String sDbPwFileName = "DbPassword.txt";
 	public static final String sPwFileName = "Passwords.txt";
@@ -83,7 +82,7 @@ public class Config {
 
 	// ----- Config-Werte in der DB
 	// alle Werte werden hier gehalten und in die DB gespeichert
-	private static Map<String, String> keyValueMap = new TreeMap<>();
+	private static Map<String, String> keyValueMap = new TreeMap<String, String>();
 	// das Passwort um die Config-Werte zu ändern
 	public static String configDbPasswort = "T4123";
 
@@ -265,10 +264,25 @@ public class Config {
 	 */
 	public static void readConfigData() throws Exception {
 		Trace.println(1, "Config.readConfigData()");
-		// zuerst due Default Werte, falls nichts gesetzt ist.
-		writeDefaultInMap();
+		// ist ein Eintrag in DB vorhanden?
+		String value;
+		try {
+			value = ConfigDbData.instance().read(datumBeginKey);
+		} catch (NumberFormatException ex) {
+			value = null;
+		}
+		// wenn noch keine Daten
+		if (value == null) {
+			writeDefaultInMap();
+			configDataGelesen = true;
+		}
+		else {
+			keyValueMap = ConfigDbData.instance().readAll(keyValueMap);
+		}
+		
+		// speichern in DB
+		// saveConfigData();
 		// alle Config-Werte von der DB lesen
-		keyValueMap = ConfigDbData.instance().readAll(keyValueMap);
 		setAllValues();
 		showDatumSetzen();
 		setZeitenProTag();
@@ -340,6 +354,14 @@ public class Config {
 	 * @throws Exception
 	 */
 	public static void saveConfigData() throws Exception {
+		// wenn noch keinen Eintrag
+		try {
+			ConfigDbData.instance().read(datumBeginKey);
+		} catch (NumberFormatException ex) {
+			// wenn noch keine Daten
+			configDataGelesen = true;
+		}
+
 		// nur sichern, wenn auch vorher gelesen
 		if (configDataGelesen) {
 			Trace.println(1, "Config.saveConfigData()");
@@ -629,6 +651,9 @@ public class Config {
 		String[] split = zeitStartStr.split(zeitTrennChar);
 		int i = 0;
 		for (String zeit : split) {
+			if (i >= zeitStart.length) {
+				break;
+			}
 			zeitStart[i] = Integer.valueOf(zeit);
 			i++;
 		}
@@ -642,6 +667,9 @@ public class Config {
 		split = zeitEndeStr.split(zeitTrennChar);
 		i = 0;
 		for (String zeit : split) {
+			if (i >= zeitEnde.length) {
+				break;
+			}			
 			zeitEnde[i] = Integer.valueOf(zeit);
 			i++;
 		}
