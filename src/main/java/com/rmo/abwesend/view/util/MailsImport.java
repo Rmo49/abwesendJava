@@ -133,7 +133,7 @@ public class MailsImport {
 	 * keinen Eintrag haben.
 	 */
 	private void emailCheck() {
-		Trace.println(0, "----> emailCheck");
+		Trace.println(0, "====> emailCheck");
 		try {
 			List<Spieler> spielerList = SpielerData.instance().readAllSpieler();
 			for (Spieler lSpieler : spielerList) {

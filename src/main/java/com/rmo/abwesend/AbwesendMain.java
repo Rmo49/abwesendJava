@@ -33,7 +33,7 @@ import com.rmo.abwesend.view.util.CmUtil;
  */
 public class AbwesendMain {
 
-	private final static String version = "TCA CM abwesend, (V9.3)";
+	private final static String version = "TCA CM abwesend, (V9.5)";
 //	private static JOptionPane startFrame;
 
 	public AbwesendMain() {

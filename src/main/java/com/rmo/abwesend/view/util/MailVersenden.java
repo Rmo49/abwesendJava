@@ -606,7 +606,7 @@ public class MailVersenden implements ActionListener, PropertyChangeListener {
 		btnStart.setEnabled(false);
 		dialog.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		// Instances of javax.swing.SwingWorker are not reusuable, so
-		// we create new instances as needed, siehe Klasse unten.
+		// we create new instances as needed, siehe Klasse TaskMail unten.
 		task = new TaskMail();
 		task.addPropertyChangeListener(this);
 		task.execute();

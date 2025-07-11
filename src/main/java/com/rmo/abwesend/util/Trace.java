@@ -1,6 +1,7 @@
 package com.rmo.abwesend.util;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -18,7 +19,8 @@ public class Trace {
 	/** Stringbuffer für Message */
 	private static StringBuffer sBuffer = new StringBuffer(255);
 	/** Das File in das geschrieben wird */
-	private static FileWriter file = null;
+	private static  File file = null;
+	private static FileWriter fileWriter = null;
 	private static BufferedWriter writer = null;
 	private static PrintWriter printWriter = null;
 
@@ -29,6 +31,15 @@ public class Trace {
 		super();
 	}
 
+	public static String getTracePath() {
+		if (fileWriter == null) {
+			return "noch nicht gesetzt";
+		}
+		else {
+			return file.getPath();
+		}
+	} 
+	
 	/**
 	 * Ausgabe, falls dieser Level gedruckt werden soll.
 	 * 
@@ -50,7 +61,7 @@ public class Trace {
 	 */
 	public static void println(int level, String message) {
 		if (level <= Config.traceLevel) {
-			if (file == null) {
+			if (fileWriter == null) {
 				makeWriters();
 			}
 			try {
@@ -75,7 +86,7 @@ public class Trace {
 	}
 
 	public static PrintWriter getPrintWriter() {
-		if (file == null) {
+		if (fileWriter == null) {
 			makeWriters();
 		}
 		return printWriter;
@@ -84,7 +95,7 @@ public class Trace {
 	public static void flush() {
 		try {
 			writer.flush();
-			file.flush();
+			fileWriter.flush();
 		} catch (IOException ex) {
 			System.out.println("Trace.flush: " + ex.getMessage());
 		}
@@ -94,8 +105,9 @@ public class Trace {
 	/** Initialisiert alle Writers */
 	private static void makeWriters() {
 		try {
-			file = new FileWriter(Config.sTraceFileName);
-			writer = new BufferedWriter(file);
+			file = new File(Config.sTraceFileName);
+			fileWriter = new FileWriter(file);
+			writer = new BufferedWriter(fileWriter);
 			printWriter = new PrintWriter(writer);
 		} catch (IOException ex) {
 			System.out.println("Trace.makeFile: " + ex.getMessage());

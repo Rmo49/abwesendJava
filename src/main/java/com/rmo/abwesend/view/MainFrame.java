@@ -25,7 +25,8 @@ import com.rmo.abwesend.view.util.MailsImport;
 import com.rmo.abwesend.view.util.MailVersenden;
 import com.rmo.abwesend.view.util.SpielerExport;
 import com.rmo.abwesend.view.util.SpielerSelektieren;
-import com.rmo.abwesend.view.util.TraceDbAnzeigen;
+import com.rmo.abwesend.view.util.TraceAnzeigen;
+import com.rmo.abwesend.view.util.UserDbAnzeigen;
 import com.rmo.abwesend.view.util.VonBisDatum;
 
 /**
@@ -274,12 +275,22 @@ public class MainFrame extends JFrame {
 		});
 		menuSetup.add(menuConfig);
 
-		JMenuItem menuTrace = new JMenuItem("Trace");
+		JMenuItem menuUsers = new JMenuItem("Users");
+		menuUsers.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				UserDbAnzeigen traceDb = new UserDbAnzeigen();
+				setPaneCenter(traceDb.getPanel());
+			}
+		});
+		menuSetup.add(menuUsers);
+
+		JMenuItem menuTrace= new JMenuItem("Trace");
 		menuTrace.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				TraceDbAnzeigen traceDb = new TraceDbAnzeigen();
-				setPaneCenter(traceDb.getPanel());
+				TraceAnzeigen trace = new TraceAnzeigen();
+				setPaneCenter(trace.getPanel());
 			}
 		});
 		menuSetup.add(menuTrace);

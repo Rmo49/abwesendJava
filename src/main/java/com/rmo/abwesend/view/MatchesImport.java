@@ -503,7 +503,7 @@ public class MatchesImport extends BasePane implements ActionListener, PropertyC
 				if (datumLast.compareTo(datum) == 0) {
 					// gleiches Datum
 					if (zeitLast > 0) {
-						// TODO hier prüfen
+						// hier wird geprüft
 						if (zeitLast+2 > match.getZeitAsInt()) {
 							Trace.println(5, "Check Spiel von Spieler: " + spk.getName() +" am " + match.getDatumZeit());
 						}

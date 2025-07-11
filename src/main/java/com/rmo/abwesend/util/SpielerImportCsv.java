@@ -2,6 +2,7 @@ package com.rmo.abwesend.util;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.List;
 
 import com.rmo.abwesend.model.Spieler;
 import com.rmo.abwesend.model.SpielerData;
+import com.rmo.abwesend.model.SpielerEmail;
 import com.rmo.abwesend.model.SpielerTableauData;
 import com.rmo.abwesend.model.Tableau;
 import com.rmo.abwesend.model.TableauData;
@@ -18,7 +20,7 @@ import com.rmo.abwesend.model.TableauData;
 /**
  * Spieler von einem csv-File (in Text Format) einlesen, das von Swistennis
  * exportiert wurde.
- * 
+ *
  * @author ruedi
  *
  */
@@ -127,7 +129,7 @@ public class SpielerImportCsv {
 
 	/**
 	 * Einen Spieler dazufügen, falls noch nicht in der DB
-	 * 
+	 *
 	 * @param spielerName
 	 * @throws Exception
 	 */
@@ -142,7 +144,7 @@ public class SpielerImportCsv {
 
 	/**
 	 * Die Id bestimmen
-	 * 
+	 *
 	 * @param konkSuche    nach der gesucht wird
 	 * @param tableauList
 	 * @param tableauName, wenn > 0 muss dieser Name in der TableauBezeichung
@@ -178,7 +180,7 @@ public class SpielerImportCsv {
 
 	/**
 	 * Die chars -62, -96 in 32 konvertieren
-	 * 
+	 *
 	 * @param utf8
 	 * @return java-string
 	 */
@@ -192,7 +194,7 @@ public class SpielerImportCsv {
 
 	/**
 	 * Vergleicht 2 Strings
-	 * 
+	 *
 	 * @param str1
 	 * @param str2
 	 * @return
@@ -225,7 +227,7 @@ public class SpielerImportCsv {
 
 	/**
 	 * Wenn mehrere Leerzeichen nacheinander, dann diese löschen.
-	 * 
+	 *
 	 * @param str
 	 * @return
 	 */
@@ -264,7 +266,7 @@ public class SpielerImportCsv {
 
 	/**
 	 * Die Beziehung Spieler / Tableau sichern.
-	 * 
+	 *
 	 * @param spielerID
 	 * @param konkurrenz
 	 */
@@ -285,6 +287,74 @@ public class SpielerImportCsv {
 	 * Name in Trace
 	 */
 	public boolean startEmailEinlesen(String dirName, String fileName) throws Exception {
+		Trace.println(3, "SpielerVonFile.startEmailEinlesen()");
+		fehler = false;
+		List<SpielerEmail> emailList = readFileToList(dirName, fileName);
+		List<Spieler> spielerList = SpielerData.instance().readAllSpieler();
+		// iterate über alle Spieler, email suchen
+		for (Spieler spieler : spielerList) {
+			// wenn noch keine email eingetragen.
+			if (spieler.getEmail().length() <= 0) {
+				String email = readEmailFromList(spieler, emailList);
+				if (email.length() > 0) {
+					addEmail(spieler.getId(), email);
+				}
+			}
+		}
+		Trace.println(3, "SpielerVonFile.startEinlesen() <<< End");
+		return fehler;
+	}
+
+	/**
+	 * Daten vom File in die email-Liste einlesen, Liste zurückgeben.
+	 */
+	private List<SpielerEmail> readFileToList(String dirName, String fileName) throws IOException {
+		List<SpielerEmail> emailList = new ArrayList<>();
+		String dirFile = dirName + "/" + fileName;
+		Trace.println(5, "SpielerImportCsv.readFileToList(): " + dirFile);
+		
+		InputStreamReader fileIn;
+		fileIn = new InputStreamReader(new FileInputStream(dirFile), StandardCharsets.UTF_8);
+
+		BufferedReader bufferedReader = new BufferedReader(fileIn);
+		String line;
+		while ((line = bufferedReader.readLine()) != null) {
+			if (line.contains(Config.spielerImportSplitChar)) {
+				String[] lSpielerZeile = line.split(Config.spielerImportSplitChar);
+				if (lSpielerZeile.length >= 3) {
+					SpielerEmail spe = new SpielerEmail(lSpielerZeile);
+					emailList.add(spe);
+				}
+			}
+		}
+		bufferedReader.close();
+		return emailList;
+	}
+
+
+	/**
+	 * Die Email des Spielers in der e-mailListe suchen.
+	 * @param spk
+	 * @param emailList
+	 * @return die gefunden email, sonst ""
+	 */
+	private String readEmailFromList(Spieler spieler, List<SpielerEmail> emailList) {
+		String email = "";
+		for (SpielerEmail spe : emailList) {
+			if (spe.name.equals(spieler.getName()) && spe.vorname.equals(spieler.getVorName())) {
+				return spe.email;
+			}
+		}
+		return email;
+	}
+
+
+	/**
+	 * Einlesen der e-mail Zeile um Zeile. Dann den Spieler suchen, wenn gefunden,
+	 * e-mail eintragen Wenn true zurück gibt, dann keine Fehler gefunden, sonst
+	 * Name in Trace
+	 */
+	public boolean startEmailEinlesenOld(String dirName, String fileName) throws Exception {
 		Trace.println(3, "SpielerVonFile.startEmailEinlesen()");
 		fehler = false;
 		String dirFile = dirName + "/" + fileName;
@@ -314,7 +384,7 @@ public class SpielerImportCsv {
 
 	/**
 	 * Email zum Spieler dazufügen
-	 * 
+	 *
 	 * @param spielerName
 	 * @throws Exception
 	 */

@@ -2,6 +2,7 @@ package com.rmo.abwesend.model;
 
 /**
  * Für die Anzeige von Namen
+ * name enthält "name, vorname"
  * 
  * @author Ruedi
  *

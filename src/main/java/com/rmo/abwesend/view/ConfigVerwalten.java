@@ -185,7 +185,7 @@ public class ConfigVerwalten extends BasePane {
 		cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	}
 
-		// TODO löschen
+		// TODO löschen 10.7.25
 //		cellSelectionModel.addListSelectionListener(new ListSelectionListener() {
 //			@Override
 //			public void valueChanged(ListSelectionEvent event) {

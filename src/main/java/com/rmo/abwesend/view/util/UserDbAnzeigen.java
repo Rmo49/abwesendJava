@@ -28,7 +28,7 @@ import com.rmo.abwesend.util.Config;
  * @author Ruedi
  *
  */
-public class TraceDbAnzeigen {
+public class UserDbAnzeigen {
 
 	private JPanel panel;
 	private TraceTableModel traceModel;
@@ -36,7 +36,7 @@ public class TraceDbAnzeigen {
 
 	private JFormattedTextField abDatum;
 
-//	public TraceDbAnzeigen(MainFrame main) {
+//	public UserDbAnzeigen(MainFrame main) {
 //		mainFrame = main;
 //	}
 

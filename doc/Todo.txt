@@ -4,7 +4,7 @@ DB Connection
 
 
 mail
-
+- mail an Junioren => selektieren nach Status (Aktiv, Passiv, Junioren) und Alter?
 
 - Mail versenden, Layout im Setup Fenster von Mail-Text sollte nicht verkleinern
 - evt. SMS senden.
