@@ -74,7 +74,7 @@ public class ConfigDbData {
 	 * Die Connection zu der DB.
 	 */
 	protected Connection getConnection() throws SQLException {
-		return DbConnection.getConnection();
+		return DbConnection.getConnection(Config.dbName);
 	}
 
 	/**

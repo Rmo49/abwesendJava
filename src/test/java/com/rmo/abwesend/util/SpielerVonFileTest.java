@@ -1,25 +1,13 @@
 package com.rmo.abwesend.util;
 
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 /**
  * Testklasse noch nicht impl.
  * @author ruedi
  *
  */
-public class SpielerVonFileTest extends TestCase {
-	
-	/**
-	 * @return the suite of tests being tested
-	 */
-	public static Test suite() {
-		return new TestSuite(SpielerVonFileTest.class);
-	}
+public class SpielerVonFileTest  {
 
-	
+
 	/**
 	 * Datum lesen
 	 */
@@ -28,5 +16,5 @@ public class SpielerVonFileTest extends TestCase {
 //		svf.startSpielerEinlesen(dirName, fileName, tableauName)
 	}
 
-	
+
 }

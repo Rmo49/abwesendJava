@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.ParseException;
@@ -27,7 +28,7 @@ import com.rmo.abwesend.model.ConfigDbData;
 /**
  * Configuration Abwesend. Kann seine Daten vom Config-File einlesen, und
  * schreiben. Allgemeine Daten werden in der DB gespeichert. Diese werden nach
- * dem Start in die keyValueMap gelesen. Von dieser Map werden die statischen
+ * dem Start in die dbValueMap gelesen. Von dieser Map werden die statischen
  * (typisierten) Variablen gesetzt, und diese Werte sogleich wieder in die Map
  * zurückgeschrieben, somit werden Werte mit den Default-Werten gesetzt falls
  * noch nicht in der DB. Wenn ein Wert geändert wird, wird auch die statische
@@ -36,6 +37,7 @@ import com.rmo.abwesend.model.ConfigDbData;
  */
 public class Config {
 	public static final boolean newVersion = true;
+	private static boolean propertiesGelesen = false;
 	private static boolean configDataGelesen = false;
 
 	// fonts, background, Eingabefelder
@@ -60,7 +62,7 @@ public class Config {
 
 	/** Config path filename und file */
 	public static String sPath = "";
-	private static final String sConfigFileName = "AbwesendConfig.txt";
+	public static final String sConfigFileName = "AbwesendConfig.txt";
 	private static File sConfigFile;
 
 	/** Weitere Files */
@@ -82,8 +84,8 @@ public class Config {
 
 	// ----- Config-Werte in der DB
 	// alle Werte werden hier gehalten und in die DB gespeichert
-	private static Map<String, String> keyValueMap = new TreeMap<String, String>();
-	// das Passwort um die Config-Werte zu ändern
+	private static Map<String, String> dbValueMap = new TreeMap<String, String>();
+	// das Passwort um die Config-Werte zu änder"db.n
 	public static String configDbPasswort = "T4123";
 
 	// --- Trace
@@ -95,23 +97,48 @@ public class Config {
 	// --- Version von Java
 	public static int javaVersion = 10;
 
-	// --- Database, muss in Config, oder Parameter gespeichert werden.
-	public static final String dbNameKey = "db.name";
-	public static String dbName = "tennis";
+	// --- Database, muss in Config, gespeichert werden.
 	public static String dbUrlPrefix = "jdbc:mysql:";
-	public static final String dbUrlKey = "db.url";
-	public static String dbUrl = "//server41.hostfactory.ch";
-	public static final String dbPortKey = "db.port";
-	public static String dbPort = "3307";
 	public static String dbUrlSetting = "?useLegacyDatetimeCode=false&serverTimezone=UTC";
-	public static final String dbUserKey = "db.username";
-	public static String dbUser = "javacon";
+
+	// --- verbinden zu Local oder web
+	public static final String dbConnectWeb = "web";
+	public static final String dbConnectLocal = "local";
+	
+	public static final String dbConnectToKey = "db.connect.to";
+	public static String dbConnectTo = dbConnectLocal;
+
+	// --- Die Werte die verwendet werden, müssen beim Start gesetzt werden
+	public static String dbUrl;
+	public static String dbName;
+	public static String dbPort;
+	public static String dbUser;
+
+	// --- Die Werte für Web
+	public static final String dbUrlWebKey = "db.web.url";
+	public static String dbUrlWeb = "//server41.hostfactory.ch";
+	public static final String dbNameWebKey = "db.web.name";
+	public static String dbNameWeb = "tennis";
+	public static final String dbPortWebKey = "db.web.port";
+	public static String dbPortWeb = "3307";
+	public static final String dbUserWebKey = "db.web.username";
+	public static String dbUserWeb = "javacon";
+
+	// --- Local DB
+	public static final String dbUrlLocalKey = "db.local.url";
+	public static String dbUrlLocal = "//localhost";
+	public static final String dbNameLocalKey = "db.local.name";
+	public static String dbNameLocal = "tennistest";
+	public static final String dbPortLocalKey = "db.local.port";
+	public static String dbPortLocal = "3306";
+	public static final String dbUserLocalKey = "db.local.username";
+	public static String dbUserLocal = "javacon";
 
 	// --- Download von der Tennis-Homepage (Properties)
 	public static final String webDriverKey = "browser.webdriverTyp";
 	public static String webDriver = "webdriver.chrome.driver";
 	public static final String webDriverFileKey = "browser.driverLocation";
-	public static String webDriverFile = "C:/Program Files (x86)/Google/Chrome/chromedriver.exe";
+	public static String webDriverFile = "C:/Program/Google/Chrome/chromedriver/chromedriver.exe";
 
 	// Swiss Tennis in DB speichern, da für alle gleich
 	public static final String swissTennisUrlKey = "swisstennis.url";
@@ -126,7 +153,7 @@ public class Config {
 
 	// --- Anzeige der Abwesenheiten Datum und Zeit
 	// Turnier Datum, in DB
-	public static GregorianCalendar beginDatumTmp = new GregorianCalendar(2022, 8, 26); // 0=Jan
+	public static GregorianCalendar beginDatumTmp = new GregorianCalendar(2026, 8, 15); // 0=Jan
 	public static final String datumBeginKey = "turnier.beginDatum";
 	public static Date turnierBeginDatum = beginDatumTmp.getTime();
 	public static final String datumEndKey = "turnier.endDatum";
@@ -171,6 +198,10 @@ public class Config {
 	public static int[] zeitEnde;
 	private static String zeitTrennChar = ";";
 
+	// bis wann sollen die Tableau angezeigt werden
+	public static String tableauShowBisKey = "tableau.show.bis";
+	public static int tableauShowBis = 70;
+
 	// --- Für einlesen von Spieler und Spielplan, in Config
 	public static final String spielerExportDirKey = "spieler.export.dir";
 	public static String spielerExportDir = "D:/Downloads";
@@ -190,7 +221,7 @@ public class Config {
 
 	public static String spielerRowIndex = "Konkurrenz";
 	public static final String spielerColKonkurrenzKey = "spieler.import.konkurrenz";
-	public static String spielerColKonkurrenz = "Konkurrenzx";
+	public static String spielerColKonkurrenz = "Konkurrenz";
 	public static final String spielerColName1Key = "spieler.import.name1";
 	public static String spielerColName1 = "Name";
 	public static final String spielerColVorname1Key = "spieler.import.vorname1";
@@ -255,15 +286,34 @@ public class Config {
 		if (mProperties.getProperty(key) != null) {
 			return mProperties.getProperty(key);
 		}
-		return keyValueMap.get(key);
+		return dbValueMap.get(key);
 	}
 
 	/**
 	 * Alle key value pairs einlesen, das sind felder mit einer 'final String
-	 * wertEndung'. Die Werte werden in der keyValueMap gespeichert.
+	 * wertEndung'. Die Werte werden in der dbValueMap gespeichert.
 	 */
 	public static void readConfigData() throws Exception {
 		Trace.println(1, "Config.readConfigData()");
+		// zuerst alle Default wert setzen
+		writeDefaultInMap();
+		// alle Config-Werte von der DB lesen
+		dbValueMap = ConfigDbData.instance().readAll(dbValueMap);
+
+		// speichern in DB
+		// saveConfigData();
+		setAllValues();
+		showDatumSetzen();
+		setZeitenProTag();
+		configDataGelesen = true;
+	}
+
+	/**
+	 * Alle key value pairs einlesen, das sind felder mit einer 'final String
+	 * wertEndung'. Die Werte werden in der dbValueMap gespeichert.
+	 */
+	public static void readConfigData_old() throws Exception {
+		Trace.println(1, "Config.readConfigData_old()");
 		// ist ein Eintrag in DB vorhanden?
 		String value;
 		try {
@@ -275,11 +325,10 @@ public class Config {
 		if (value == null) {
 			writeDefaultInMap();
 			configDataGelesen = true;
+		} else {
+			dbValueMap = ConfigDbData.instance().readAll(dbValueMap);
 		}
-		else {
-			keyValueMap = ConfigDbData.instance().readAll(keyValueMap);
-		}
-		
+
 		// speichern in DB
 		// saveConfigData();
 		// alle Config-Werte von der DB lesen
@@ -317,6 +366,7 @@ public class Config {
 		weekDauer = weekEnd - weekBegin;
 		zeitStartStr = getWert(zeitStartKey, zeitStartStr);
 		zeitEndeStr = getWert(zeitEndeKey, zeitEndeStr);
+		tableauShowBis = getWert(tableauShowBisKey, tableauShowBis);
 
 		// das file für mails versenden
 		sMailToSendPath = sPath + "/" + sMailToSend;
@@ -331,10 +381,10 @@ public class Config {
 	public static void writeDefaultInMap() throws Exception {
 		Trace.println(2, "Config.writeDefaultInMap()");
 		// String Values
-		keyValueMap.put(swissTennisUrlKey, swissTennisUrl);
-		keyValueMap.put(swisstennisTournamentKey, swisstennisTournament);
-		keyValueMap.put(swisstennisIdKey, swisstennisId);
-		keyValueMap.put(swisstennisPwdKey, swisstennisPwd);
+		dbValueMap.put(swissTennisUrlKey, swissTennisUrl);
+		dbValueMap.put(swisstennisTournamentKey, swisstennisTournament);
+		dbValueMap.put(swisstennisIdKey, swisstennisId);
+		dbValueMap.put(swisstennisPwdKey, swisstennisPwd);
 
 		// Datum in die Map speichern
 		putWert(datumBeginKey, turnierBeginDatum);
@@ -344,12 +394,13 @@ public class Config {
 		putWert(weekBeginKey, weekBegin);
 		putWert(weekEndKey, weekEnd);
 
-		keyValueMap.put(zeitStartKey, zeitStartStr);
-		keyValueMap.put(zeitEndeKey, zeitEndeStr);
+		dbValueMap.put(zeitStartKey, zeitStartStr);
+		dbValueMap.put(zeitEndeKey, zeitEndeStr);
+		putWert(tableauShowBisKey, tableauShowBis);
 	}
 
 	/**
-	 * Alle Werte in die DB schreiben. Die keyValueMap enthält alle tupel
+	 * Alle Werte in die DB schreiben. Die dbValueMap enthält alle tupel
 	 * 
 	 * @throws Exception
 	 */
@@ -368,7 +419,7 @@ public class Config {
 			// zuerst alles löschen
 			ConfigDbData.instance().deleteAll();
 			// alle Werte in die DB schreiben
-			ConfigDbData.instance().addAll(keyValueMap);
+			ConfigDbData.instance().addAll(dbValueMap);
 		}
 	}
 
@@ -379,7 +430,7 @@ public class Config {
 	 * @return gefunderner Wert, oder null wenn nicht gefunden
 	 */
 	private static String getWert(String key, String wert) {
-		String tmp = keyValueMap.get(key);
+		String tmp = dbValueMap.get(key);
 		if (tmp == null || tmp.length() < 1) {
 			return wert;
 		}
@@ -387,17 +438,18 @@ public class Config {
 	}
 
 	/** Einen int-Werte einlesen */
-//	private static int getWert(String key, int wert) throws Exception {
-//		int tmp = wert;
-//		try {
-//			tmp = Integer.parseInt(getWert(key, ""));
-//		}
-//		catch (NumberFormatException ex) {
-//			throw new Exception("Config-Wert: '" + key + "' falsch \n"
-//					+ "Fehler: " + ex.getMessage());
-//		}
-//		return tmp;
-//	}
+	private static int getWert(String key, int wert) throws Exception {
+		int tmp = wert;
+		try {
+			String value = dbValueMap.get(key);
+			if (value != null) {
+				tmp = Integer.parseInt(value);
+			}
+		} catch (NumberFormatException ex) {
+			throw new Exception("Config-Wert: '" + key + "' falsch \n" + "Fehler: " + ex.getMessage());
+		}
+		return tmp;
+	}
 
 	/** Einen double-Werte einlesen */
 	private static double getWert(String key, double wert) throws Exception {
@@ -419,34 +471,45 @@ public class Config {
 	}
 
 	/** Einen int-Werte in den Map speichen */
-//	private static void putWert(String key, int wert) {
-//		keyValueMap.put(key, Integer.toString(wert));
-//	}
+	private static void putWert(String key, int wert) {
+		dbValueMap.put(key, Integer.toString(wert));
+	}
 
 	/** Einen double-Werte in den Map speichen */
 	private static void putWert(String key, double wert) {
-		keyValueMap.put(key, Double.toString(wert));
+		dbValueMap.put(key, Double.toString(wert));
 	}
 
 	/** Einen datum in den Map speichen */
 	private static void putWert(String key, Date wert) {
-		keyValueMap.put(key, sdfDatum.format(wert));
+		dbValueMap.put(key, sdfDatum.format(wert));
 	}
 
-	/** Prüft, ob das File vorhanden ist */
+	/**
+	 * Prüft, ob das File vorhanden ist,
+	 */
 	private static void checkConfigFile(String configFileName) throws Exception {
+		// den richtigen Pfad setzen
+		String path = AbwesendMain.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+		sPath = path.substring(0, path.lastIndexOf("/"));
+
 		String fileName = null;
 		if (sPath.length() > 0) {
 			fileName = sPath + "/" + configFileName;
 		} else {
 			fileName = configFileName;
 		}
-		sConfigFile = new File(fileName);
-		if (!sConfigFile.exists()) {
-			if (!sConfigFile.createNewFile()) {
-				throw new Exception("Kann ConfigFile nicht anlegen: " + fileName);
-			}
+
+		// neues File anlegen
+		if (sConfigFile == null) {
+			sConfigFile = new File(fileName);
 		}
+		if (!sConfigFile.exists()) {
+			sConfigFile.createNewFile();
+		}
+//		} else {
+//			throw new Exception("Kann ConfigFile nicht anlegen: " + fileName);
+//		}
 	}
 
 	// ------- Property file handling -----------------------------
@@ -457,24 +520,24 @@ public class Config {
 	 * So werden neue Properties im File angezeigt.
 	 */
 	public static void readProperties() throws Exception {
-		Trace.println(1, "Config.readProperties()");
-
-		// den richtigen Pfad setzen
-		String path = AbwesendMain.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
-		if (path.endsWith(".jar")) {
-			sPath = path.substring(0, path.lastIndexOf("/"));
-		} else {
-			sPath = path.substring(0, path.lastIndexOf("/"));
+		if (propertiesGelesen) {
+			return;
 		}
+		Trace.println(1, "Config.readProperties()");
 
 		if (sConfigFile == null) {
 			checkConfigFile(sConfigFileName);
 		}
-		Trace.println(2, "lese von File: '" + sConfigFile + "'");
-		FileInputStream inputStream = new FileInputStream(sConfigFile);
+		Trace.println(2, "lese von File: '" + sPath + "'");
 		mProperties = new Properties();
-		mProperties.load(inputStream);
-		inputStream.close();
+		try {
+			FileInputStream inputStream = new FileInputStream(sConfigFile);
+			mProperties.load(inputStream);
+			inputStream.close();
+		} catch (FileNotFoundException ex) {
+			Trace.println(2, "Properties lesen, Fehler: " + ex.getMessage());
+			Trace.println(2,  "Standard-Werte werden geladen");
+		}
 
 		// --- temporärer Tracelevel setzen
 		int temp = traceLevel;
@@ -485,28 +548,55 @@ public class Config {
 		mProperties.setProperty(traceLevelKey, Integer.toString(traceLevel));
 		Trace.println(1, "trace.level = " + traceLevel);
 
+		if (mProperties.getProperty(dbConnectToKey) == null) {
+			mProperties.setProperty(dbConnectToKey, dbConnectTo);
+		} else {
+			dbConnectTo = mProperties.getProperty(dbConnectToKey);
+		}
+	
 		// --- überprüfen ob bereits gesetzt, sonst neu in die Property schreiben
-		if (mProperties.getProperty(dbNameKey) == null) {
-			mProperties.setProperty(dbNameKey, dbName);
+		if (mProperties.getProperty(dbNameWebKey) == null) {
+			mProperties.setProperty(dbNameWebKey, dbNameWeb);
 		} else {
-			dbName = mProperties.getProperty(dbNameKey);
+			dbNameWeb = mProperties.getProperty(dbNameWebKey);
 		}
-		if (mProperties.getProperty(dbUrlKey) == null) {
-			mProperties.setProperty(dbUrlKey, dbUrl);
+		if (mProperties.getProperty(dbUrlWebKey) == null) {
+			mProperties.setProperty(dbUrlWebKey, dbUrlWeb);
 		} else {
-			dbUrl = mProperties.getProperty(dbUrlKey);
+			dbUrlWeb = mProperties.getProperty(dbUrlWebKey);
 		}
-		if (mProperties.getProperty(dbPortKey) == null) {
-			mProperties.setProperty(dbPortKey, dbPort);
+		if (mProperties.getProperty(dbPortWebKey) == null) {
+			mProperties.setProperty(dbPortWebKey, dbPortWeb);
 		} else {
-			dbPort = mProperties.getProperty(dbPortKey);
+			dbPortWeb = mProperties.getProperty(dbPortWebKey);
+		}
+		if (mProperties.getProperty(dbUserWebKey) == null) {
+			mProperties.setProperty(dbUserWebKey, dbUserWeb);
+		} else {
+			dbUserWeb = mProperties.getProperty(dbUserWebKey);
+		}
+		// --- Properties für lokale DB
+		if (mProperties.getProperty(dbNameLocalKey) == null) {
+			mProperties.setProperty(dbNameLocalKey, dbNameLocal);
+		} else {
+			dbNameLocal = mProperties.getProperty(dbNameLocalKey);
+		}
+		if (mProperties.getProperty(dbUrlLocalKey) == null) {
+			mProperties.setProperty(dbUrlLocalKey, dbUrlLocal);
+		} else {
+			dbUrlLocal = mProperties.getProperty(dbUrlLocalKey);
+		}
+		if (mProperties.getProperty(dbPortLocalKey) == null) {
+			mProperties.setProperty(dbPortLocalKey, dbPortLocal);
+		} else {
+			dbPortLocal = mProperties.getProperty(dbPortLocalKey);
+		}
+		if (mProperties.getProperty(dbUserLocalKey) == null) {
+			mProperties.setProperty(dbUserLocalKey, dbUserLocal);
+		} else {
+			dbUserLocal = mProperties.getProperty(dbUserLocalKey);
 		}
 
-		if (mProperties.getProperty(dbUserKey) == null) {
-			mProperties.setProperty(dbUserKey, dbUser);
-		} else {
-			dbUser = mProperties.getProperty(dbUserKey);
-		}
 		if (mProperties.getProperty(showTableauBoxKey) == null) {
 			mProperties.setProperty(showTableauBoxKey, Integer.toString(showTableauBox));
 		} else {
@@ -593,6 +683,8 @@ public class Config {
 		windowHeight = Double.parseDouble(mProperties.getProperty(windowHeigthKey, Double.toString(windowHeight)));
 		windowX = Double.parseDouble(mProperties.getProperty(windowXKey, Double.toString(windowX)));
 		windowY = Double.parseDouble(mProperties.getProperty(windowYKey, Double.toString(windowY)));
+
+		propertiesGelesen = true;
 	}
 
 	/**
@@ -669,13 +761,15 @@ public class Config {
 		for (String zeit : split) {
 			if (i >= zeitEnde.length) {
 				break;
-			}			
+			}
 			zeitEnde[i] = Integer.valueOf(zeit);
 			i++;
 		}
 	}
 
-	/** Alle Properites in das File schreiben */
+	/**
+	 * Alle Properites in das File schreiben
+	 */
 	public static void saveProperties() throws Exception {
 		Trace.println(1, "Config.saveProperties()");
 		writeProperties();
@@ -704,9 +798,14 @@ public class Config {
 	 * schreiben, dann weden diese gespeichert.
 	 */
 	private static void writeProperties() {
-		mProperties.setProperty(dbUrlKey, dbUrl);
-		mProperties.setProperty(dbPortKey, dbPort);
-		mProperties.setProperty(dbUserKey, dbUser);
+		mProperties.setProperty(dbUrlWebKey, dbUrlWeb);
+		mProperties.setProperty(dbPortWebKey, dbPortWeb);
+		mProperties.setProperty(dbUserWebKey, dbUserWeb);
+		mProperties.setProperty(dbNameWebKey, dbNameWeb);
+		mProperties.setProperty(dbUrlLocalKey, dbUrlLocal);
+		mProperties.setProperty(dbPortLocalKey, dbPortLocal);
+		mProperties.setProperty(dbUserLocalKey, dbUserLocal);
+		mProperties.setProperty(dbNameLocalKey, dbNameLocal);
 		mProperties.setProperty(showTableauBoxKey, Integer.toString(showTableauBox));
 		mProperties.setProperty(showBeginDatumKey, sdfDatum.format(showBeginDatum));
 		mProperties.setProperty(showEndDatumKey, sdfDatum.format(showEndDatum));
@@ -736,7 +835,6 @@ public class Config {
 		mProperties.setProperty(planDirKey, planDir);
 		mProperties.setProperty(planFileKey, planFile);
 		mProperties.setProperty(planTrennCharKey, planTrennChar);
-
 	}
 
 	/** Einen int-Werte von den Properties lesen */
@@ -773,12 +871,45 @@ public class Config {
 	}
 
 	// ------- getter und setter -----------------------
-//	public static String getDbName() {
-//		return dbName;
-//	}
+	/**
+	 * Die Verbindung auf server im Internet setzen
+	 */
+	public static void setConnectionToWeb() {
+		dbUrl = dbUrlWeb;
+		dbPort = dbPortWeb;
+		dbUser = dbUserWeb;
+		dbName = dbNameWeb;
+		try {
+			saveProperties();
+		} catch (Exception ex) {
+			Trace.println(1, "Config.saveProperties Fehler: " + ex.getMessage());
+		}
+	}
+	
+	/**
+	 * Setzt die Verbindung zu Lokaler Database
+	 * Wird von allen Testcases verwendet.
+	 */
+	public static void setConnectionToLocal() {
+		Config.dbUrl = Config.dbUrlLocal;
+		Config.dbPort = Config.dbPortLocal;
+		Config.dbName = Config.dbNameLocal;
+		Config.dbUser = Config.dbUserLocal;
+		try {
+			Config.saveProperties();
+		}
+		catch (Exception ex) {
+			Trace.println(1, "Config.saveProperties Fehler: " + ex.getMessage());
+		}
+	}
 
-	public static Map<String, String> getKeyValueMap() {
-		return keyValueMap;
+
+	public static String getDbName() {
+		return dbName;
+	}
+
+	public static Map<String, String> getDbValueMap() {
+		return dbValueMap;
 	}
 
 	public static void setJavaVersion(String version) {

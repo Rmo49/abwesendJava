@@ -263,7 +263,7 @@ public class DbActions {
 	 * Eine neue DB anlegen
 	 */
 	private void startNewDb() {
-		if (TennisDataBase.generateNewTables()) {
+		if (TennisDataBase.generateAllTables()) {
 			CmUtil.info("DB generieren", "Datenbank generiert, >>> Programm neu starten");
 		} else {
 			CmUtil.info("DB generieren", "Fehler siehe Trace");

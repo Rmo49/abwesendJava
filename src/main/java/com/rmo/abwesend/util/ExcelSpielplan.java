@@ -248,8 +248,8 @@ public class ExcelSpielplan {
 			spielerName1 = null;
 			spielerName2 = null;
 		} catch (Exception ex) {
-			addFehler(ex.getMessage());
-//			Trace.println(3, Config.get(Config.planTrennCharKey) + " " + ex.getMessage());
+			addFehler(spielerName1 + " " + ex.getMessage());
+			Trace.println(3, "ExcelSpielplan.addMatches() " + spielerName1 + " "  + ex.getMessage());
 		}
 	}
 
@@ -268,7 +268,7 @@ public class ExcelSpielplan {
 	}
 
 	/**
-	 * Von einem Spieler(paar) den Match speichern
+	 * Von einem Spieler den Match speichern
 	 * 
 	 * @param name
 	 */
@@ -277,7 +277,13 @@ public class ExcelSpielplan {
 		if (namen.length > 2) {
 			namen[1] = namen[namen.length - 1];
 		}
-		int spielerId = SpielerData.instance().readId(namen[0].trim(), namen[1].trim());
+		String vorname = "";
+		// wenn Vorname gesetzt
+		if (namen.length >= 2) {
+			vorname = namen[1].trim();
+		}
+
+		int spielerId = SpielerData.instance().readId(namen[0].trim(), vorname);
 		if (spielerId >= 0) {
 			Match match = new Match();
 			match.setSpielerId(spielerId);

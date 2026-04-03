@@ -10,6 +10,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.rmo.abwesend.util.Config;
+
 /**
  * Spieler-Model, Verbindung zu Spieler in der DB. Schnittstelle zur DB. Spieler
  * werden mit der Klasse Spieler sichtbar gemacht.
@@ -74,7 +76,7 @@ public class SpielerData {
 	 * Die Connection zu der DB.
 	 */
 	protected Connection getConnection() throws Exception {
-		return DbConnection.getConnection();
+		return DbConnection.getConnection(Config.dbName);
 	}
 
 	/**

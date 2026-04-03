@@ -8,6 +8,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.rmo.abwesend.util.Config;
+
 /**
  * Tableau-Model, Verbindung zu Tableau-Tabelle in der DB. Schnittstelle zur DB.
  * Tableau werden mit der Klasse Tableau sichtbar gemacht.
@@ -21,10 +23,11 @@ public class TableauData {
 	 */
 	public static String createTable() {
 		StringBuffer sb = new StringBuffer(300);
-		sb.append(" CREATE TABLE IF NOT EXISTS tableau (");
-		sb.append(
-				" tableauID INT unsigned NOT NULL AUTO_INCREMENT, bezeichnung VARCHAR(50) DEFAULT NULL, position VARCHAR(2) DEFAULT NULL,");
-		sb.append(" konkurrenz VARCHAR(50) DEFAULT NULL, PRIMARY KEY (tableauID)");
+		sb.append("CREATE TABLE IF NOT EXISTS tableau (");
+		sb.append("tableauID INT unsigned NOT NULL AUTO_INCREMENT, ");
+		sb.append("bezeichnung VARCHAR(50) DEFAULT NULL, ");
+		sb.append("position VARCHAR(2) DEFAULT NULL, ");
+		sb.append("konkurrenz VARCHAR(50) DEFAULT NULL, PRIMARY KEY (tableauID)");
 		sb.append(");");
 		return sb.toString();
 	}
@@ -70,20 +73,24 @@ public class TableauData {
 	 * Die Connection zu der DB.
 	 */
 	protected Connection getConnection() throws Exception {
-		return DbConnection.getConnection();
+		return DbConnection.getConnection(Config.dbName);
 	}
 
 	/**
 	 * Das Tableau wird gespeichert. Falls die TableauNr nicht vorhanden ist, wird
-	 * ein neuer Tableau angelegt
+	 * ein neuer Tableau angelegt.
+	 * 
+	 * @param pTableau
+	 * @return die ID des Tableau
+	 * @throws Exception wenn bereits vorhanden
 	 */
-	public void add(Tableau pTableau) throws Exception {
+	public int add(Tableau pTableau) throws Exception {
 		if (pTableau.getBezeichnung().length() < 2) {
 			throw new SQLException("Tableau Bezeichung eingeben");
 		}
 		if (pTableau.getId() <= 0) {
 			// nicht gelesen von DB, vielleicht aber schon vorhanden.
-			if (findBezeichnung(pTableau.getBezeichnung())) {
+			if (findBezeichnung(pTableau.getBezeichnung()) >= 0) {
 				throw new SQLException("Tableau mit diesem Namen schon vorhanden: " + pTableau.getBezeichnung());
 			}
 			// wenn nicht gefunden, neues anlegen
@@ -96,6 +103,7 @@ public class TableauData {
 				addRow(pTableau);
 			}
 		}
+		return findBezeichnung(pTableau.getBezeichnung());
 	}
 
 	/**
@@ -105,7 +113,7 @@ public class TableauData {
 	public Tableau read(int pTableauId) throws Exception {
 		if (findRow(pTableauId)) {
 			mReadSet.refreshRow();
-			Tableau lTableau = copyToTableau();
+			Tableau lTableau = copyReadSetToTableau();
 			return lTableau;
 		} else {
 			throw new SQLException("Tableau nicht gefunden, ID: " + pTableauId);
@@ -117,9 +125,9 @@ public class TableauData {
 	 * SQLException geworfen.
 	 */
 	public Tableau readBezeichnung(String pTableauName) throws Exception {
-		if (findBezeichnung(pTableauName)) {
+		if (findBezeichnung(pTableauName) >= 0) {
 			mReadSet.refreshRow();
-			Tableau lTableau = copyToTableau();
+			Tableau lTableau = copyReadSetToTableau();
 			return lTableau;
 		} else {
 			throw new SQLException("Tableau nicht gefunden: " + pTableauName);
@@ -133,7 +141,7 @@ public class TableauData {
 	public Tableau readKonkurrenz(String pKonkurrenz) throws Exception {
 		if (findKonkurrenz(pKonkurrenz)) {
 			mReadSet.refreshRow();
-			Tableau lTableau = copyToTableau();
+			Tableau lTableau = copyReadSetToTableau();
 			return lTableau;
 		} else {
 			throw new SQLException("Tableau nicht gefunden: " + pKonkurrenz);
@@ -176,6 +184,17 @@ public class TableauData {
 			throw new SQLException("Tableau " + pTableauNr + " nicht gelöscht!");
 		}
 	}
+	
+	/**
+	 * Alle Daten löschen, zuerst muss  gelöscht werden
+	 */
+	public void deleteAllRow() throws Exception {
+		String lQuery = "DELETE FROM tableau;";
+		Statement statement = getConnection().createStatement();
+		statement.executeUpdate(lQuery);
+		statement.close();
+	}
+
 
 	// ------ interne Methoden -----------------------------------------
 
@@ -199,10 +218,14 @@ public class TableauData {
 	}
 
 	/**
-	 * Sucht den Tableau über Bezeichnung. Wenn true, steht mReadSet auf dieser
-	 * Zeile.
+	 * Sucht den Tableau über Bezeichnung. Wenn gefunden gibt die ID zurück.
+	 * Nach lesen steht mReadSet auf dieser Zeile.
+	 * 
+	 * @param bezeichnung
+	 * @return ID des Tableau oder -1 wenn nicht gefunden
+	 * @throws Exception
 	 */
-	private boolean findBezeichnung(String bezeichnung) throws Exception {
+	private int findBezeichnung(String bezeichnung) throws Exception {
 		setupReadSet();
 		if (mReadSet != null) {
 			mReadSet.close();
@@ -212,10 +235,10 @@ public class TableauData {
 		lQuery.append(bezeichnung);
 		lQuery.append("%';");
 		mReadSet = mReadStmt.executeQuery(lQuery.toString());
-		if (mReadSet.next()) {
-			return true;
+		if (mReadSet.next()) {	
+			return mReadSet.getInt(1);
 		}
-		return false;
+		return -1;
 	}
 
 	/**
@@ -241,7 +264,7 @@ public class TableauData {
 	/**
 	 * Kopiert die Attribute vom ResultSet in das Objekt Tableau
 	 */
-	private Tableau copyToTableau() throws SQLException {
+	private Tableau copyReadSetToTableau() throws SQLException {
 		Tableau pTableau = new Tableau();
 		pTableau.setId(mReadSet.getInt(1));
 		pTableau.setBezeichnung(mReadSet.getString(2));

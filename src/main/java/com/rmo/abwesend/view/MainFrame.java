@@ -20,6 +20,8 @@ import javax.swing.JPanel;
 import com.rmo.abwesend.model.DbConnection;
 import com.rmo.abwesend.model.TennisDataBase;
 import com.rmo.abwesend.util.Config;
+import com.rmo.abwesend.util.SwissTennisPage;
+import com.rmo.abwesend.view.util.ConfigFile;
 import com.rmo.abwesend.view.util.DbActions;
 import com.rmo.abwesend.view.util.MailsImport;
 import com.rmo.abwesend.view.util.MailVersenden;
@@ -177,7 +179,9 @@ public class MainFrame extends JFrame {
 		menuTurnierPage.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new MatchesImport(mainFrame).startSeiteLesen();
+//				new MatchesImport(mainFrame).startSeiteLesen();
+				SwissTennisPage.startSeiteLesen(SwissTennisPage.getDriver());
+				SwissTennisPage.closeDriver();
 			}
 		});
 		menuBar.add(menuTurnierPage);
@@ -274,6 +278,16 @@ public class MainFrame extends JFrame {
 			}
 		});
 		menuSetup.add(menuConfig);
+		
+		JMenuItem menuConfigFile = new JMenuItem("Config File");
+		menuConfigFile.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ConfigFile configFile = new ConfigFile();
+				setPaneCenter(configFile.getPanel());
+			}
+		});
+		menuSetup.add(menuConfigFile);
 
 		JMenuItem menuUsers = new JMenuItem("Users");
 		menuUsers.addActionListener(new ActionListener() {

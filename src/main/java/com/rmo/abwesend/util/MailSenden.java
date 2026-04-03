@@ -94,7 +94,7 @@ public class MailSenden {
 			// override the getPasswordAuthentication method
 			@Override
 			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(Config.get(Config.emailUser), PasswordFile.getInstance().getMailPassword());
+				return new PasswordAuthentication(Config.get(Config.emailUser), PasswordFile.getMailPassword());
 			}
 		});
 

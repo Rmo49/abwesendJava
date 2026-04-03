@@ -1,18 +1,39 @@
+Spieler eines Tages anzeigen
+	- Tag wählbar ab wann in Fenster
+	- mehrere Tage anzeigen (wird in Einstellungen gesetzt)
+	- Nach Datum der Spiele sortiert, oder Namen der Spieler
+	- Liste aller Spieler anzeigen (Obergrenze in Einstellungen oder Config)
+	
+
+Spieldaten herunter laden und auf homepage kopieren zur Info
+	- mehrere Tage selektierbar 
+	- wie matches einlesen => calendarAdm.pdf (nicht excel)
+	- Diese Datei auf homepage: https://nomadus.ch/tca/info/CalendarAdm.pdf
+	- mit FDP file transfer:
+	Hostname: nomadus.ch
+	user: ftpnomaduscfea0
+	PW: Laura88.
+	Port: FTP: 21
+	Zielverzeichnis: httpdocs
+
+Trace anzeigen Textfield in scrollfeld verpacken.
 
 DB Connection
 - Wenn keine Daten, kann nix eingegeben werden.
+
+- Notizen zu jedem Spieler einfügen
 
 
 mail
 - mail an Junioren => selektieren nach Status (Aktiv, Passiv, Junioren) und Alter?
 
 - Mail versenden, Layout im Setup Fenster von Mail-Text sollte nicht verkleinern
+
 - evt. SMS senden.
 	Beispiele für solche Dienste sind Twilio, Nexmo (jetzt Teil von Vonage) oder MessageBird.
 	Twilio: $0.0725 per SMS
 	Vonage: https://www.vonage.com/communications-apis/sms/ , $0.07885 per message
 
-	
 
 Fehler
 - Abwesend eintragen wenn Wert geändert und verlassen will, fragen ob Speichern
@@ -27,7 +48,7 @@ Flutter
 --------------------------
 AbwesendConfig.txt
 db.url=//server41.hostfactory.ch
-db.url=//localhost
+
 
 
 

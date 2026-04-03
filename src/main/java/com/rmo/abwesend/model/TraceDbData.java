@@ -18,7 +18,7 @@ public class TraceDbData {
 
 	/**
 	 * Das Create Statement für diese Tabelle
-	 * 
+	 *
 	 * @return
 	 */
 	public static String createTable() {
@@ -56,7 +56,7 @@ public class TraceDbData {
 
 	/**
 	 * Singleton
-	 * 
+	 *
 	 * @return
 	 */
 	public static TraceDbData instance() {
@@ -70,7 +70,7 @@ public class TraceDbData {
 	 * Die Connection zu der DB.
 	 */
 	protected Connection getConnection() throws SQLException {
-		return DbConnection.getConnection();
+		return DbConnection.getConnection(Config.dbName);
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class TraceDbData {
 
 	/**
 	 * Die Trace-Einträge bis zu einen Datum löschen
-	 * 
+	 *
 	 * @param date
 	 * @throws SQLException
 	 */

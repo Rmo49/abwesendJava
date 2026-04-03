@@ -7,6 +7,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.rmo.abwesend.util.Config;
+
 /**
  * Spieler-Tableau-Beziehung, Verbindung zur Tabelle SpielerTableau in der DB.
  * Schnittstelle zur DB. Tableau werden mit der Klasse Tableau sichtbar gemacht.
@@ -31,11 +33,12 @@ public class SpielerTableauData {
 	public static String createTable2() {
 		StringBuffer sb = new StringBuffer(300);
 		sb.append("CREATE TABLE IF NOT EXISTS spielerTableau (");
-		sb.append(" spielerID int unsigned NOT NULL, tableauID INT unsigned NOT NULL,");
-		sb.append(" PRIMARY KEY (spielerID, tableauID),");
-		sb.append(" FOREIGN KEY (spielerID) REFERENCES Spieler(spielerID)");
-		sb.append(" ON DELETE CASCADE,");
-		sb.append(" FOREIGN KEY (tableauID) REFERENCES Tableau(tableauID)");
+		sb.append("spielerID int unsigned NOT NULL, ");
+		sb.append("tableauID INT unsigned NOT NULL, ");
+		sb.append("PRIMARY KEY (spielerID, tableauID), ");
+		sb.append("FOREIGN KEY (spielerID) REFERENCES Spieler(spielerID) ");
+		sb.append("ON DELETE CASCADE, ");
+		sb.append("FOREIGN KEY (tableauID) REFERENCES Tableau(tableauID)");
 //		sb.append (" ON DELETE CASCADE");
 		sb.append(");");
 		return sb.toString();
@@ -82,7 +85,7 @@ public class SpielerTableauData {
 	 * Die Connection zu der DB.
 	 */
 	protected Connection getConnection() throws Exception {
-		return DbConnection.getConnection();
+		return DbConnection.getConnection(Config.dbName);
 	}
 
 	/**

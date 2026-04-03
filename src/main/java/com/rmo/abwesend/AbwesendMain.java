@@ -33,7 +33,7 @@ import com.rmo.abwesend.view.util.CmUtil;
  */
 public class AbwesendMain {
 
-	private final static String version = "TCA CM abwesend, (V9.5)";
+	private final static String version = "TCA CM abwesend, (V10.0)";
 //	private static JOptionPane startFrame;
 
 	public AbwesendMain() {
@@ -46,7 +46,14 @@ public class AbwesendMain {
 					"Config lesen", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-
+		// Je nach Enstellung lokal oder web
+		if (Config.dbConnectTo.equalsIgnoreCase(Config.dbConnectLocal)) {
+			Config.setConnectionToLocal();
+		}
+		else {
+			Config.setConnectionToWeb();
+		}
+		
 		if (!checkDbPasswordFile()) {
 			CmUtil.alertWarning("Passwort Datenbank",
 					"Passwort Datei '" + Config.sPwFileName + "' für die Datenbank ist nicht vorhanden,\n"
@@ -58,11 +65,11 @@ public class AbwesendMain {
 
 		// prüfen, ob DB vorhanden, dann normal weiter
 		if (TennisDataBase.dbExists()) {
-			if (TennisDataBase.countTables("tennis") < TennisDataBase.numberOfTabels) {
+			if (TennisDataBase.countTables(Config.dbName) < TennisDataBase.numberOfTabels) {
 				int wahl = JOptionPane.showConfirmDialog(null, "Einige Tabellen fehlen, diese anlegen?", "Start", 
 						JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null);
 				if (wahl == JOptionPane.YES_OPTION) {
-					if (TennisDataBase.generateNewTables()) {
+					if (TennisDataBase.generateAllTables()) {
 						// alles ok
 					}
 					else {
@@ -164,8 +171,7 @@ public class AbwesendMain {
 	 * @return
 	 */
 	private static boolean checkDbPasswordFile() {
-		PasswordFile pwFile = PasswordFile.getInstance();
-		if (pwFile.getDbPassword() == null) {
+		if (PasswordFile.getDbPassword() == null) {
 			return false;
 		} else {
 			return true;
@@ -208,6 +214,7 @@ public class AbwesendMain {
 		}
 	}
 
+	
 	/**
 	 * Hier wird das program gestartet.
 	 *

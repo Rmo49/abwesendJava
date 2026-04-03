@@ -37,6 +37,8 @@ public class ConfigVerwalten extends BasePane {
 
 	private final int COL1WIDTH = 150;
 	private final int COL2WIDTH = 600;
+	private final int BOTTOM_HEIGHT = 100;
+
 	private Dimension EINGABE_FELD = new Dimension(400, 20);
 	// die daten der Cofig-Tabelle
 	private ConfigTableModel configTableData = new ConfigTableModel();
@@ -229,6 +231,7 @@ public class ConfigVerwalten extends BasePane {
 			}
 		});
 		panel.add(btnSpeichern);
+		panel.setPreferredSize(new Dimension(0, BOTTOM_HEIGHT));
 		return panel;
 	}
 
@@ -284,7 +287,7 @@ public class ConfigVerwalten extends BasePane {
 		 * Konvertiert Map in Arrays (keys, values) die lokal gehalten werden.
 		 */
 		public ConfigTableModel() {
-			keyValueMap = Config.getKeyValueMap();
+			keyValueMap = Config.getDbValueMap();
 			keys = new String[keyValueMap.size()];
 			values = new String[keyValueMap.size()];
 			int index = 0;
@@ -354,10 +357,10 @@ public class ConfigVerwalten extends BasePane {
 		 */
 		public void saveAll() {
 			// sichern in der DB
-			Config.getKeyValueMap().clear();
+			Config.getDbValueMap().clear();
 
 			for (int i = 0; i < keys.length; i++) {
-				Config.getKeyValueMap().put(keys[i], values[i]);
+				Config.getDbValueMap().put(keys[i], values[i]);
 			}
 			try {
 				Config.saveConfigData();

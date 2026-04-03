@@ -5,6 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import com.rmo.abwesend.util.Config;
+
 /**
  * Mail-Daten, der Inhalt der mail, meist nur die aktuelle Version (Text) in der
  * DB.
@@ -66,7 +68,7 @@ public class MailData {
 	 * Die Connection zu der DB.
 	 */
 	protected Connection getConnection() throws SQLException {
-		return DbConnection.getConnection();
+		return DbConnection.getConnection(Config.dbName);
 	}
 
 	/**

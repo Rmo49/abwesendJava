@@ -1,5 +1,6 @@
 package com.rmo.abwesend.model;
 
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,9 +18,8 @@ import com.rmo.abwesend.util.Trace;
 public class TennisDataBase {
 
 	/** Verbindung zu Data bean */
-	private static String useName = "USE " + Config.dbName;
 	public static final int numberOfTabels = 7;
-	
+
 	private static String dbError;
 	private static String tableMissing;
 
@@ -30,15 +30,16 @@ public class TennisDataBase {
 	 * @throws Exception
 	 */
 	public static boolean dbExists() {
-		if (dbError != null && !dbError.isEmpty()) {
-			// wenn eine Fehlermeldung vorhanden, dann bereits ein Versuch zu lesen
-			return false;
-		} else {
-			dbError = "";
-		}
+		//TODO wird das noch gebraucht?
+//		if (dbError != null && !dbError.isEmpty()) {
+//			// wenn eine Fehlermeldung vorhanden, dann bereits ein Versuch zu lesen
+//			return false;
+//		} else {
+//			dbError = "";
+//		}
 		try {
 			// Connection aufbauen
-			DbConnection.getConnection();
+			DbConnection.getConnection(Config.dbName);
 		} catch (SQLException ex) {
 			dbError = "TennisDataBase.dbExists(), Fehler: " + ex.getMessage();
 			Trace.println(1, "TennisDataBase.dbExists(), Fehler: " + ex.getMessage());
@@ -94,7 +95,7 @@ public class TennisDataBase {
 	 */
 	public static boolean tableExist(String tableName) {
 		try {
-			DatabaseMetaData dbmd = DbConnection.getConnection().getMetaData();
+			DatabaseMetaData dbmd = DbConnection.getConnection(Config.dbName).getMetaData();
 
 			// prüfen, ob Tabelle exisitert
 			ResultSet tables = dbmd.getTables(null, null, tableName, new String[] { "TABLE" });
@@ -119,7 +120,7 @@ public class TennisDataBase {
 	public static int countTables(String dbName) {
 		int anzahl = 0;
 		try {
-			DatabaseMetaData dbmd = DbConnection.getConnection().getMetaData();
+			DatabaseMetaData dbmd = DbConnection.getConnection(Config.dbName).getMetaData();
 			// prüfen, ob Tabelle exisitert
 			ResultSet tables = dbmd.getTables(dbName, null, "%", new String[] { "TABLE" });
 
@@ -147,14 +148,14 @@ public class TennisDataBase {
 	 * @throws SQLException
 	 */
 	public static void deleteAllTables() throws SQLException {
-		Statement statement = DbConnection.getConnection().createStatement();
-		statement.execute(useName);
-//		statement.execute(SpielerTableauData.dorpTable());
-//		statement.execute(MatchData.dorpTable());
-//		statement.execute(SpielerData.dorpTable());
-//		statement.execute(TableauData.dorpTable());
-//		statement.execute(ConfigDbData.dorpTable());
-//		statement.execute(TraceDbData.dorpTable());
+		Statement statement = DbConnection.getConnection(Config.dbName).createStatement();
+		statement.execute("USE " + Config.dbName);
+		statement.execute(SpielerTableauData.dorpTable());
+		statement.execute(MatchData.dorpTable());
+		statement.execute(SpielerData.dorpTable());
+		statement.execute(TableauData.dorpTable());
+		statement.execute(ConfigDbData.dorpTable());
+		statement.execute(TraceDbData.dorpTable());
 		statement.execute(MailData.dorpTable());
 		statement.close();
 	}
@@ -164,12 +165,12 @@ public class TennisDataBase {
 	 *
 	 * @throws SQLException
 	 */
-	public static boolean generateNewTables() {
-		generateDb();
+	public static boolean generateAllTables() {
 		try {
-			Statement statement = DbConnection.getConnection().createStatement();
+			createDb(Config.dbName);
 
-			statement.execute(useName);
+			Statement statement = DbConnection.getConnection(Config.dbName).createStatement();
+			statement.execute("USE " + Config.dbName);
 			statement.execute(SpielerData.createTable());
 			statement.execute(TableauData.createTable());
 			statement.execute(SpielerTableauData.createTable2());
@@ -189,10 +190,80 @@ public class TennisDataBase {
 	/**
 	 * Eine neue DB anlegen
 	 */
-	public static void generateDb() {
+	public static void createDb(String dbName) throws SQLException {
+		Trace.println(0, "TennisDataBase.createDb(dbName:" + dbName + ")");
+
 		boolean gefunden = false;
 		try {
-			ResultSet resultSet = DbConnection.getConnection().getMetaData().getCatalogs();
+			ResultSet resultSet = DbConnection.getConnection("").getMetaData().getCatalogs();
+
+			while (resultSet.next()) {
+				String databaseName = resultSet.getString(1);
+				if (databaseName.equalsIgnoreCase(dbName)) {
+					gefunden = true;
+				}
+			}
+			resultSet.close();
+		} catch (Exception ex) {
+			Trace.println(1, "TennisDataBase.createDb(), Fehler: " + ex.getMessage());
+		}
+		if (gefunden) {
+			return;
+		}
+
+		// hier neue anlegen, wenn nicht schon vorhanden.
+		Connection connection = null;
+		try {
+			connection = DbConnection.getConnection(dbName);
+			if (connection == null || connection.isClosed()) {
+				connection = DbConnection.getConnection("");
+			}
+
+			if ((dbName != null) && (dbName.length() > 0)) {
+				connection.setSchema(dbName); // hat keine Auswirkungen
+				Statement statement = connection.createStatement();
+				statement.execute("CREATE DATABASE " + dbName);
+				connection.setAutoCommit(true);
+			}
+
+		} catch (Exception ex) {
+			Trace.println(0, "TennisDataBase.createDb(), Url: " + Config.dbUrl + " Fehler: " + ex.getMessage());
+			StringBuffer message = new StringBuffer(500);
+			message.append(" von Url: ");
+			message.append(Config.dbUrl);
+			message.append("\n");
+			message.append(ex.getMessage());
+			throw new SQLException(message.toString());
+		}
+	}
+
+	/**
+	 * Die DB entfernden
+	 * @param dbName
+	 */
+	public static void deleteDb(String dbName) {
+		Connection connection = null;
+		try {
+			connection = DbConnection.getConnection(dbName);
+			if (connection == null || connection.isClosed()) {
+				connection = DbConnection.getConnection("");
+			}
+			Statement statement = connection.createStatement();
+			statement.execute("DROP DATABASE " + dbName);
+			connection.close();
+		} catch (Exception ex) {
+			Trace.println(1, "TennisDataBase.deleteDb(), Fehler: " + ex.getMessage());
+		}
+
+	}
+
+	/**
+	 * Eine neue DB anlegen
+	 */
+	public static void createDb_old() {
+		boolean gefunden = false;
+		try {
+			ResultSet resultSet = DbConnection.getConnection("").getMetaData().getCatalogs();
 
 			while (resultSet.next()) {
 				String databaseName = resultSet.getString(1);
@@ -207,7 +278,7 @@ public class TennisDataBase {
 
 		if (!gefunden) {
 			try {
-				Statement statement = DbConnection.getConnection().createStatement();
+				Statement statement = DbConnection.getConnection("").createStatement();
 				String sql = "CREATE DATABASE " + Config.dbName;
 				statement.executeUpdate(sql);
 				statement.close();
@@ -216,4 +287,5 @@ public class TennisDataBase {
 			}
 		}
 	}
+
 }

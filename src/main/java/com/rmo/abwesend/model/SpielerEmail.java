@@ -17,9 +17,9 @@ public class SpielerEmail {
 	 */
 	public SpielerEmail(String[] data) {
 		if (data.length >= 3) {
-			name = data[0];
-			vorname = data[1];
-			email = data[2];
+			name = data[0].trim();
+			vorname = data[1].trim();
+			email = data[2].trim();
 		}
 		else {
 			name = "";
@@ -41,7 +41,7 @@ public class SpielerEmail {
 	 * @param vorname the vorname to set
 	 */
 	public void setVorname(String vorname) {
-		this.vorname = vorname;
+		this.vorname = vorname.trim();
 	}
 
 
@@ -55,7 +55,7 @@ public class SpielerEmail {
 	 * @param name the name to set
 	 */
 	public void setName(String name) {
-		this.name = name;
+		this.name = name.trim();
 	}
 	/**
 	 * @return the email
@@ -67,7 +67,7 @@ public class SpielerEmail {
 	 * @param email the email to set
 	 */
 	public void setEmail(String email) {
-		this.email = email;
+		this.email = email.trim();
 	}
 
 

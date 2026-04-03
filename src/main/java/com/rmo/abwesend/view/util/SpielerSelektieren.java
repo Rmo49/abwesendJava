@@ -126,7 +126,7 @@ public class SpielerSelektieren {
 	private JComponent addSelectionTableau() {
 		JPanel flowPane = new JPanel(new FlowLayout());
 
-		JLabel labelTableau = new JLabel("Tableau: ");
+		JLabel labelTableau = new JLabel("Tableaux: ");
 		labelTableau.setBackground(Config.colorTable);
 		labelTableau.setOpaque(true);
 		flowPane.add(labelTableau);
@@ -142,7 +142,10 @@ public class SpielerSelektieren {
 			tableauListModel.addElement(new Tableau(-1, " ", "1", "SwissTennis"));
 			Iterator<Tableau> iter = allTableau.iterator();
 			while (iter.hasNext()) {
-				tableauListModel.addElement(iter.next());
+				Tableau tableau = iter.next();
+				if (Integer.parseInt(tableau.getPosition()) < Config.tableauShowBis) {
+					tableauListModel.addElement(tableau);
+				}
 			}
 		} catch (Exception ex) {
 			JOptionPane.showMessageDialog(mainFrame, ex.getMessage(), "Datenbank lesen", JOptionPane.ERROR_MESSAGE);

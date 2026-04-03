@@ -294,7 +294,7 @@ public class SpielerImportCsv {
 		// iterate über alle Spieler, email suchen
 		for (Spieler spieler : spielerList) {
 			// wenn noch keine email eingetragen.
-			if (spieler.getEmail().length() <= 0) {
+			if ((spieler.getEmail().length() <= 0) || (spieler.getEmail().equals("null"))) {
 				String email = readEmailFromList(spieler, emailList);
 				if (email.length() > 0) {
 					addEmail(spieler.getId(), email);
@@ -341,8 +341,10 @@ public class SpielerImportCsv {
 	private String readEmailFromList(Spieler spieler, List<SpielerEmail> emailList) {
 		String email = "";
 		for (SpielerEmail spe : emailList) {
-			if (spe.name.equals(spieler.getName()) && spe.vorname.equals(spieler.getVorName())) {
-				return spe.email;
+			if (spe.name.equals(spieler.getName())) {
+				if (spe.vorname.equals(spieler.getVorName())) {
+					return spe.email;
+				}
 			}
 		}
 		return email;

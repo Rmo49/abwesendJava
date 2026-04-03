@@ -8,47 +8,48 @@ import java.io.FileReader;
  * eine Verbindung zur DB hergestellt werden.
  */
 public class PasswordFile {
-	private static PasswordFile instance;
-	/** Name des Files */
-	private String mFileName = null;
 	/** Das File mit dem Password */
-	private FileReader fileReader = null;
+	private static FileReader fileReader = null;
 	/** Tag für das DB Passwort, muss im Passwort-File vorhanden sein */
-	private final String dbPwTag = "DB=";
+	private static final String dbPwTag = "DB=";
 	/** Das Passwort für Datenbank, einmal lesen immer verwenden */
 	private static String dbPassword = null;
+	/** Tag für das DB Passwort, muss im Passwort-File vorhanden sein */
+	private static final String dbLocalPwTag = "DBlocal=";
+	/** Das Passwort für Datenbank, einmal lesen immer verwenden */
+	private static String dbLocalPassword = null;
 	/** Tag für das mail-Passwort */
-	private final String mailPwTag = "Mail=";
+	private static final String mailPwTag = "Mail=";
 	/** Das Passwort für Mails versenden, einmal lesen immer verwenden */
 	private static String mailPassword = null;
 
+		
 	/**
-	 * MailControl constructor comment.
+	 * Gibt das gespeicherte Passwort zurück. Wenn kein File vorhanden, dann NULL;
+	 * 
+	 * @return
 	 */
-	private PasswordFile() {
-		mFileName = Config.sPath + "/" + Config.sPwFileName;
+	public static String getDbPassword() {
+		Trace.println(5, "DbPasswordFile.getDbPassword()");
+		if (dbPassword == null) {
+			dbPassword = readPassword(dbPwTag);
+		}
+		return dbPassword;
 	}
-
-	public static PasswordFile getInstance() {
-	    if(instance == null) {
-	    	instance = new PasswordFile();
-        }
-        return instance;
-    }
-
 
 	/**
 	 * Gibt das gespeicherte Passwort zurück. Wenn kein File vorhanden, dann NULL;
 	 * 
 	 * @return
 	 */
-	public String getDbPassword() {
-		Trace.println(2, "DbPasswordFile.getDbPassword() file: " + mFileName);
-		if (dbPassword == null) {
-			dbPassword = readPassword(dbPwTag);
+	public static String getDbLocalPassword() {
+		Trace.println(5, "DbPasswordFile.getDbLocalPassword()");
+		if (dbLocalPassword == null) {
+			dbLocalPassword = readPassword(dbLocalPwTag);
 		}
-		return dbPassword;
+		return dbLocalPassword;
 	}
+
 
 
 	/**
@@ -56,26 +57,42 @@ public class PasswordFile {
 	 *
 	 * @return
 	 */
-	public String getMailPassword() {
-		Trace.println(2, "DbPasswordFile.getMailPassword() file: " + mFileName);
+	public static String getMailPassword() {
+		Trace.println(5, "DbPasswordFile.getMailPassword()");
 		if (mailPassword == null) {
 			mailPassword = readPassword(mailPwTag);
 		}
 		return mailPassword;
 	}
 
-
-
+	/**
+	 * Gibt den Namen des File zurück, prüft zuerst ob auch Config gelesen wurde
+	 * @return
+	 */
+	private static String getFileName() {
+		if (Config.sPath.length() < 1) {
+			try {
+				Config.readProperties();
+			
+			} catch (Exception ex) {
+				Trace.println(1, "Password File, kann Properies nicht lesen");
+				return "";
+			}
+		}
+		return Config.sPath + "/" + Config.sPwFileName;
+	}
+	
+	
 	/**
 	 * Das Passwort vom File lesen, das dem pwType entspricht
 	 * @param pwTag die Bezeichnung des Passworts das gesucht wird
 	 * @return
 	 */
-	private String readPassword(String pwTag) {
+	private static String readPassword(String pwTag) {
 		String password = null;
 		try {
 			if (fileReader == null) {
-				fileReader = new FileReader(mFileName);
+				fileReader = new FileReader(getFileName());
 			}
 			BufferedReader buffReader = new BufferedReader(fileReader);
 
@@ -93,6 +110,7 @@ public class PasswordFile {
 			fileReader = null;
 		}
 		catch (Exception ex) {
+			Trace.println(1, "Fehler: " + ex.getMessage());
 			return null;
 		}
 		return password;

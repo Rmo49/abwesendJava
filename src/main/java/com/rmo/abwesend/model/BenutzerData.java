@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
+import com.rmo.abwesend.util.Config;
+
 /**
  * Verbindung zur Tabelle User in der DB.
  */
@@ -68,7 +70,7 @@ public class BenutzerData {
 	 * Die Connection zu der DB.
 	 */
 	protected Connection getConnection() throws SQLException {
-		return DbConnection.getConnection();
+		return DbConnection.getConnection(Config.dbName);
 	}
 
 	/**

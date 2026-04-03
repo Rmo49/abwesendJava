@@ -31,11 +31,8 @@ import javax.swing.SwingWorker;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 
 import com.rmo.abwesend.model.Match;
 import com.rmo.abwesend.model.MatchData;
@@ -43,6 +40,7 @@ import com.rmo.abwesend.model.SpielerData;
 import com.rmo.abwesend.model.SpielerKurz;
 import com.rmo.abwesend.util.Config;
 import com.rmo.abwesend.util.ExcelSpielplan;
+import com.rmo.abwesend.util.SwissTennisPage;
 import com.rmo.abwesend.util.Trace;
 import com.rmo.abwesend.view.util.CmUtil;
 
@@ -50,7 +48,7 @@ import com.rmo.abwesend.view.util.CmUtil;
  * Spiele von einem excel-File von Swisstennis einlesen Zuerst wird das File mit
  * den Spieldaten heruntergeladen von Swisstennis und dann werden die Daten
  * eingelesen.
- * 
+ *
  * @author Ruedi
  *
  */
@@ -59,7 +57,6 @@ public class MatchesImport extends BasePane implements ActionListener, PropertyC
 	private final String BTN_EXCEL = "MS-Excel"; // Was im JButton für herunterlanden steht
 
 	private JFrame mainFrame;
-	private WebDriver driver;
 	private JButton btnEinlesen;
 	private JCheckBox spieleLoeschen;
 	private JButton btnCheckMatches;
@@ -183,7 +180,7 @@ public class MatchesImport extends BasePane implements ActionListener, PropertyC
 		pane.add(btnEinlesen, getConstraintFirst(0, row++));
 
 		// --- Gibt es Matches zur gleichen Zeit?
-		
+
 		pane.add(new JLabel(" "), getConstraintFirst(0, row++));
 
 		btnCheckMatches = new JButton("Matches überprüfen");
@@ -191,19 +188,19 @@ public class MatchesImport extends BasePane implements ActionListener, PropertyC
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				btnCheckMatches.setEnabled(false);
-				
+
 				CmUtil.info("Spielzeiten geprüft ", checkTimeOfPlayer());
 			}
 		});
-				
+
 		pane.add(btnCheckMatches, getConstraintFirst(0, row++));
-		
+
 		return pane;
 	}
 
 	/**
 	 * Den Gridbag der für alle Darstellungen verwendet wird
-	 * 
+	 *
 	 * @param row
 	 * @return
 	 */
@@ -223,7 +220,7 @@ public class MatchesImport extends BasePane implements ActionListener, PropertyC
 
 	/**
 	 * Den Gridbag der für alle Darstellungen verwendet wird
-	 * 
+	 *
 	 * @param row
 	 * @return
 	 */
@@ -247,88 +244,33 @@ public class MatchesImport extends BasePane implements ActionListener, PropertyC
 	 */
 	private boolean startDownload() {
 		try {
-			if (!startSeiteLesen() || !downloadSpielplan()) {
+			if (!SwissTennisPage.startSeiteLesen(SwissTennisPage.getDriver()) || !downloadSpielplan()) {
 				return false;
 			}
 		} catch (Exception ex) {
 			CmUtil.alertError("SwissTennis Seite lesen", ex);
 			return false;
 		}
-//		driver.close();
-//		driver.quit();
+		SwissTennisPage.closeDriver();
 		return true;
 	}
 
-	public boolean startSeiteLesen() throws NoSuchElementException {
-		Trace.println(3, "SwissTennis startSeiteLesen()");
-		// declaration and instantiation of objects/variables
-//	    	System.setProperty("webdriver.firefox.marionette","C:\\geckodriver.exe");
-//			WebDriver driver = new FirefoxDriver();
-
-		Trace.println(4, "SwissTennis create WebDriver");
-		try {
-			if (Config.webDriver.contains("chrome")) {
-				// im System muss der driver gesetzt werden.
-				System.setProperty(Config.webDriver, Config.webDriverFile);
-				ChromeOptions options = new ChromeOptions();
-				options.addArguments("--headless");
-//				driver = new ChromeDriver(options);
-				driver = new ChromeDriver();
-
-			} else {
-				throw new Exception("WebDriver nicht gefunden: " + Config.webDriverFile);
-			}
-		} catch (Exception ex) {
-			CmUtil.alertError("SwissTennis Seite öffnen ", ex);
-			return false;
-		}
-
-		String expectedTitle = "Login-Zone";
-		String actualTitle = "";
-
-		// launch Browser and direct it to the Base URL
-		Trace.println(4, "SwissTennis get baseUrl: " + Config.swissTennisUrlTournament);
-		try {
-			driver.get(Config.swissTennisUrlTournament);
-		} catch (Exception ex) {
-			CmUtil.alertError(
-					"Kann Turnierseite von Swiss Tennis nicht öffnen. '" + Config.swissTennisUrlTournament + "'",
-					ex.getMessage());
-			return false;
-		}
-
-		// get the actual value of the title
-		actualTitle = driver.getTitle();
-		Trace.println(4, "SwissTennis.getTitle(): " + actualTitle);
-		if (actualTitle.contentEquals(expectedTitle)) {
-			WebElement element = null;
-			element = driver.findElement(By.name("id"));
-			element.sendKeys(Config.swisstennisId);
-
-			element = driver.findElement(By.name("pwd"));
-			element.sendKeys(Config.swisstennisPwd);
-
-			element = driver.findElement(By.name("Tournament"));
-			element.click();
-		} else {
-			CmUtil.alertError("Swiss Tennis", "Seite nicht gefunden: " + Config.swissTennisUrlTournament);
-			return false;
-		}
-		return true;
-	}
 
 	/**
 	 * Wenn hier, sollte auf der Übersichtsseite von SwissTennis stehen.
-	 * 
+	 *
 	 * @return
 	 */
 	private boolean downloadSpielplan() {
+		WebDriver driver;
+
 		Trace.println(3, "SwissTennis downloadSpielplan()");
 
 		StringBuffer xpath = new StringBuffer(100);
 		xpath.append("//a[@href='../servlet/CalendarAdm?tournament=Id");
 		xpath.append(Config.swisstennisTournament);
 		xpath.append("&lang=D']");
+		driver = SwissTennisPage.getDriver();
 		WebElement element = driver.findElement(By.xpath(xpath.toString()));
 		Trace.println(5, "element Tag: " + element.getTagName() + " " + element.getText());
 		element.click();
@@ -421,7 +363,7 @@ public class MatchesImport extends BasePane implements ActionListener, PropertyC
 
 	/**
 	 * Abstand zwischen Elementen.
-	 * 
+	 *
 	 * @param panel
 	 */
 	private void addSpace(JPanel panel) {
@@ -489,7 +431,7 @@ public class MatchesImport extends BasePane implements ActionListener, PropertyC
 
 	/**
 	 * Die Liste der Matches vergleichen und wenn zur gleichen Zeit message setzen
-	 * 
+	 *
 	 * @param matches
 	 */
 	private void matchesVergleichen(List<Match> matches, SpielerKurz spk) {
@@ -530,6 +472,7 @@ public class MatchesImport extends BasePane implements ActionListener, PropertyC
 		 */
 		@Override
 		public Void doInBackground() {
+			Trace.println(3, "MatchesImport.doInBackground()");
 			if (spieleLoeschen.isSelected()) {
 				try {
 					MatchData.instance().deleteAllRow();

@@ -27,15 +27,13 @@ import javax.swing.SwingWorker;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 
 import com.rmo.abwesend.model.SpielerTableauData;
 import com.rmo.abwesend.util.Config;
 import com.rmo.abwesend.util.ExcelSpieler;
+import com.rmo.abwesend.util.SwissTennisPage;
 import com.rmo.abwesend.util.Trace;
 import com.rmo.abwesend.view.util.CmUtil;
 
@@ -44,7 +42,7 @@ import com.rmo.abwesend.view.util.CmUtil;
  * Zeile für Zeile die Spieler einlesen. Was vorher gesetzt werden muss: die
  * erste Zeile ab der gelesen werden soll Spalte wo steht Tableau, Name und
  * Vorname
- * 
+ *
  * @author Ruedi
  *
  */
@@ -53,7 +51,6 @@ public class SpielerDatenImport extends BasePane implements ActionListener, Prop
 //	private final String BTN_EXCEL = "MS-Excel"; // Was im JButton für herunterlanden steht
 
 	private JFrame mainFrame;
-	private WebDriver driver;
 	private JButton btnEinlesen;
 	private JCheckBox tableauLoeschen;
 
@@ -143,7 +140,7 @@ public class SpielerDatenImport extends BasePane implements ActionListener, Prop
 
 		pane.add(new JLabel(Config.spielerColVorname2Key), getConstraintFirst(0, row));
 		pane.add(new JLabel(Config.spielerColVorname2), getConstraintNext(1, row++));
-		
+
 		tableauLoeschen = new JCheckBox("Beziehung Spieler->Tableau zuerst löschen");
 		tableauLoeschen.setSelected(false);
 		pane.add(tableauLoeschen, getConstraintNext(1, row++));
@@ -163,7 +160,7 @@ public class SpielerDatenImport extends BasePane implements ActionListener, Prop
 
 	/**
 	 * Den Gridbag der für alle Darstellungen verwendet wird
-	 * 
+	 *
 	 * @param row
 	 * @return
 	 */
@@ -183,7 +180,7 @@ public class SpielerDatenImport extends BasePane implements ActionListener, Prop
 
 	/**
 	 * Den Gridbag der für alle Darstellungen verwendet wird
-	 * 
+	 *
 	 * @param row
 	 * @return
 	 */
@@ -207,86 +204,26 @@ public class SpielerDatenImport extends BasePane implements ActionListener, Prop
 	 */
 	private boolean startDownload() {
 		try {
-			if (!startSeiteLesen() || !downloadSpieler()) {
+			if (!SwissTennisPage.startSeiteLesen(SwissTennisPage.getDriver()) || !downloadSpieler()) {
 				return false;
 			}
 		} catch (Exception ex) {
 			CmUtil.alertError("SwissTennis Seite lesen", ex);
 			return false;
 		}
-		return true;
-	}
-
-	/**
-	 * Die erste Seite von Swisstennis lesen
-	 *
-	 * @return true wenn gefunden
-	 * @throws NoSuchElementException
-	 */
-	public boolean startSeiteLesen() throws NoSuchElementException {
-		Trace.println(3, "SwissTennis startSeiteLesen()");
-		// declaration and instantiation of objects/variables
-//	    	System.setProperty("webdriver.firefox.marionette","C:\\geckodriver.exe");
-//			WebDriver driver = new FirefoxDriver();
-
-		Trace.println(4, "SwissTennis create WebDriver");
-		try {
-			if (Config.webDriver.contains("chrome")) {
-				// im System muss der driver gesetzt werden.
-				System.setProperty(Config.webDriver, Config.webDriverFile);
-				ChromeOptions options = new ChromeOptions();
-				options.addArguments("--headless");
-//				driver = new ChromeDriver(options);
-				driver = new ChromeDriver();
-
-			} else {
-				throw new Exception("WebDriver nicht gefunden: " + Config.webDriverFile);
-			}
-		} catch (Exception ex) {
-			CmUtil.alertError("SwissTennis Seite öffnen ", ex);
-			return false;
-		}
-
-		String expectedTitle = "Login-Zone";
-		String actualTitle = "";
-
-		// launch Browser and direct it to the Base URL
-		Trace.println(4, "SwissTennis get baseUrl: " + Config.swissTennisUrlTournament);
-		try {
-			driver.get(Config.swissTennisUrlTournament);
-		} catch (Exception ex) {
-			CmUtil.alertError("Kann Seite von Swiss Tennis nicht öffnen. '" + Config.swissTennisUrlTournament + "'",
-					ex.getMessage());
-			return false;
-		}
-
-		// get the actual value of the title
-		actualTitle = driver.getTitle();
-		Trace.println(4, "SwissTennis.getTitle(): " + actualTitle);
-		if (actualTitle.contentEquals(expectedTitle)) {
-			WebElement element = null;
-			element = driver.findElement(By.name("id"));
-			element.sendKeys(Config.swisstennisId);
-
-			element = driver.findElement(By.name("pwd"));
-			element.sendKeys(Config.swisstennisPwd);
-
-			element = driver.findElement(By.name("Tournament"));
-			element.click();
-		} else {
-			CmUtil.alertError("Swiss Tennis", "Seite nicht gefunden: " + Config.swissTennisUrlTournament);
-			return false;
-		}
+		SwissTennisPage.closeDriver();
 		return true;
 	}
 
 	/**
 	 * Wenn hier, sollte auf der Übersichtsseite von SwissTennis stehen.
-	 * 
+	 *
 	 * @return
 	 */
 	private boolean downloadSpieler() {
 		Trace.println(3, "SwissTennis downloadSpielplan()");
+		WebDriver driver;
+
 		// Crome > Entwicklertools Lasche Sources
 		// für das Menü Spieler-Liste steht:
 		// servlet/PlayerList?tournament=Id144642&lang=D
@@ -295,6 +232,8 @@ public class SpielerDatenImport extends BasePane implements ActionListener, Prop
 		xpath.append("//a[@href='../servlet/PlayerList?tournament=Id");
 		xpath.append(Config.swisstennisTournament);
 		xpath.append("&lang=D']");
+
+		driver = SwissTennisPage.getDriver();
 		WebElement element = driver.findElement(By.xpath(xpath.toString()));
 		Trace.println(5, "element Tag: " + element.getTagName() + " " + element.getText());
 		element.click();
@@ -378,7 +317,7 @@ public class SpielerDatenImport extends BasePane implements ActionListener, Prop
 
 	/**
 	 * Abstand zwischen Elementen.
-	 * 
+	 *
 	 * @param panel
 	 */
 	private void addSpace(JPanel panel) {
@@ -404,7 +343,7 @@ public class SpielerDatenImport extends BasePane implements ActionListener, Prop
 		// => siehe MyTask.doInBackground()
 	}
 
-	
+
 	/**
 	 * Alle Beziehungen Spieler->Tableau löschen
 	 */
@@ -416,7 +355,7 @@ public class SpielerDatenImport extends BasePane implements ActionListener, Prop
 		}
 		Trace.println(3, "Alle Beziehungen Spieler->Tableau gelöscht");
 	}
-	
+
 	/**
 	 * Sichern der geänderten Werte.
 	 */
